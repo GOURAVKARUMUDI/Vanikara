@@ -28,7 +28,7 @@ export default function IntelligenceWorld() {
   const { resolvedTheme } = useTheme();
   const { config, currentProfile } = usePerformance();
 
-  const initialFogColor = resolvedTheme === "dark" ? "#020617" : "#d0def0";
+  const initialFogColor = resolvedTheme === "dark" ? "#020617" : "#c8d7e6";
   const bloomIntensity = view === "success" ? 5.5 : resolvedTheme === "dark" ? 1.25 : 0.65;
 
   return (

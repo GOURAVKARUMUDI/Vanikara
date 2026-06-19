@@ -96,7 +96,7 @@ export default function GlassObjects() {
   const isDark = resolvedTheme === "dark";
   const fragColor = isDark ? "#93c5fd" : "#e0f2fe";
   const lightColor = isDark ? "#38bdf8" : "#f97316";
-  const lightIntensity = isDark ? 0.75 : 0.45;
+  const lightIntensity = isDark ? 0.6 : 0.35;
 
   return (
     <>

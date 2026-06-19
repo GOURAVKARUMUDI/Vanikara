@@ -19,11 +19,11 @@ export default function ThemeLighting() {
       ambientColor: new THREE.Color("#050814"), // Deep space navy
       ambientIntensity: 0.35,
       dirColor: new THREE.Color("#3b82f6"), // Electric blue rim light
-      dirIntensity: 6.0,
+      dirIntensity: 4.2,
       fillColor: new THREE.Color("#8b5cf6"), // Cybernetic purple point light
-      fillIntensity: 3.5,
+      fillIntensity: 2.4,
       spotColor: new THREE.Color("#f97316"), // Neon orange highlights
-      spotIntensity: 7.0,
+      spotIntensity: 4.5,
     },
     light: {
       ambientColor: new THREE.Color("#94a3b8"), // Soft slate-blue ambient for shadows

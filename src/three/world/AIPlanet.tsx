@@ -159,7 +159,7 @@ export default function AIPlanet() {
       {/* Internal point light inside the crystal sphere */}
       <pointLight 
         color={isDark ? "#60a5fa" : "#e0f2fe"} 
-        intensity={isDark ? 3.0 : 2.0} 
+        intensity={isDark ? 2.0 : 1.4} 
         distance={5.0} 
         decay={1.8}
       />

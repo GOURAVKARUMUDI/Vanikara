@@ -134,7 +134,7 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
 
   const activeConfig = useMemo<PerformanceConfig>(() => {
     return {
-      maxParticles: 825, // Increased by 50% (1.5x) to 825 particles
+      maxParticles: 660, // Reduced by 20% to 660 particles for visual clarity
       usePostProcessing: true,
       bloomIntensity: 1.25,
       bloomMipmapBlur: true,

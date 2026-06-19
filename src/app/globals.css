@@ -78,7 +78,7 @@ html[data-atmosphere="evening"] {
                  linear-gradient(135deg, #0e0a24 0%, #170921 50%, #220938 100%);
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
-  --glass-bg: rgba(14, 10, 36, 0.65);
+  --glass-bg: rgba(14, 10, 36, 0.48);
   --glass-border: rgba(255, 255, 255, 0.07);
   --glass-glow: rgba(244, 63, 94, 0.18);
   --accent-color: #FF7A00;
@@ -99,7 +99,7 @@ html[data-atmosphere="night"] {
                  linear-gradient(135deg, #030712 0%, #060b18 50%, #0c1022 100%);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --glass-bg: rgba(6, 11, 24, 0.7);
+  --glass-bg: rgba(6, 11, 24, 0.48);
   --glass-border: rgba(255, 255, 255, 0.06);
   --glass-glow: rgba(30, 107, 214, 0.15);
   --accent-color: #1E6BD6;

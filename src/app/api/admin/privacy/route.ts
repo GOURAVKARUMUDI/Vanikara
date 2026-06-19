@@ -5,12 +5,28 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { isAdmin } from "@/lib/isAdmin";
 
-const CONFIG_PATH = path.join(process.cwd(), "data/privacy_config.json");
+const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
+const RUNTIME_PATH = path.join(process.cwd(), ".next/privacy_config.json");
+
+async function getConfig() {
+  try {
+    const fileContent = await fs.readFile(RUNTIME_PATH, "utf-8");
+    return JSON.parse(fileContent);
+  } catch {
+    const fileContent = await fs.readFile(STATIC_PATH, "utf-8");
+    const config = JSON.parse(fileContent);
+    try {
+      const dir = path.dirname(RUNTIME_PATH);
+      await fs.mkdir(dir, { recursive: true });
+      await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
+    } catch {}
+    return config;
+  }
+}
 
 export async function GET() {
   try {
-    const fileContent = await fs.readFile(CONFIG_PATH, "utf-8");
-    const config = JSON.parse(fileContent);
+    const config = await getConfig();
 
     // Verify if the caller is an authenticated super admin
     const cookieStore = await cookies();
@@ -50,17 +66,17 @@ export async function POST(req: Request) {
 
     const { currentVersion, policyText, optionalServices } = await req.json();
 
-    // Read existing file to preserve statistics
-    const fileContent = await fs.readFile(CONFIG_PATH, "utf-8");
-    const config = JSON.parse(fileContent);
+    // Read existing using runtime caching to preserve statistics
+    const config = await getConfig();
 
     // Update settings fields
     if (currentVersion) config.currentVersion = currentVersion;
     if (policyText) config.policyText = policyText;
     if (optionalServices) config.optionalServices = optionalServices;
 
-    // Write updated configuration back to disk
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+    // Write updated configuration to both static (for git) and runtime (for instant bypass)
+    await fs.writeFile(STATIC_PATH, JSON.stringify(config, null, 2), "utf-8");
+    await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
 
     return NextResponse.json({ success: true, data: config });
   } catch (error: any) {

@@ -2,15 +2,31 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 
-const CONFIG_PATH = path.join(process.cwd(), "data/privacy_config.json");
+const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
+const RUNTIME_PATH = path.join(process.cwd(), ".next/privacy_config.json");
+
+async function getConfig() {
+  try {
+    const fileContent = await fs.readFile(RUNTIME_PATH, "utf-8");
+    return JSON.parse(fileContent);
+  } catch {
+    const fileContent = await fs.readFile(STATIC_PATH, "utf-8");
+    const config = JSON.parse(fileContent);
+    try {
+      const dir = path.dirname(RUNTIME_PATH);
+      await fs.mkdir(dir, { recursive: true });
+      await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
+    } catch {}
+    return config;
+  }
+}
 
 export async function POST(req: Request) {
   try {
     const { action, preferences, version } = await req.json();
 
-    // 1. Read existing config file
-    const fileContent = await fs.readFile(CONFIG_PATH, "utf-8");
-    const config = JSON.parse(fileContent);
+    // 1. Read existing config using runtime caching
+    const config = await getConfig();
 
     // 2. Increment aggregate stats based on user choice
     config.stats.totalVisits += 1;
@@ -29,8 +45,8 @@ export async function POST(req: Request) {
       if (preferences.preferences) config.stats.preferencesAccepted += 1;
     }
 
-    // 3. Write changes back to json file
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+    // 3. Write changes ONLY to the runtime path so dev server does not hot-reload
+    await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

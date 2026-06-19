@@ -4,6 +4,9 @@ import MainLayout from '@/components/MainLayout';
 import ClientLogger from '@/components/ClientLogger';
 import { ThemeProvider } from '@/components/layout/ThemeContext';
 import BackgroundSystem from '@/components/layout/BackgroundSystem';
+import { CygmaWorldProvider } from '@/context/CygmaWorldContext';
+import { ConsentProvider } from '@/context/ConsentContext';
+import { PerformanceProvider } from '@/context/PerformanceContext';
 
 export const metadata: Metadata = {
   title: {
@@ -35,14 +38,21 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ThemeProvider>
-          <BackgroundSystem />
-          <ClientLogger />
-          <MainLayout>
-            {children}
-          </MainLayout>
+          <CygmaWorldProvider>
+            <ConsentProvider>
+              <PerformanceProvider>
+                <BackgroundSystem />
+                <ClientLogger />
+                <MainLayout>
+                  {children}
+                </MainLayout>
+              </PerformanceProvider>
+            </ConsentProvider>
+          </CygmaWorldProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
 

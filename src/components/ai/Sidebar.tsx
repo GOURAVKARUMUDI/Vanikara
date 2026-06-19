@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { MessageSquare, Plus, ChevronLeft, ChevronRight, Trash2, Sparkles, Brain, Cpu, Database } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { 
+  MessageSquare, Plus, ChevronLeft, ChevronRight, Trash2, 
+  Sparkles, Brain, Cpu, Pin, Edit2, Check, X 
+} from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface SidebarProps {
@@ -33,7 +36,25 @@ export default function Sidebar({
 }: SidebarProps) {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [pinnedIds, setPinnedIds] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  
   const supabase = createClient();
+
+  // Load pinned conversation IDs from local storage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("vanikara_pinned_conversations");
+      if (stored) {
+        try {
+          setPinnedIds(JSON.parse(stored));
+        } catch {
+          setPinnedIds([]);
+        }
+      }
+    }
+  }, []);
 
   const fetchConversations = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -78,8 +99,64 @@ export default function Sidebar({
       if (currentConvId === id) {
         setCurrentConvId(null);
       }
+      // Clean up local storage pin if deleted
+      setPinnedIds((prev) => {
+        const updated = prev.filter((p) => p !== id);
+        localStorage.setItem("vanikara_pinned_conversations", JSON.stringify(updated));
+        return updated;
+      });
     }
   };
+
+  // Toggle Pinned status
+  const handleTogglePin = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPinnedIds((prev) => {
+      const updated = prev.includes(id) 
+        ? prev.filter((p) => p !== id) 
+        : [...prev, id];
+      localStorage.setItem("vanikara_pinned_conversations", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Inline Rename Thread submission
+  const handleRenameSubmit = async (id: string, e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!editingTitle.trim()) return;
+
+    const { error } = await supabase
+      .from("conversations")
+      .update({ title: editingTitle.trim() })
+      .eq("id", id);
+
+    if (!error) {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, title: editingTitle.trim() } : c))
+      );
+      setEditingId(null);
+    } else {
+      alert("Failed to update thread title.");
+    }
+  };
+
+  const handleStartRename = (id: string, title: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingId(id);
+    setEditingTitle(title);
+  };
+
+  // Sort conversations putting pinned items at the top
+  const sortedConversations = useMemo(() => {
+    return [...conversations].sort((a, b) => {
+      const aPinned = pinnedIds.includes(a.id);
+      const bPinned = pinnedIds.includes(b.id);
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+      return 0; // Maintain relative ordering otherwise
+    });
+  }, [conversations, pinnedIds]);
 
   return (
     <div
@@ -96,7 +173,7 @@ export default function Sidebar({
       </button>
 
       {/* New Chat Button */}
-      <div className="p-4">
+      <div className="p-4 flex-shrink-0">
         {isOpen ? (
           <button
             onClick={onNewChat}
@@ -118,7 +195,7 @@ export default function Sidebar({
 
       {/* Model Router Selector */}
       {isOpen && (
-        <div className="px-4 py-2 border-b border-[var(--glass-border)]">
+        <div className="px-4 py-2 border-b border-[var(--glass-border)] flex-shrink-0 select-none">
           <span className="block text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-2.5">
             Model Router
           </span>
@@ -153,7 +230,7 @@ export default function Sidebar({
 
       {/* Guest Session Status Widget */}
       {!isAuthenticated && isOpen && (
-        <div className="mx-4 my-4 p-3 bg-red-500/5 border border-red-500/10 rounded-2xl space-y-2.5 flex-shrink-0">
+        <div className="mx-4 my-4 p-3 bg-red-500/5 border border-red-500/10 rounded-2xl space-y-2.5 flex-shrink-0 select-none">
           <div className="text-[10px] font-extrabold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500/80 animate-pulse" />
             Guest Session
@@ -188,50 +265,93 @@ export default function Sidebar({
       {isAuthenticated && (
         <div className="flex-1 overflow-y-auto p-4 space-y-1.5 scrollbar-thin">
           {isOpen && (
-            <span className="block text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-1">
+            <span className="block text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-1 select-none">
               Chat Streams
             </span>
           )}
           
           {loading && isOpen && (
-            <div className="text-[10px] text-[var(--text-secondary)] py-2 animate-pulse font-medium">
+            <div className="text-[10px] text-[var(--text-secondary)] py-2 animate-pulse font-medium select-none">
               Syncing histories...
             </div>
           )}
 
           {!loading && conversations.length === 0 && isOpen && (
-            <div className="text-[10px] text-[var(--text-secondary)] py-6 text-center italic leading-relaxed">
+            <div className="text-[10px] text-[var(--text-secondary)] py-6 text-center italic leading-relaxed select-none">
               No active threads. Let's initialize a new sequence.
             </div>
           )}
 
-          {conversations.map((conv) => {
+          {sortedConversations.map((conv) => {
             const active = currentConvId === conv.id;
+            const isPinned = pinnedIds.includes(conv.id);
+            const isEditing = editingId === conv.id;
+
             return (
               <div
                 key={conv.id}
-                onClick={() => setCurrentConvId(conv.id)}
-                className={`w-full p-2.5 rounded-xl text-left text-xs transition-all cursor-pointer flex items-center justify-between group ${
+                onClick={() => !isEditing && setCurrentConvId(conv.id)}
+                className={`w-full p-2.5 rounded-xl text-left text-xs transition-all cursor-pointer flex items-center justify-between group border ${
                   active
-                    ? "bg-slate-500/10 text-[var(--text-primary)] font-bold border border-[var(--glass-border)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-500/5 border border-transparent"
+                    ? "bg-slate-500/10 text-[var(--text-primary)] font-bold border-[var(--glass-border)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-500/5 border-transparent"
                 }`}
               >
-                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <MessageSquare className="w-3.5 h-3.5 text-[var(--accent-color)] shrink-0" />
+                <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+                  <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${isPinned ? 'text-amber-500' : 'text-[var(--accent-color)]'}`} />
                   {isOpen && (
-                    <span className="truncate pr-2 font-display">{conv.title}</span>
+                    <div className="flex-grow min-w-0">
+                      {isEditing ? (
+                        <form onSubmit={(e) => handleRenameSubmit(conv.id, e)} className="flex items-center gap-1.5 w-full">
+                          <input
+                            type="text"
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full bg-slate-500/15 text-[var(--text-primary)] text-xs rounded px-1.5 py-0.5 border border-[var(--accent-color)] focus:outline-none font-medium"
+                            autoFocus
+                          />
+                          <button type="submit" className="text-green-500 hover:text-green-600">
+                            <Check className="w-3.5 h-3.5" />
+                          </button>
+                          <button type="button" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="text-red-500 hover:text-red-600">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </form>
+                      ) : (
+                        <span className="truncate block font-display leading-normal">{conv.title}</span>
+                      )}
+                    </div>
                   )}
                 </div>
                 
-                {isOpen && (
-                  <button
-                    onClick={(e) => deleteConversation(conv.id, e)}
-                    className="opacity-0 group-hover:opacity-100 hover:text-red-500 p-1 rounded-lg transition-all cursor-pointer"
-                    title="Purge thread"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                {/* Actions on Hover */}
+                {isOpen && !isEditing && (
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                    <button
+                      onClick={(e) => handleTogglePin(conv.id, e)}
+                      className={`p-1 rounded-lg transition-all cursor-pointer ${isPinned ? 'text-amber-500 hover:text-amber-600' : 'hover:text-[var(--text-primary)]'}`}
+                      title={isPinned ? "Unpin thread" : "Pin thread to top"}
+                    >
+                      <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-amber-500/20' : ''}`} />
+                    </button>
+                    
+                    <button
+                      onClick={(e) => handleStartRename(conv.id, conv.title, e)}
+                      className="p-1 rounded-lg hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                      title="Rename thread"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={(e) => deleteConversation(conv.id, e)}
+                      className="p-1 rounded-lg hover:text-red-500 transition-all cursor-pointer"
+                      title="Purge thread"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 )}
               </div>
             );

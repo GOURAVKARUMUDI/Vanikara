@@ -6,32 +6,27 @@ import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { Cookie, Check, Shield, RefreshCw } from "lucide-react";
 import { FadeUp } from "@/components/Animate";
+import { useConsent } from "@/context/ConsentContext";
 
 export default function CookiesPage() {
+  const { consent, savePreferences } = useConsent();
+  
   const [preferences, setPreferences] = useState({
-    essential: true, // Always true
-    functional: false,
-    analytical: false,
+    preferences: false,
+    analytics: false,
     marketing: false
   });
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
 
   useEffect(() => {
-    // Read stored consent if any
-    try {
-      const stored = localStorage.getItem("cookie_consent");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setTimeout(() => {
-          setPreferences(parsed);
-        }, 0);
-      }
-    } catch (e) {
-      // Ignored
-    }
-  }, []);
+    setPreferences({
+      preferences: consent.preferences,
+      analytics: consent.analytics,
+      marketing: consent.marketing
+    });
+  }, [consent]);
 
-  const handleToggle = (key: "functional" | "analytical" | "marketing") => {
+  const handleToggle = (key: "preferences" | "analytics" | "marketing") => {
     setPreferences((prev) => ({
       ...prev,
       [key]: !prev[key]
@@ -41,11 +36,7 @@ export default function CookiesPage() {
   const handleSave = () => {
     setSaveStatus("saving");
     setTimeout(() => {
-      try {
-        localStorage.setItem("cookie_consent", JSON.stringify(preferences));
-      } catch (e) {
-        // Ignored
-      }
+      savePreferences(preferences);
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus("idle"), 1500);
     }, 800);
@@ -88,7 +79,7 @@ export default function CookiesPage() {
                       </span>
                     </div>
 
-                    {/* 2. Functional */}
+                    {/* 2. Preferences / Functional */}
                     <div className="flex items-start justify-between gap-4 border-t border-[var(--glass-border)] pt-4">
                       <div className="space-y-1 text-xs">
                         <h4 className="font-bold text-[var(--text-primary)]">Functional Cookies</h4>
@@ -98,20 +89,20 @@ export default function CookiesPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleToggle("functional")}
+                        onClick={() => handleToggle("preferences")}
                         className={`w-10 h-6 rounded-full p-1 transition-all duration-300 cursor-pointer ${
-                          preferences.functional ? "bg-[var(--accent-color)]" : "bg-slate-500/20"
+                          preferences.preferences ? "bg-[var(--accent-color)]" : "bg-slate-500/20"
                         }`}
                       >
                         <div
                           className={`w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
-                            preferences.functional ? "translate-x-4" : "translate-x-0"
+                            preferences.preferences ? "translate-x-4" : "translate-x-0"
                           }`}
                         />
                       </button>
                     </div>
 
-                    {/* 3. Analytical */}
+                    {/* 3. Analytics / Analytical */}
                     <div className="flex items-start justify-between gap-4 border-t border-[var(--glass-border)] pt-4">
                       <div className="space-y-1 text-xs">
                         <h4 className="font-bold text-[var(--text-primary)]">Analytical Cookies</h4>
@@ -121,14 +112,14 @@ export default function CookiesPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleToggle("analytical")}
+                        onClick={() => handleToggle("analytics")}
                         className={`w-10 h-6 rounded-full p-1 transition-all duration-300 cursor-pointer ${
-                          preferences.analytical ? "bg-[var(--accent-color)]" : "bg-slate-500/20"
+                          preferences.analytics ? "bg-[var(--accent-color)]" : "bg-slate-500/20"
                         }`}
                       >
                         <div
                           className={`w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-300 ${
-                            preferences.analytical ? "translate-x-4" : "translate-x-0"
+                            preferences.analytics ? "translate-x-4" : "translate-x-0"
                           }`}
                         />
                       </button>

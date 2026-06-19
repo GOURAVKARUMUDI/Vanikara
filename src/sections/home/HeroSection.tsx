@@ -3,19 +3,15 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
-import { ChevronDown, Volume2, VolumeX } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useTheme } from "@/components/layout/ThemeContext";
-import { audioManager } from "@/lib/audio";
 
 const easeOutExpo = [0.16, 1, 0.3, 1] as const;
 const easeOutQuart = [0.25, 1, 0.5, 1] as const;
 
-// Lazy load Canvas scene component on the client-side to prevent SSR mismatch
-const CygmaCanvas = dynamic(() => import("@/components/auth/CygmaCanvas"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-transparent pointer-events-none" />
-});
+import HeroScene from "@/components/hero/HeroScene";
+
 
 // Particles mapping coordinates (Converge to circular ring of radius 24px and inner V shape)
 const PARTICLE_COUNT = 24;
@@ -56,7 +52,6 @@ const STATIC_STARTS = [
 
 export default function HeroSection() {
   const [phase, setPhase] = useState<number>(0); // 0: init/dolly (0-2s), 1: converge (2-4.5s), 2: flash (4.5-4.8s), 3: slide-up/reveal (4.8-8s), 4: complete (8s+)
-  const [isMuted, setIsMuted] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
   const { resolvedTheme } = useTheme();
 
@@ -87,41 +82,17 @@ export default function HeroSection() {
     };
   }, []);
 
-  useEffect(() => {
-    // Keep local mute state in sync with audioManager
-    const checkMute = () => {
-      setIsMuted(audioManager.isMuted());
-    };
-    checkMute();
-    
-    const interval = setInterval(checkMute, 1000);
-    window.addEventListener("focus", checkMute);
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("focus", checkMute);
-    };
-  }, []);
 
-  const toggleSound = () => {
-    const nextMute = !isMuted;
-    setIsMuted(nextMute);
-    audioManager.toggleMute(!nextMute, true);
-    audioManager.playClick();
-  };
 
   if (!mounted) return null;
 
   return (
     <section
       id="hero"
-      className="relative min-h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-gradient)] pt-32 pb-24 px-6"
+      className="relative min-h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-32 pb-24 px-6"
     >
-      {/* 1. Cinematic PBR 3D Core Canvas in Backdrop */}
-      <CygmaCanvas 
-        theme={resolvedTheme} 
-        isSuccess={false} 
-        position="absolute" 
-      />
+      {/* Coordinates 3D Scene states and scroll tracking */}
+      <HeroScene />
 
       {/* 2. Soft atmospheric noise overlay (photographic grain) */}
       <div 
@@ -201,51 +172,73 @@ export default function HeroSection() {
             )}
           </AnimatePresence>
 
-          {/* Central Logo Geometric Shape Drawing */}
+          {/* Central Logo Image / Shape */}
           <div className="w-16 h-16 relative flex items-center justify-center mb-3">
             {/* Soft inner glow behind shape */}
             {phase >= 2 && (
               <div className="absolute inset-0 bg-[var(--accent-color)]/10 blur-xl rounded-full animate-pulse pointer-events-none" />
             )}
             
-            <svg className="w-14 h-14 text-[var(--accent-color)]" viewBox="0 0 100 100" fill="none">
-              {/* Outer boundary circle */}
-              <motion.circle
-                cx="50"
-                cy="50"
-                r="38"
-                stroke="currentColor"
-                strokeWidth="2.0"
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={phase >= 1 ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
-                transition={{ duration: 2.2, delay: 0.2, ease: "easeInOut" }}
-              />
-              {/* Inner V logic shape */}
-              <motion.path
-                d="M32 38 L50 66 L68 38"
-                stroke="currentColor"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={phase >= 1 ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
-                transition={{ duration: 2.0, delay: 0.5, ease: "easeInOut" }}
-              />
-              {/* Glowing core dot */}
-              {phase >= 2 && (
-                <motion.circle
-                  cx="50"
-                  cy="46"
-                  r="4.5"
-                  fill="currentColor"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                  className="shadow-sm shadow-blue-500"
-                />
+            <AnimatePresence mode="wait">
+              {phase < 3 ? (
+                <motion.svg
+                  key="assembling-logo"
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="w-14 h-14 text-[var(--accent-color)]"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                >
+                  {/* Outer boundary circle */}
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    stroke="currentColor"
+                    strokeWidth="2.0"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={phase >= 1 ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                    transition={{ duration: 2.2, delay: 0.2, ease: "easeInOut" }}
+                  />
+                  {/* Inner V logic shape */}
+                  <motion.path
+                    d="M32 38 L50 66 L68 38"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={phase >= 1 ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                    transition={{ duration: 2.0, delay: 0.5, ease: "easeInOut" }}
+                  />
+                  {/* Glowing core dot */}
+                  {phase >= 2 && (
+                    <motion.circle
+                      cx="50"
+                      cy="46"
+                      r="4.5"
+                      fill="currentColor"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                      className="shadow-sm shadow-blue-500"
+                    />
+                  )}
+                </motion.svg>
+              ) : (
+                <motion.div
+                  key="final-logo"
+                  initial={{ scale: 0.4, opacity: 0, filter: "blur(5px)" }}
+                  animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+                  transition={{ type: "spring", stiffness: 220, damping: 16 }}
+                  className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 flex items-center justify-center shadow-md backdrop-blur-md relative"
+                >
+                  {/* Top specular reflection highlight */}
+                  <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                  <img src="/logo.png" alt="Vanikara Logo" className="w-8.5 h-auto" />
+                </motion.div>
               )}
-            </svg>
+            </AnimatePresence>
           </div>
 
           {/* Company identity label */}
@@ -341,8 +334,7 @@ export default function HeroSection() {
             }}
             className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors select-none"
             onClick={() => {
-              audioManager.playClick();
-              document.getElementById("who-we-are")?.scrollIntoView({ behavior: "smooth" });
+              document.getElementById("our-vision")?.scrollIntoView({ behavior: "smooth" });
             }}
           >
             <span className="text-[8px] font-black uppercase tracking-widest font-mono">SCROLL</span>
@@ -350,24 +342,6 @@ export default function HeroSection() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ==========================================
-          AUDIO TOGGLE BUTTON (Muted by Default)
-          ========================================== */}
-      <div className="absolute bottom-6 right-6 z-30">
-        <button
-          onClick={toggleSound}
-          onMouseEnter={() => audioManager.playHover()}
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-white/10 dark:border-white/5 bg-white/20 dark:bg-slate-900/40 backdrop-blur-xl shadow-lg hover:scale-105 transition-all text-[var(--text-primary)] hover:border-[var(--accent-color)] active:scale-95 cursor-pointer"
-          title={isMuted ? "Unmute Ambient Sound" : "Mute Ambient Sound"}
-        >
-          {isMuted ? (
-            <VolumeX className="w-4 h-4 text-[var(--text-secondary)]" />
-          ) : (
-            <Volume2 className="w-4 h-4 text-[var(--accent-color)]" />
-          )}
-        </button>
-      </div>
     </section>
   );
 }

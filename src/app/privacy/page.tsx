@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Button from '@/components/ui/Button';
+import PageHero from '@/components/ui/PageHero';
 
 export const metadata: Metadata = { 
   title: 'Privacy Policy',
@@ -48,7 +49,6 @@ To exercise these rights, please contact us at vanikara26@gmail.com.`,
       content: `We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. You are advised to review this Privacy Policy periodically for any changes.`,
     },
     {
-      id: 'section-8',
       title: '8. CYGMA AI Workspace & Model Processing',
       content: `CYGMA AI is a proprietary software workspace developed by VANIKARA Intelligence Private Limited. It does not train, host, or own the connected third-party base models (such as those provided by OpenAI). 
 
@@ -59,49 +59,44 @@ If you upload documents (PDF, DOCX, PPTX, TXT, CSV), the workspace extracts the 
 Users can request immediate, permanent deletion of their chat records and uploaded document data at any time from their Settings panel. All session conversation data is kept for a standard retention duration of 30 days unless deleted sooner by the user.`,
     },
     {
-      id: 'section-9',
       title: '9. Contact Us',
       content: `For questions, clarifications, or requests regarding this Privacy Policy, please reach out to us at vanikara26@gmail.com.`,
     },
   ];
 
   return (
-    <>
-      <section className="py-24 text-center" style={{ background: 'linear-gradient(160deg, #f8fafc 0%, #e8f0fe 100%)' }}>
-        <div className="max-w-xl mx-auto px-4">
-          <span className="section-tag mb-4">Legal</span>
-          <h1 className="heading-xl mb-6">Privacy Policy</h1>
-          <p className="text-slate-500 text-sm">Last updated: March 2025</p>
+    <div className="pb-24 bg-transparent">
+      <PageHero
+        tag="Legal Policy"
+        title={<>Privacy <span className="gradient-text">Policy</span></>}
+        subtitle="Last updated: March 2025"
+      />
+
+      <div className="max-w-4xl mx-auto px-6 mt-16 space-y-12">
+        <div className="p-6 rounded-2xl text-xs sm:text-sm bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--accent-color)] font-semibold backdrop-blur-md shadow-sm">
+          ℹ️ This policy explains how VANIKARA INTELLIGENCE PRIVATE LIMITED collects, uses, and protects your personal information. By using our services, you agree to this policy.
         </div>
-      </section>
 
-      <section className="section">
-        <div className="container" style={{ maxWidth: 800 }}>
-          <div className="p-6 rounded-2xl mb-12 text-sm" style={{ background: '#e8f0fe', border: '1px solid rgba(30,107,214,0.15)', color: '#1E6BD6' }}>
-            ℹ️ This policy explains how VANIKARA INTELLIGENCE PRIVATE LIMITED collects, uses, and protects your personal information. By using our services, you agree to this policy.
-          </div>
-
-          <div className="space-y-12">
-            {sections.map(({ title, content }) => (
-              <div key={title}>
-                <h2 className="font-bold text-lg text-slate-900 mb-3">{title}</h2>
-                <div className="border-l-2 border-blue-600 pl-6">
-                  {content.split('\n\n').map((para, i) => (
-                    <p key={i} className="text-slate-500 leading-relaxed text-[0.9375rem] mb-4 last:mb-0">
-                      {para}
-                    </p>
-                  ))}
-                </div>
+        <div className="space-y-10">
+          {sections.map(({ title, content }) => (
+            <div key={title} className="scroll-mt-28 space-y-3">
+              <h2 className="font-display font-black text-lg text-[var(--text-primary)] uppercase tracking-wide">
+                {title}
+              </h2>
+              <div className="border-l-2 border-[var(--accent-color)] pl-6 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed space-y-4 font-medium">
+                {content.split('\n\n').map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
               </div>
-            ))}
-          </div>
-
-          <div className="mt-16 pt-8 border-t border-slate-100 flex flex-wrap gap-3">
-            <Button href="/contact" variant="primary">Contact Us</Button>
-            <Button href="/terms" variant="secondary">Terms of Service</Button>
-          </div>
+            </div>
+          ))}
         </div>
-      </section>
-    </>
+
+        <div className="pt-8 border-t border-[var(--glass-border)] flex flex-wrap gap-3">
+          <Button href="/contact" variant="primary">Contact Us</Button>
+          <Button href="/terms" variant="secondary">Terms of Service</Button>
+        </div>
+      </div>
+    </div>
   );
 }

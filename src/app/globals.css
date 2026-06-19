@@ -267,3 +267,19 @@ input, textarea, select { font-family: inherit; }
 .text-balance {
   text-wrap: balance;
 }
+
+/* ── Custom Cursor Overrides ───────────────────── */
+@media (min-width: 768px) {
+  html,
+  body,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .cursor-pointer,
+  input[type="submit"] {
+    cursor: none !important;
+  }
+}

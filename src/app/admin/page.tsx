@@ -15,6 +15,8 @@ import AIManager from "@/components/admin/AIManager";
 import ContactManager from "@/components/admin/ContactManager";
 import CareersManager from "@/components/admin/CareersManager";
 import SettingsManager from "@/components/admin/SettingsManager";
+import PrivacyManager from "@/components/admin/PrivacyManager";
+import AdminScene from "@/components/admin/AdminScene";
 
 export const metadata = {
   title: "Startup OS | Vanikara",
@@ -55,10 +57,12 @@ export default async function AdminPage({
     { id: "payments", label: "Payments" },
     { id: "packages", label: "Packages" },
     { id: "settings", label: "Settings" },
+    { id: "privacy", label: "Privacy Control" },
   ];
 
   return (
     <div className="min-h-screen bg-transparent pt-12">
+      <AdminScene />
       <div className="max-w-7xl mx-auto py-12 px-6">
         
         {/* Header */}
@@ -174,6 +178,7 @@ export default async function AdminPage({
           {tab === "payments" && <PaymentsTable />}
           {tab === "packages" && <PackagesManager />}
           {tab === "settings" && <SettingsManager />}
+          {tab === "privacy" && <PrivacyManager />}
         </main>
       </div>
     </div>

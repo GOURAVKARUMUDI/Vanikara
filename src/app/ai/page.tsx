@@ -7,6 +7,7 @@ import ChatArea from "@/components/ai/ChatArea";
 import ContextPanel from "@/components/ai/ContextPanel";
 import Button from "@/components/ui/Button";
 import { ShieldCheck, LogIn, Compass, Terminal, ShieldAlert } from "lucide-react";
+import AIScene from "@/components/ai/AIScene";
 
 interface Message {
   id: string;
@@ -231,6 +232,7 @@ export default function AIPage() {
 
   return (
     <div className="flex w-full h-[calc(100vh-4rem)] overflow-hidden bg-transparent relative animate-in fade-in duration-300">
+      <AIScene />
       
       {/* 1. Collapsible Left Sidebar */}
       <Sidebar

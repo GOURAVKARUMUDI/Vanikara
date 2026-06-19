@@ -11,20 +11,8 @@ import { Eye, EyeOff, Mail, Lock, Sparkles, AlertCircle, Compass, LogIn, ArrowLe
 import Button from "@/components/ui/Button";
 import AuthSidebar from "@/components/auth/AuthSidebar";
 
-// Lazy load Canvas scene component on the client-side to prevent Next.js SSR crashes
-const CygmaCanvas = dynamic(() => import("@/components/auth/CygmaCanvas"), {
-  ssr: false,
-  loading: () => (
-    <div className="absolute inset-0 bg-slate-950 flex items-center justify-center z-50">
-      <div className="text-center space-y-4">
-        <div className="w-10 h-10 border-2 border-t-[var(--accent-color)] border-white/5 rounded-full animate-spin mx-auto" />
-        <p className="text-[10px] font-mono text-[var(--text-secondary)] uppercase tracking-widest animate-pulse">
-          Loading Cygma Environment...
-        </p>
-      </div>
-    </div>
-  ),
-});
+import LoginScene from "@/components/auth/LoginScene";
+import { useCygmaWorld } from "@/context/CygmaWorldContext";
 
 type AuthView = "options" | "email" | "admin";
 
@@ -33,8 +21,8 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [view, setView] = useState<AuthView>("options");
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [formView, setFormView] = useState<AuthView>("options");
+  const { isSuccess, setIsSuccess, setView } = useCygmaWorld();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -43,6 +31,24 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // 3D Card Tilt State & Handlers
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    // Limit rotation to max 4 degrees
+    const rotateX = -(y / (rect.height / 2)) * 4;
+    const rotateY = (x / (rect.width / 2)) * 4;
+    setTilt({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
 
   // Trigger Google Sign-in flow
   const handleGoogleLogin = async () => {
@@ -107,32 +113,34 @@ export default function LoginPage() {
       setIsLoading(false);
     } else {
       setIsSuccess(true);
+      setView("success");
       setTimeout(() => {
         if (isAdmin(email)) {
           router.push("/admin");
         } else {
           router.push("/dashboard");
         }
-      }, 1500);
+      }, 1800);
     }
   };
 
   // Bypass authentication directly for public Guest preview mode
   const handleGuestPreview = () => {
     setIsSuccess(true);
+    setView("success");
     setTimeout(() => {
       router.push("/ai");
-    }, 1500);
+    }, 1800);
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-slate-950 px-4 py-8">
+    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-transparent px-4 py-8">
       
-      {/* 3D Render Layer */}
-      <CygmaCanvas isSuccess={isSuccess} />
+      {/* Coordinates 3D Canvas Login states */}
+      <LoginScene />
 
       {/* Atmospheric layout overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent pointer-events-none z-10" />
 
       {/* Main glass frame box */}
       <div className="relative max-w-5xl w-full flex items-center justify-center gap-8 z-20">
@@ -141,14 +149,35 @@ export default function LoginPage() {
         <AnimatePresence mode="wait">
           {!isSuccess && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 1.05, y: -20, filter: "blur(20px)" }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-md p-10 bg-white/10 dark:bg-slate-950/45 border border-white/20 dark:border-white/5 rounded-[2.2rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12),0_24px_64px_rgba(0,0,0,0.15)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_24px_64px_rgba(0,0,0,0.45)] backdrop-blur-[40px] relative overflow-hidden"
-              role="main"
-              aria-label="Cygma Authentication Workspace"
+              initial={{ opacity: 0, scale: 0.2, filter: "blur(15px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.2, y: -20, filter: "blur(15px)" }}
+              transition={{ duration: 1.0, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-md shrink-0"
             >
+              {/* Breathing / Floating Wrapper */}
+              <motion.div
+                animate={{ y: [4, -8, 4] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 6,
+                  ease: "easeInOut",
+                }}
+                className="w-full"
+              >
+                {/* 3D Tilt Card Wrapper */}
+                <div
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                    transformStyle: "preserve-3d" as const,
+                    transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                  className="w-full p-10 bg-white/10 dark:bg-slate-950/45 border border-white/20 dark:border-white/5 rounded-[2.2rem] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12),0_24px_64px_rgba(0,0,0,0.15)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_24px_64px_rgba(0,0,0,0.45)] backdrop-blur-[40px] relative overflow-hidden"
+                  role="main"
+                  aria-label="Cygma Authentication Workspace"
+                >
               {/* Top Specular Line Reflection */}
               <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-color)]/5 blur-[60px] rounded-full pointer-events-none -mr-16 -mt-16" />
@@ -164,7 +193,7 @@ export default function LoginPage() {
               </div>
 
               {/* Interactive forms views */}
-              {view === "options" && (
+              {formView === "options" && (
                 <div className="space-y-6">
                   <div className="text-center">
                     <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight mb-1 font-display uppercase">
@@ -228,7 +257,7 @@ export default function LoginPage() {
 
                     {/* Method 3: Passwordless Email OTP */}
                     <button
-                      onClick={() => setView("email")}
+                      onClick={() => setFormView("email")}
                       disabled={isLoading}
                       className="w-full py-3 px-5 rounded-full border border-[var(--glass-border)] hover:border-[var(--accent-color)] bg-transparent text-[var(--text-primary)] hover:bg-slate-500/5 font-semibold text-xs tracking-wider flex items-center justify-center gap-2.5 transition-all select-none duration-300 active:scale-98"
                     >
@@ -246,7 +275,7 @@ export default function LoginPage() {
                   <div className="flex gap-3">
                     {/* Method 4: Administrator access credentials */}
                     <button
-                      onClick={() => setView("admin")}
+                      onClick={() => setFormView("admin")}
                       className="flex-1 py-2.5 px-3 rounded-xl border border-[var(--glass-border)] hover:border-[var(--accent-color)] bg-transparent text-[var(--text-primary)] hover:bg-slate-500/5 font-bold text-[9px] tracking-widest uppercase flex items-center justify-center gap-1.5 transition-all duration-300"
                     >
                       <LogIn className="w-3.5 h-3.5" />
@@ -266,12 +295,12 @@ export default function LoginPage() {
               )}
 
               {/* Passwordless Email View */}
-              {view === "email" && (
+              {formView === "email" && (
                 <div className="space-y-6">
                   <div>
                     <button
                       onClick={() => {
-                        setView("options");
+                        setFormView("options");
                         setErrorMsg("");
                         setSuccessMsg("");
                       }}
@@ -330,12 +359,12 @@ export default function LoginPage() {
               )}
 
               {/* Administrator Password Access View */}
-              {view === "admin" && (
+              {formView === "admin" && (
                 <div className="space-y-6">
                   <div>
                     <button
                       onClick={() => {
-                        setView("options");
+                        setFormView("options");
                         setErrorMsg("");
                         setSuccessMsg("");
                       }}
@@ -409,6 +438,8 @@ export default function LoginPage() {
                   </form>
                 </div>
               )}
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

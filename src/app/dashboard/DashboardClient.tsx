@@ -24,6 +24,7 @@ import { createClient } from "@/utils/supabase/client";
 import Button from "@/components/ui/Button";
 import Card, { CardBody } from "@/components/ui/Card";
 import { useTheme } from "@/components/layout/ThemeContext";
+import DashboardScene from "@/components/dashboard/DashboardScene";
 
 export default function DashboardClient({ initialUser, initialProfile, initialSub }: any) {
   const [activeTab, setActiveTab] = useState("overview");
@@ -140,6 +141,7 @@ export default function DashboardClient({ initialUser, initialProfile, initialSu
 
   return (
     <div className="min-h-screen bg-transparent pt-12">
+      <DashboardScene />
       <main className="pt-16 pb-20 px-6 max-w-7xl mx-auto space-y-10">
         
         {/* Header Summary */}

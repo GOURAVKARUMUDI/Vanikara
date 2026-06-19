@@ -3,6 +3,7 @@ import { FadeUp } from "@/components/Animate";
 import PageHero from "@/components/ui/PageHero";
 import ContactForm from "@/sections/contact/ContactForm";
 import ContactInfo from "@/sections/contact/ContactInfo";
+import ContactScene from "@/components/contact/ContactScene";
 
 export const metadata: Metadata = { 
   title: "Contact",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-transparent pb-20">
+      <ContactScene />
       <PageHero
         tag="Get in Touch"
         title={

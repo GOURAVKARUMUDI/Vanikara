@@ -1,0 +1,87 @@
+"use client";
+
+import React from "react";
+import { Canvas } from "@react-three/fiber";
+import * as THREE from "three";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { useCygmaWorld } from "@/context/CygmaWorldContext";
+import { useTheme } from "@/components/layout/ThemeContext";
+import { usePerformance } from "@/context/PerformanceContext";
+
+// Child rigs & components
+import CameraController from "./CameraController";
+import FogController from "./Fog";
+import Lighting from "./Lighting";
+import ThemeLighting from "./ThemeLighting";
+import ParticleField from "./ParticleField";
+import NeuralNetwork from "./NeuralNetwork";
+import EnergyRings from "./EnergyRings";
+import GlassObjects from "./GlassObjects";
+import AIPlanet from "./AIPlanet";
+
+/**
+ * IntelligenceWorld: The top-level 3D wrapper rendering a persistent Canvas.
+ * Anchors the entire website's visual identity.
+ */
+export default function IntelligenceWorld() {
+  const { view } = useCygmaWorld();
+  const { resolvedTheme } = useTheme();
+  const { config, currentProfile } = usePerformance();
+
+  const initialFogColor = resolvedTheme === "dark" ? "#020617" : "#dbeafe";
+  const bloomIntensity = view === "success" ? 5.5 : resolvedTheme === "dark" ? 1.25 : 0.65;
+
+  return (
+    <div className="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden select-none">
+      <Canvas
+        camera={{ position: [0, 1.2, 12], fov: 45 }}
+        gl={{
+          antialias: currentProfile !== "battery" && currentProfile !== "low",
+          alpha: true,
+          powerPreference: "high-performance",
+          toneMapping: THREE.ACESFilmicToneMapping,
+        }}
+        dpr={config.dpr}
+      >
+        <fog attach="fog" args={[initialFogColor, 4, 11]} />
+
+        {/* Global Camera interpolation */}
+        <CameraController />
+
+        {/* Fog preset interpolation */}
+        <FogController />
+
+        {/* Dynamic Light coordinates & materials rigs */}
+        <Lighting />
+        <ThemeLighting />
+
+        {/* Neural Network Segments Grid */}
+        <NeuralNetwork nodeCount={config.neuralNetworkNodeCount} />
+
+        {/* 600+ Space dust energy particles */}
+        <ParticleField count={config.maxParticles} />
+
+        {/* Orbital rings */}
+        {currentProfile !== "battery" && <EnergyRings />}
+
+        {/* Floating crystal dodecahedrons */}
+        <GlassObjects />
+
+        {/* Core Glass Sphere */}
+        <AIPlanet />
+
+        {/* Bloom post-processing */}
+        {config.usePostProcessing && (
+          <EffectComposer>
+            <Bloom
+              intensity={bloomIntensity * config.bloomIntensity}
+              luminanceThreshold={0.15}
+              luminanceSmoothing={0.75}
+              mipmapBlur={config.bloomMipmapBlur}
+            />
+          </EffectComposer>
+        )}
+      </Canvas>
+    </div>
+  );
+}

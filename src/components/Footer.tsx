@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Mail, Linkedin, Github } from "lucide-react";
+import { useConsent } from "@/context/ConsentContext";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { openPreferences } = useConsent();
 
   return (
     <footer className="pt-20 pb-10 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md transition-all duration-800">
@@ -90,9 +94,8 @@ export default function Footer() {
                   { href: "/privacy", label: "Privacy Policy" },
                   { href: "/terms", label: "Terms & Conditions" },
                   { href: "/cookies", label: "Cookie Policy" },
-                  { href: "/refund", label: "Refund Policy" },
                   { href: "/security", label: "Security Page" },
-                  { href: "/legal", label: "Legal Info" }
+                  { onClick: openPreferences, label: "Privacy & Cookie Settings" }
                 ]}
               />
             </div>
@@ -131,21 +134,31 @@ export default function Footer() {
 }
 
 interface FooterLinkItem {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   label: string;
 }
 
 function FooterLinks({ links }: { links: FooterLinkItem[] }) {
   return (
     <ul className="space-y-3 list-none p-0 m-0">
-      {links.map(({ href, label }) => (
+      {links.map(({ href, onClick, label }) => (
         <li key={label}>
-          <Link
-            href={href}
-            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:translate-x-1 inline-block transition-all duration-300"
-          >
-            {label}
-          </Link>
+          {onClick ? (
+            <button
+              onClick={onClick}
+              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:translate-x-1 inline-block transition-all duration-300 bg-transparent border-none p-0 text-left outline-none cursor-pointer"
+            >
+              {label}
+            </button>
+          ) : (
+            <Link
+              href={href || "/"}
+              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:translate-x-1 inline-block transition-all duration-300"
+            >
+              {label}
+            </Link>
+          )}
         </li>
       ))}
     </ul>

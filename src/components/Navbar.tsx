@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Sun, Moon, Sparkles, User as UserIcon, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
@@ -10,7 +10,7 @@ import { createClient } from "@/utils/supabase/client";
 import { isAdmin } from "@/lib/isAdmin";
 import { useAuthRedirect } from "@/lib/authRedirect";
 import { useTheme, ThemeMode } from "./layout/ThemeContext";
-import { audioManager } from "@/lib/audio";
+import { useCygmaWorld, CygmaView } from "@/context/CygmaWorldContext";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -27,8 +27,10 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
+  const router = useRouter();
   const supabase = createClient();
   const { theme, setTheme } = useTheme();
+  const { navbarVisible, setNavbarVisible, setView, setIsTransitioning } = useCygmaWorld();
   
   useAuthRedirect();
 
@@ -66,22 +68,45 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  // Contextual ambient audio management
-  useEffect(() => {
-    if (pathname === "/") {
-      if (audioManager.getWasUnmutedByUser()) {
-        audioManager.toggleMute(true, false);
-      }
-    } else {
-      audioManager.toggleMute(false, false);
-    }
-  }, [pathname]);
-
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    audioManager.playClick();
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, href: string) => {
+    // Scroll smoothly to top if already on target page
     if (href === "/" && pathname === "/") {
       e.preventDefault();
       document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    if (pathname === href) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    let targetView: CygmaView | null = null;
+    if (href === "/") targetView = "hero";
+    else if (href === "/about") targetView = "about";
+    else if (href === "/projects") targetView = "projects";
+    else if (href === "/ai") targetView = "ai";
+    else if (href === "/careers") targetView = "careers";
+    else if (href === "/contact") targetView = "contact";
+    else if (href === "/dashboard") targetView = "dashboard";
+    else if (href === "/admin") targetView = "admin";
+    else if (href === "/login") targetView = "login";
+
+    if (targetView) {
+      e.preventDefault();
+      setIsTransitioning(true);
+      setView(targetView);
+
+      if (targetView === "login") {
+        setNavbarVisible(false);
+      } else {
+        setNavbarVisible(true);
+      }
+
+      const delay = targetView === "login" ? 1100 : 700;
+      setTimeout(() => {
+        router.push(href);
+      }, delay);
     }
   };
 
@@ -119,7 +144,6 @@ export default function Navbar() {
   };
 
   const cycleTheme = () => {
-    audioManager.playClick();
     const modes: ThemeMode[] = ["auto", "light", "dark"];
     const nextIndex = (modes.indexOf(theme) + 1) % modes.length;
     setTheme(modes[nextIndex]);
@@ -139,7 +163,13 @@ export default function Navbar() {
 
   return (
     <div className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-4 pointer-events-none">
-      <header
+      <motion.header
+        animate={{ 
+          opacity: navbarVisible ? 1 : 0, 
+          y: navbarVisible ? 0 : -20,
+          pointerEvents: navbarVisible ? "auto" : "none" 
+        }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
         className={`w-full md:w-[72vw] max-w-4xl pointer-events-auto transition-all duration-500 rounded-full border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] relative overflow-hidden group/navbar ${
           isScrolled 
             ? "py-2 px-6 bg-white/70 dark:bg-slate-900/60 scale-95" 
@@ -154,13 +184,7 @@ export default function Navbar() {
           <Link 
             href="/" 
             className="flex items-center gap-2 group select-none"
-            onClick={(e) => {
-              if (pathname === "/") {
-                e.preventDefault();
-                audioManager.playClick();
-                document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
+            onClick={(e) => handleLinkClick(e, "/")}
           >
             <div className="relative overflow-hidden w-8 h-8 rounded-xl flex items-center justify-center bg-white/10 dark:bg-white/5 shadow-sm border border-white/10 dark:border-white/5">
               <img 
@@ -186,7 +210,6 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href === "/" ? "/#hero" : link.href}
                   className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
-                  onMouseEnter={() => audioManager.playHover()}
                   onClick={(e) => handleLinkClick(e, link.href)}
                 >
                   {active && (
@@ -213,8 +236,6 @@ export default function Navbar() {
                 <Link 
                   href="/dashboard" 
                   className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
-                  onMouseEnter={() => audioManager.playHover()}
-                  onClick={() => audioManager.playClick()}
                 >
                   {pathname === "/dashboard" && (
                     <motion.span
@@ -235,8 +256,6 @@ export default function Navbar() {
                   <Link 
                     href="/admin" 
                     className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
-                    onMouseEnter={() => audioManager.playHover()}
-                    onClick={() => audioManager.playClick()}
                   >
                     {pathname === "/admin" && (
                       <motion.span
@@ -287,7 +306,13 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Button href="/login" variant="ghost" size="sm" magnetic>
+              <Button 
+                href="/login" 
+                variant="ghost" 
+                size="sm" 
+                magnetic
+                onClick={(e) => handleLinkClick(e as any, "/login")}
+              >
                 Login
               </Button>
             )}
@@ -309,7 +334,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Fullscreen Menu */}
       <AnimatePresence>
@@ -342,7 +367,6 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href === "/" ? "/#hero" : link.href}
                   className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                  onMouseEnter={() => audioManager.playHover()}
                   onClick={(e) => {
                     handleLinkClick(e, link.href);
                     setMobileMenuOpen(false);
@@ -357,8 +381,6 @@ export default function Navbar() {
                    <Link
                     href="/dashboard"
                     className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                    onMouseEnter={() => audioManager.playHover()}
-                    onClick={() => audioManager.playClick()}
                   >
                     Portal
                   </Link>
@@ -366,8 +388,6 @@ export default function Navbar() {
                     <Link
                       href="/admin"
                       className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                      onMouseEnter={() => audioManager.playHover()}
-                      onClick={() => audioManager.playClick()}
                     >
                       Admin
                     </Link>
@@ -387,7 +407,16 @@ export default function Navbar() {
                   </Button>
                 </div>
               ) : (
-                <Button href="/login" variant="primary" size="lg" className="w-full">
+                <Button 
+                  href="/login" 
+                  variant="primary" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    handleLinkClick(e as any, "/login");
+                  }}
+                >
                   Sign In
                 </Button>
               )}

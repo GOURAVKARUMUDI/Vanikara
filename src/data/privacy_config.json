@@ -1,0 +1,18 @@
+{
+  "currentVersion": "1.0.0",
+  "policyText": "We use essential cookies to operate our website and optional cookies to improve performance, personalize your experience, and understand how visitors use our platform. You can accept all cookies, reject optional cookies, or customize your preferences at any time.",
+  "stats": {
+    "totalVisits": 143,
+    "acceptedAll": 90,
+    "rejectedOptional": 31,
+    "customized": 22,
+    "analyticsAccepted": 112,
+    "marketingAccepted": 46,
+    "preferencesAccepted": 79
+  },
+  "optionalServices": {
+    "googleAnalytics": true,
+    "facebookPixel": false,
+    "hotjar": false
+  }
+}

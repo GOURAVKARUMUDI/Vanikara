@@ -1,5 +1,6 @@
 "use client";
 
+import ProjectsScene from "@/components/projects/ProjectsScene";
 import { motion } from "framer-motion";
 import PageHero from "@/components/ui/PageHero";
 import Button from "@/components/ui/Button";
@@ -70,6 +71,7 @@ const PROJECTS: Project[] = [
 export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-transparent pb-24">
+      <ProjectsScene />
       <PageHero
         tag="Clinical & Commercial Launches"
         title={

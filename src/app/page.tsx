@@ -19,11 +19,11 @@ export default function HomePage() {
       {/* 1. Hero Experience (incorporating dynamic particles, mesh gradients, glass buttons) */}
       <HeroSection />
       
-      {/* 2. Who We Are */}
-      <WhoWeAre />
-      
-      {/* 3. Our Vision */}
+      {/* 2. Our Vision */}
       <OurVision />
+      
+      {/* 3. Who We Are */}
+      <WhoWeAre />
       
       {/* 4. Services Grid (custom interactive hover features) */}
       <FeaturesSection />

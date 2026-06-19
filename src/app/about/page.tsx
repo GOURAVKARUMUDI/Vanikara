@@ -1,5 +1,6 @@
 "use client";
 
+import AboutScene from "@/components/about/AboutScene";
 import PageHero from "@/components/ui/PageHero";
 import MissionSection from "@/sections/about/MissionSection";
 import TeamSection from "@/sections/about/TeamSection";
@@ -46,6 +47,7 @@ const FOUNDERS = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-transparent">
+      <AboutScene />
       <PageHero
         tag="Our Story"
         title={

@@ -6,6 +6,7 @@ import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 import { Briefcase, Heart, BookOpen, Star, CheckCircle, Upload } from "lucide-react";
+import CareersScene from "@/components/careers/CareersScene";
 
 const BENEFITS = [
   { icon: <Heart className="w-5 h-5 text-rose-500" />, title: "Flexible Culture", desc: "Work around your classes. We align milestones to your exam schedules." },
@@ -112,6 +113,7 @@ export default function CareersPage() {
 
   return (
     <div className="min-h-screen bg-transparent pb-24">
+      <CareersScene />
       <PageHero
         tag="Join the Team"
         title={

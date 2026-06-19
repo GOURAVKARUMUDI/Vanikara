@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import React, { useState, MouseEvent } from "react";
+import { motion } from "framer-motion";
 import Magnetic from "./Magnetic";
-import { audioManager } from "@/lib/audio";
+
+const MotionLink = motion(Link);
 
 interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   href?: string;
@@ -44,12 +46,7 @@ export default function Button({
     }, 600);
   };
 
-  const handleMouseEnter = () => {
-    audioManager.playHover();
-  };
-
   const handleClick = (e: MouseEvent<HTMLButtonElement & HTMLAnchorElement>) => {
-    audioManager.playClick();
     handleRipple(e);
     if (onClick) {
       onClick(e as any);
@@ -57,7 +54,7 @@ export default function Button({
   };
 
   const baseClasses =
-    "relative inline-flex items-center justify-center rounded-full font-semibold overflow-hidden transition-all duration-300 active:scale-95 focus:outline-none disabled:opacity-60 disabled:pointer-events-none select-none";
+    "relative inline-flex items-center justify-center rounded-full font-semibold overflow-hidden transition-all duration-300 focus:outline-none disabled:opacity-60 disabled:pointer-events-none select-none";
 
   const sizeClasses = {
     sm: "px-5 py-2 text-xs tracking-wider",
@@ -73,7 +70,7 @@ export default function Button({
     ghost:
       "bg-transparent border border-[var(--glass-border)] text-[var(--text-primary)] hover:bg-[var(--glass-bg)] backdrop-blur-sm",
     white:
-      "bg-white border border-slate-200 text-slate-900 hover:shadow-md hover:bg-slate-50",
+      "bg-white border border-slate-200 text-slate-900 hover:shadow-md hover:bg-slate-55",
   }[variant];
 
   const buttonContent = (
@@ -100,14 +97,31 @@ export default function Button({
 
   const mergedClasses = `${baseClasses} ${sizeClasses} ${variantClasses} ${className}`;
 
+  // Interactive springs parameters
+  const motionProps = {
+    whileHover: { scale: 1.025 },
+    whileTap: { scale: 0.95 },
+    transition: { type: "spring" as const, stiffness: 450, damping: 17 }
+  };
+
   const buttonElement = href ? (
-    <Link href={href} className={mergedClasses} onClick={handleClick as any} onMouseEnter={handleMouseEnter}>
+    <MotionLink 
+      href={href} 
+      className={mergedClasses} 
+      onClick={handleClick as any}
+      {...motionProps}
+    >
       {buttonContent}
-    </Link>
+    </MotionLink>
   ) : (
-    <button className={mergedClasses} onClick={handleClick as any} onMouseEnter={handleMouseEnter} {...props}>
+    <motion.button 
+      className={mergedClasses} 
+      onClick={handleClick as any} 
+      {...motionProps}
+      {...props as any}
+    >
       {buttonContent}
-    </button>
+    </motion.button>
   );
 
   if (magnetic) {

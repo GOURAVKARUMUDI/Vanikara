@@ -268,7 +268,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, delay: 0.35, ease: easeOutExpo }}
                 className="font-display font-black leading-[1.1] tracking-tight mb-5 text-[var(--text-primary)] uppercase text-balance max-w-[700px] w-full"
-                style={{ fontSize: "clamp(2.2rem, 5.5vw, 4.8rem)" }}
+                style={{ fontSize: "clamp(1.8rem, 4.2vw, 3.2rem)" }}
               >
                 Engineering Tomorrow&apos;s <br />
                 <span className="gradient-text">Intelligent Digital Experiences</span>
@@ -280,7 +280,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.55, ease: easeOutQuart }}
                 className="text-[var(--text-secondary)] w-full max-w-[620px] mx-auto mb-8 leading-relaxed font-semibold"
-                style={{ fontSize: "clamp(0.95rem, 2.2vw, 1.15rem)" }}
+                style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
               >
                 VANIKARA Intelligence Private Limited is an incorporated Indian technology company engineering high-performance AI layers, unified student systems, and secure cloud platforms.
               </motion.p>

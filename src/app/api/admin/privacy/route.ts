@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { isAdmin } from "@/lib/isAdmin";
 
-const CONFIG_PATH = path.join(process.cwd(), "src/data/privacy_config.json");
+const CONFIG_PATH = path.join(process.cwd(), "data/privacy_config.json");
 
 export async function GET() {
   try {

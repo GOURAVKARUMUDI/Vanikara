@@ -29,12 +29,17 @@ export default function CygmaPreviewSection() {
   ]);
   const [streamingText, setStreamingText] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Auto-scroll the chat preview box
+  // Auto-scroll the chat preview box locally within the container without hijacking page scroll
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages, streamingText]);
 
   const handleSendMessage = async (text: string) => {
@@ -270,7 +275,10 @@ export default function CygmaPreviewSection() {
                 </div>
 
                 {/* Console Message Stream Area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs scrollbar-thin">
+                <div 
+                  ref={scrollContainerRef}
+                  className="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs scrollbar-thin"
+                >
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
@@ -317,8 +325,6 @@ export default function CygmaPreviewSection() {
                       </div>
                     </div>
                   )}
-
-                  <div ref={bottomRef} />
                 </div>
 
                 {/* Input Tray */}

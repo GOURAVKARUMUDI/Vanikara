@@ -27,6 +27,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const mainRoutes = ["/", "/about", "/projects", "/ai", "/login", "/careers", "/contact", "/dashboard", "/admin"];
   const showCanvas = mainRoutes.includes(pathname);
 
+  // Disable native automatic scroll restoration to ensure clean starts at the top
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   // Reset scroll position to top on route change to prevent inheriting scroll offsets
   useEffect(() => {
     if (typeof window !== "undefined") {

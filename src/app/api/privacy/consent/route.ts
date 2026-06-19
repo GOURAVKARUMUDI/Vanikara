@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 
-const CONFIG_PATH = path.join(process.cwd(), "src/data/privacy_config.json");
+const CONFIG_PATH = path.join(process.cwd(), "data/privacy_config.json");
 
 export async function POST(req: Request) {
   try {

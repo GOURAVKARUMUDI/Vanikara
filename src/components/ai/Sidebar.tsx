@@ -39,6 +39,7 @@ export default function Sidebar({
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   
   const supabase = createClient();
 
@@ -147,16 +148,19 @@ export default function Sidebar({
     setEditingTitle(title);
   };
 
-  // Sort conversations putting pinned items at the top
+  // Filter and sort conversations putting pinned items at the top
   const sortedConversations = useMemo(() => {
-    return [...conversations].sort((a, b) => {
+    const filtered = conversations.filter((c) =>
+      c.title?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return [...filtered].sort((a, b) => {
       const aPinned = pinnedIds.includes(a.id);
       const bPinned = pinnedIds.includes(b.id);
       if (aPinned && !bPinned) return -1;
       if (!aPinned && bPinned) return 1;
       return 0; // Maintain relative ordering otherwise
     });
-  }, [conversations, pinnedIds]);
+  }, [conversations, pinnedIds, searchQuery]);
 
   return (
     <div
@@ -268,6 +272,18 @@ export default function Sidebar({
             <span className="block text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] mb-1 select-none">
               Chat Streams
             </span>
+          )}
+
+          {isOpen && (
+            <div className="mb-3 px-1 select-none">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search threads..."
+                className="w-full px-3 py-1.5 bg-slate-500/10 border border-[var(--glass-border)] rounded-lg text-[10px] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-color)] font-medium placeholder:text-slate-500/40"
+              />
+            </div>
           )}
           
           {loading && isOpen && (

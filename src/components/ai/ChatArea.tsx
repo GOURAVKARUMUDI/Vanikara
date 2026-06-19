@@ -99,6 +99,34 @@ export default function ChatArea({
     };
   }, []);
 
+  // Global click event listener for code copying (Event Delegation)
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && target.classList.contains("copy-code-btn")) {
+        const base64Code = target.getAttribute("data-code");
+        if (base64Code) {
+          try {
+            const code = decodeURIComponent(escape(atob(base64Code)));
+            navigator.clipboard.writeText(code);
+            const originalText = target.innerText;
+            target.innerText = "Copied!";
+            target.style.color = "#10b981"; // green highlight
+            setTimeout(() => {
+              target.innerText = originalText;
+              target.style.color = "";
+            }, 1800);
+          } catch (err) {
+            console.error("Failed to copy code block:", err);
+          }
+        }
+      }
+    };
+
+    document.addEventListener("click", handleGlobalClick);
+    return () => document.removeEventListener("click", handleGlobalClick);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isStreaming) return;
@@ -205,7 +233,7 @@ export default function ChatArea({
     }
   };
 
-  // Simple, highly styled markdown/syntax-highlight parser utility
+  // Simple, highly styled markdown/syntax-highlight/table parser utility
   const parseMarkdown = (text: string) => {
     if (!text) return "";
     
@@ -215,10 +243,57 @@ export default function ChatArea({
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-    // Code blocks
-    escaped = escaped.replace(/```([\s\S]*?)```/g, (_, code) => {
+    // Code blocks with language detection and inline copy trigger
+    escaped = escaped.replace(/```(\w*)\r?\n?([\s\S]*?)```/g, (_, lang, code) => {
       const trimmedCode = code.trim();
-      return `<pre class="p-4 bg-[#070b16] text-indigo-300 font-mono text-[11px] sm:text-xs rounded-2xl border border-white/5 my-4 overflow-x-auto leading-relaxed select-all"><code>${trimmedCode}</code></pre>`;
+      const languageName = lang || "code";
+      const base64Code = typeof window !== "undefined" ? btoa(unescape(encodeURIComponent(trimmedCode))) : "";
+      
+      return `
+        <div class="my-4 overflow-hidden rounded-2xl border border-white/5 bg-[#070b16] select-none font-sans">
+          <div class="flex items-center justify-between px-4 py-2 bg-[#0d1527] border-b border-white/5 text-[9px] font-black uppercase tracking-wider text-slate-400">
+            <span>${languageName}</span>
+            <button 
+              type="button" 
+              class="copy-code-btn hover:text-white transition-colors cursor-pointer flex items-center gap-1 uppercase font-bold" 
+              data-code="${base64Code}"
+            >
+              Copy
+            </button>
+          </div>
+          <pre class="p-4 overflow-x-auto text-indigo-300 font-mono text-[11px] sm:text-xs leading-relaxed select-all"><code>${trimmedCode}</code></pre>
+        </div>
+      `;
+    });
+
+    // Markdown Table parsing
+    escaped = escaped.replace(/((?:\|[^\n]+\|\r?\n?)+)/g, (tableBlock) => {
+      const lines = tableBlock.trim().split("\n");
+      if (lines.length < 2) return tableBlock;
+
+      const rows = lines.map(line => {
+        const cells = line.split("|").map(c => c.trim());
+        if (cells[0] === "") cells.shift();
+        if (cells[cells.length - 1] === "") cells.pop();
+        return cells;
+      });
+
+      const hasSeparator = rows[1]?.every(cell => /^[:-]+$/.test(cell));
+      const headerRow = rows[0];
+      const dataRows = hasSeparator ? rows.slice(2) : rows.slice(1);
+
+      const thead = `<thead class="bg-[#0d1527] text-white text-[10px] uppercase tracking-wider border-b border-white/10"><tr>${headerRow.map(h => `<th class="p-3 text-left font-bold">${h}</th>`).join("")}</tr></thead>`;
+      
+      const tbody = `<tbody class="divide-y divide-white/5">${dataRows.map(row => `<tr>${row.map(cell => `<td class="p-3 text-[11px] font-medium text-slate-300">${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
+
+      return `
+        <div class="my-4 overflow-x-auto rounded-xl border border-white/5 bg-[#070b16]/50">
+          <table class="min-w-full divide-y divide-white/5 border-collapse">
+            ${thead}
+            ${tbody}
+          </table>
+        </div>
+      `;
     });
 
     // Inline code tags
@@ -232,7 +307,8 @@ export default function ChatArea({
 
     // Paragraph splits
     return escaped.split('\n\n').map(p => {
-      if (p.trim().startsWith('<pre') || p.trim().startsWith('<li')) return p;
+      const trimmed = p.trim();
+      if (trimmed.startsWith('<pre') || trimmed.startsWith('<li') || trimmed.startsWith('<div')) return p;
       return `<p class="mb-3.5 last:mb-0 leading-relaxed">${p}</p>`;
     }).join('');
   };

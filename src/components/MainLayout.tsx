@@ -3,7 +3,7 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCygmaWorld } from "@/context/CygmaWorldContext";
 import dynamic from "next/dynamic";
@@ -70,7 +70,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [view]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-transparent">
+    <MotionConfig reducedMotion="user">
+      <div className="flex flex-col min-h-screen bg-transparent">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--accent-color)] focus:text-white focus:rounded-xl focus:shadow-lg focus:outline-none"
@@ -117,7 +118,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         </motion.main>
       </AnimatePresence>
       {!isAiPage && <Footer />}
-    </div>
+      </div>
+    </MotionConfig>
   );
 }
 

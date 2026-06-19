@@ -164,6 +164,8 @@ export default function Navbar() {
   return (
     <div className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-4 pointer-events-none">
       <motion.header
+        role="banner"
+        aria-label="Main Website Navigation"
         animate={{ 
           opacity: navbarVisible ? 1 : 0, 
           y: navbarVisible ? 0 : -20,
@@ -183,8 +185,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center gap-2 group select-none"
+            className="flex items-center gap-2 group select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:ring-offset-2 rounded-xl"
             onClick={(e) => handleLinkClick(e, "/")}
+            aria-label="VANIKARA Intelligence Home"
           >
             <div className="relative overflow-hidden w-8 h-8 rounded-xl flex items-center justify-center bg-white/10 dark:bg-white/5 shadow-sm border border-white/10 dark:border-white/5">
               <img 
@@ -199,7 +202,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 bg-slate-500/5 dark:bg-white/5 px-2 py-1 rounded-full border border-white/5">
+          <nav aria-label="Desktop Navigation Links" className="hidden md:flex items-center gap-1.5 bg-slate-500/5 dark:bg-white/5 px-2 py-1 rounded-full border border-white/5">
             {NAV_LINKS.map((link) => {
               const isHome = link.href === "/";
               const active = isHome 
@@ -209,8 +212,9 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href === "/" ? "/#hero" : link.href}
-                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
+                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
                   onClick={(e) => handleLinkClick(e, link.href)}
+                  aria-current={active ? "page" : undefined}
                 >
                   {active && (
                     <motion.span
@@ -235,7 +239,8 @@ export default function Navbar() {
               <>
                 <Link 
                   href="/dashboard" 
-                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
+                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
+                  aria-current={pathname === "/dashboard" ? "page" : undefined}
                 >
                   {pathname === "/dashboard" && (
                     <motion.span
@@ -255,7 +260,8 @@ export default function Navbar() {
                 {isAdmin(user.email) && (
                   <Link 
                     href="/admin" 
-                    className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer"
+                    className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
+                    aria-current={pathname === "/admin" ? "page" : undefined}
                   >
                     {pathname === "/admin" && (
                       <motion.span
@@ -282,8 +288,9 @@ export default function Navbar() {
             {/* Theme Toggle Button */}
             <button
               onClick={cycleTheme}
-              className="p-2 rounded-full hover:bg-slate-500/10 border border-transparent hover:border-white/10 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center"
+              className="p-2 rounded-full hover:bg-slate-500/10 border border-transparent hover:border-white/10 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
               title={`Theme: ${theme.toUpperCase()}`}
+              aria-label={`Cycle color theme, current theme is ${theme}`}
             >
               {renderThemeIcon()}
             </button>
@@ -292,15 +299,17 @@ export default function Navbar() {
               <div className="flex items-center gap-1.5">
                 <Link 
                   href="/dashboard"
-                  className="flex items-center justify-center w-7.5 h-7.5 rounded-full bg-[var(--accent-color)] text-white hover:scale-105 transition-transform border border-white/20 shadow-md"
+                  className="flex items-center justify-center w-7.5 h-7.5 rounded-full bg-[var(--accent-color)] text-white hover:scale-105 transition-transform border border-white/20 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
                   title="View Portal"
+                  aria-label="Open User Dashboard Portal"
                 >
                   <UserIcon className="w-3.5 h-3.5" />
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-full text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer flex items-center justify-center"
+                  className="p-2 rounded-full text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                   title="Logout"
+                  aria-label="Log out session"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
@@ -312,6 +321,7 @@ export default function Navbar() {
                 size="sm" 
                 magnetic
                 onClick={(e) => handleLinkClick(e as any, "/login")}
+                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:rounded-full"
               >
                 Login
               </Button>
@@ -322,13 +332,16 @@ export default function Navbar() {
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={cycleTheme}
-              className="p-1.5 rounded-full hover:bg-slate-500/10 transition-colors cursor-pointer"
+              className="p-1.5 rounded-full hover:bg-slate-500/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
+              aria-label={`Cycle color theme, current is ${theme}`}
             >
               {renderThemeIcon()}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-xl text-[var(--text-primary)] hover:bg-slate-500/10 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl text-[var(--text-primary)] hover:bg-slate-500/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
+              aria-label="Toggle Mobile Navigation Menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>

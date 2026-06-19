@@ -25,6 +25,10 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
   const { config } = usePerformance();
   const lineRef = useRef<THREE.LineSegments>(null);
 
+  const maxPairs = (nodeCount * (nodeCount - 1)) / 2;
+  const maxFloatCount = maxPairs * 6; // 2 vertices * 3 coordinates
+  const positionsArray = useMemo(() => new Float32Array(maxFloatCount), [nodeCount]);
+
   const nodes = useMemo(() => {
     const rand = createSeededRandom(22222);
     const items = [];
@@ -42,10 +46,9 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
     return items;
   }, [nodeCount]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!lineRef.current) return;
     const time = state.clock.getElapsedTime();
-    const positions: number[] = [];
 
     const activeCoords = nodes.map((node) => {
       const offset = Math.sin(time * node.speed * config.orbitSpeedMult + node.phase) * 0.15;
@@ -57,21 +60,26 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
     });
 
     const threshold = 4.2;
+    let idx = 0;
+    
+    // Normalize time scales and orbit speeds for connection checks
     for (let i = 0; i < nodeCount; i++) {
       for (let j = i + 1; j < nodeCount; j++) {
         const dist = activeCoords[i].distanceTo(activeCoords[j]);
-        if (dist < threshold) {
-          positions.push(activeCoords[i].x, activeCoords[i].y, activeCoords[i].z);
-          positions.push(activeCoords[j].x, activeCoords[j].y, activeCoords[j].z);
+        if (dist < threshold && idx < maxFloatCount - 5) {
+          positionsArray[idx++] = activeCoords[i].x;
+          positionsArray[idx++] = activeCoords[i].y;
+          positionsArray[idx++] = activeCoords[i].z;
+          positionsArray[idx++] = activeCoords[j].x;
+          positionsArray[idx++] = activeCoords[j].y;
+          positionsArray[idx++] = activeCoords[j].z;
         }
       }
     }
 
-    lineRef.current.geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-    lineRef.current.geometry.attributes.position.needsUpdate = true;
+    const geometry = lineRef.current.geometry;
+    geometry.setDrawRange(0, idx / 3);
+    geometry.attributes.position.needsUpdate = true;
   });
 
   const isDark = resolvedTheme === "dark";
@@ -93,7 +101,12 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
       {/* Network Lines (disappear during success pass-through) */}
       {view !== "success" && (
         <lineSegments ref={lineRef}>
-          <bufferGeometry />
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              args={[positionsArray, 3]}
+            />
+          </bufferGeometry>
           <lineBasicMaterial
             color={lineColor}
             transparent

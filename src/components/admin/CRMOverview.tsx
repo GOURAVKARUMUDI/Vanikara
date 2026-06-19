@@ -8,7 +8,16 @@ import {
   DollarSign,
   ArrowUpRight
 } from "lucide-react";
-import CRMCharts from "./CRMCharts";
+import dynamic from "next/dynamic";
+
+const CRMCharts = dynamic(() => import("./CRMCharts"), {
+  ssr: false,
+  loading: () => (
+    <div className="p-8 text-center text-xs text-slate-400 bg-slate-500/5 border border-[var(--glass-border)] rounded-[2rem] min-h-[300px] flex items-center justify-center font-medium animate-pulse">
+      Syncing ecosystem metrics...
+    </div>
+  )
+});
 
 export default function CRMOverview() {
   const [stats, setStats] = useState<any>(null);

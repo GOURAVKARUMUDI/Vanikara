@@ -9,6 +9,8 @@ export default function ContactManager() {
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "new" | "converted">("all");
 
   const fetchMessages = async () => {
     try {
@@ -34,7 +36,7 @@ export default function ContactManager() {
       const res = await fetch("/api/leads", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: "converted" }) // mock status update to show archived
+        body: JSON.stringify({ id, status: "converted" })
       });
       if (res.ok) {
         fetchMessages();
@@ -60,6 +62,18 @@ export default function ContactManager() {
     }
   };
 
+  const filteredMessages = messages.filter((msg) => {
+    const matchesSearch = 
+      msg.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      msg.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      msg.message?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+    const matchesStatus = 
+      statusFilter === "all" || msg.status === statusFilter;
+      
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -72,17 +86,43 @@ export default function ContactManager() {
         </p>
       </div>
 
+      {/* Live Search and Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] p-4 rounded-3xl backdrop-blur-md select-none">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search inquiries by name, email, or message contents..."
+          className="flex-grow px-4 py-2.5 bg-slate-500/5 border border-[var(--glass-border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-color)] font-semibold"
+        />
+        <div className="flex gap-1 bg-slate-500/10 p-1 rounded-xl w-fit">
+          {(["all", "new", "converted"] as const).map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-3.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                statusFilter === status
+                  ? "bg-[var(--accent-color)] text-white shadow-sm"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              {status === "converted" ? "Archived" : status}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="space-y-4">
         {loading ? (
           <div className="p-8 text-center text-xs text-slate-500">
             Fetching messages...
           </div>
-        ) : messages.length === 0 ? (
+        ) : filteredMessages.length === 0 ? (
           <div className="p-8 text-center text-xs text-slate-500 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl">
-            No contact submissions logged.
+            No matching submissions found.
           </div>
         ) : (
-          messages.map((msg) => (
+          filteredMessages.map((msg) => (
             <Card key={msg.id} hover>
               <CardBody className="p-6 sm:p-8 space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--glass-border)] pb-3 select-none">

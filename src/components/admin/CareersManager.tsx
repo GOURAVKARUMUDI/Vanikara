@@ -9,6 +9,29 @@ export default function CareersManager() {
   const [candidates, setCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [positionFilter, setPositionFilter] = useState("all");
+  const [notes, setNotes] = useState<Record<string, string>>({});
+
+  // Load notes on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("vanikara_candidate_notes");
+      if (stored) {
+        try {
+          setNotes(JSON.parse(stored));
+        } catch {
+          setNotes({});
+        }
+      }
+    }
+  }, []);
+
+  const handleSaveNote = (id: string, noteText: string) => {
+    const updated = { ...notes, [id]: noteText };
+    setNotes(updated);
+    localStorage.setItem("vanikara_candidate_notes", JSON.stringify(updated));
+  };
 
   const fetchCandidates = async () => {
     try {
@@ -46,6 +69,18 @@ export default function CareersManager() {
     }
   };
 
+  const filteredCandidates = candidates.filter((cand) => {
+    const matchesSearch = 
+      cand.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cand.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cand.cover_letter?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+    const matchesPosition = 
+      positionFilter === "all" || cand.position === positionFilter;
+      
+    return matchesSearch && matchesPosition;
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -58,17 +93,38 @@ export default function CareersManager() {
         </p>
       </div>
 
+      {/* Search and Position Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] p-4 rounded-3xl backdrop-blur-md select-none">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search applicants by name, email, or statement text..."
+          className="flex-grow px-4 py-2.5 bg-slate-500/5 border border-[var(--glass-border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-color)] font-semibold"
+        />
+        <select
+          value={positionFilter}
+          onChange={(e) => setPositionFilter(e.target.value)}
+          className="px-4 py-2.5 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-color)] font-semibold cursor-pointer"
+        >
+          <option value="all" className="bg-slate-900 text-white font-medium">All Positions</option>
+          <option value="React Frontend Developer Intern" className="bg-slate-900 text-white font-medium">Frontend Intern</option>
+          <option value="Node.js Fullstack Intern" className="bg-slate-900 text-white font-medium">Fullstack Intern</option>
+          <option value="Campus Rep Coordinator" className="bg-slate-900 text-white font-medium">Campus Rep</option>
+        </select>
+      </div>
+
       <div className="space-y-4">
         {loading ? (
           <div className="p-8 text-center text-xs text-slate-500 flex justify-center items-center gap-2">
             <RefreshCw className="w-4 h-4 animate-spin text-[var(--accent-color)]" /> Fetching candidates...
           </div>
-        ) : candidates.length === 0 ? (
+        ) : filteredCandidates.length === 0 ? (
           <div className="p-8 text-center text-xs text-slate-500 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl">
-            No internship applications logged.
+            No matching candidates found.
           </div>
         ) : (
-          candidates.map((cand) => (
+          filteredCandidates.map((cand) => (
             <Card key={cand.id} hover>
               <CardBody className="p-6 sm:p-8 space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--glass-border)] pb-3 select-none">
@@ -100,6 +156,19 @@ export default function CareersManager() {
                   <p className="bg-slate-500/5 p-4 rounded-xl border border-[var(--glass-border)] whitespace-pre-wrap">
                     {cand.cover_letter || "No cover letter submitted."}
                   </p>
+                </div>
+
+                {/* Admin Evaluation Notes */}
+                <div className="pt-4 border-t border-[var(--glass-border)] space-y-2">
+                  <label className="block text-[9px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                    Admin Evaluation Notes
+                  </label>
+                  <textarea
+                    value={notes[cand.id] || ""}
+                    onChange={(e) => handleSaveNote(cand.id, e.target.value)}
+                    placeholder="Enter screening feedback, test scores, or background details..."
+                    className="w-full h-20 p-3 bg-slate-500/5 border border-[var(--glass-border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-color)] resize-none font-medium placeholder:text-slate-500/40"
+                  />
                 </div>
 
                 <div className="pt-2 flex justify-between items-center gap-4">

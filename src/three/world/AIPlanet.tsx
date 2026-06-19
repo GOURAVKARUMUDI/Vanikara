@@ -80,9 +80,9 @@ export default function AIPlanet() {
 
     if (coreRef.current) {
       coreRef.current.scale.set(scale, scale, scale);
-      coreRef.current.rotation.y = time * 0.06 * config.orbitSpeedMult;
-      coreRef.current.rotation.x = Math.sin(time * 0.03 * config.orbitSpeedMult) * 0.04;
-      coreRef.current.position.y = 0.2 + Math.sin(time * 0.35 * config.orbitSpeedMult) * 0.04;
+      coreRef.current.rotation.y = time * 0.08 * config.orbitSpeedMult;
+      coreRef.current.rotation.x = 0;
+      coreRef.current.position.y = 0.2;
     }
 
     // Dynamic targets based on active view preset

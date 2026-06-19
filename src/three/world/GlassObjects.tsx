@@ -25,7 +25,7 @@ export default function GlassObjects() {
   const { view } = useCygmaWorld();
   const { resolvedTheme } = useTheme();
   const { config } = usePerformance();
-  const fragmentRefs = useRef<THREE.Mesh[]>([]);
+  const fragmentRefs = useRef<THREE.Group[]>([]);
   const currentDistanceMult = useRef(1.0);
 
   // Generate floating crystal polyhedrons based on performance profile
@@ -69,26 +69,26 @@ export default function GlassObjects() {
     const timeScale = Math.min(3.0, delta / 0.0166) * config.orbitSpeedMult;
 
     fragments.forEach((frag, idx) => {
-      const mesh = fragmentRefs.current[idx];
-      if (mesh) {
-        // Self rotation
-        mesh.rotation.x += frag.rotSpeed.x * 0.002 * timeScale;
-        mesh.rotation.y += frag.rotSpeed.y * 0.002 * timeScale;
-        mesh.rotation.z += frag.rotSpeed.z * 0.002 * timeScale;
+      const group = fragmentRefs.current[idx];
+      if (group) {
+        // Self rotation of the group
+        group.rotation.x += frag.rotSpeed.x * 0.002 * timeScale;
+        group.rotation.y += frag.rotSpeed.y * 0.002 * timeScale;
+        group.rotation.z += frag.rotSpeed.z * 0.002 * timeScale;
 
         // Orbit speed multiplier during success passes
         const speedMult = (view === "success" ? 6.0 : 1.0) * timeScale;
         const angle = time * frag.orbitSpeed * speedMult + frag.phase;
         const radius = Math.sqrt(frag.pos.x * frag.pos.x + frag.pos.z * frag.pos.z) * currentDistanceMult.current;
 
-        mesh.position.x = Math.cos(angle) * radius;
-        mesh.position.z = Math.sin(angle) * radius;
-        mesh.position.y = frag.pos.y + Math.sin(time * 0.65 + frag.phase) * 0.12 * timeScale;
+        group.position.x = Math.cos(angle) * radius;
+        group.position.z = Math.sin(angle) * radius;
+        group.position.y = frag.pos.y + Math.sin(time * 0.65 + frag.phase) * 0.12 * timeScale;
 
         if (view === "success") {
           // Centrifugal displacement: push fragments outward to clear camera view
-          mesh.position.x *= 1.15;
-          mesh.position.z *= 1.15;
+          group.position.x *= 1.15;
+          group.position.z *= 1.15;
         }
       }
     });
@@ -96,28 +96,38 @@ export default function GlassObjects() {
 
   const isDark = resolvedTheme === "dark";
   const fragColor = isDark ? "#93c5fd" : "#e0f2fe";
+  const lightColor = isDark ? "#38bdf8" : "#f97316";
+  const lightIntensity = isDark ? 0.75 : 0.45;
 
   return (
     <>
       {fragments.map((frag, idx) => (
-        <mesh
+        <group
           key={frag.id}
           ref={(el) => {
             if (el) fragmentRefs.current[idx] = el;
           }}
           position={frag.pos}
         >
-          <dodecahedronGeometry args={[frag.size]} />
-          <MeshTransmissionMaterial
-            transmission={0.94}
-            roughness={0.06}
-            thickness={0.35}
-            chromaticAberration={0.18}
-            ior={1.5}
-            color={fragColor}
-            backside={true}
+          <mesh>
+            <dodecahedronGeometry args={[frag.size]} />
+            <MeshTransmissionMaterial
+              transmission={0.94}
+              roughness={0.06}
+              thickness={0.35}
+              chromaticAberration={0.18}
+              ior={1.5}
+              color={fragColor}
+              backside={true}
+            />
+          </mesh>
+          <pointLight
+            color={lightColor}
+            intensity={lightIntensity}
+            distance={2.0}
+            decay={2}
           />
-        </mesh>
+        </group>
       ))}
     </>
   );

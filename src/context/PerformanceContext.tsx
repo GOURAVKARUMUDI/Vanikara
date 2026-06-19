@@ -139,7 +139,7 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
       bloomIntensity: 1.25,
       bloomMipmapBlur: true,
       useHeavyTransmission: true,
-      glassObjectsCount: 13,
+      glassObjectsCount: 25,
       dpr: detectedSpecs.dpr,
       targetFps: 60,
       orbitSpeedMult: reduceMotion ? 0.0 : 1.0,

@@ -75,6 +75,30 @@ export default function ParticleField({ count = 650 }) {
   const isDark = resolvedTheme === "dark";
   const particleColor = isDark ? "#a5b4fc" : "#475569"; // Light lavender vs steel blue
 
+  // Create a high-quality soft circular texture for rounded particles
+  const circleTexture = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(0, 0, 64, 64);
+      // Soft radial gradient for a beautiful glow effect
+      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+      gradient.addColorStop(0.25, "rgba(255, 255, 255, 0.85)");
+      gradient.addColorStop(0.55, "rgba(255, 255, 255, 0.35)");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(32, 32, 32, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+  }, []);
+
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
@@ -84,12 +108,13 @@ export default function ParticleField({ count = 650 }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.038}
+        size={0.065}
         color={particleColor}
         transparent
-        opacity={isDark ? 0.35 : 0.5}
+        opacity={isDark ? 0.45 : 0.6}
         sizeAttenuation
         depthWrite={false}
+        map={circleTexture || undefined}
         blending={isDark ? THREE.AdditiveBlending : THREE.NormalBlending}
       />
     </points>

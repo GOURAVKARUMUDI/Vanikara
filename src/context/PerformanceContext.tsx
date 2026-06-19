@@ -134,7 +134,7 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
 
   const activeConfig = useMemo<PerformanceConfig>(() => {
     return {
-      maxParticles: 12000, // Locked to ultra premium counts
+      maxParticles: 550, // Reduced count for elegant, non-crowded space dust background
       usePostProcessing: true,
       bloomIntensity: 1.25,
       bloomMipmapBlur: true,

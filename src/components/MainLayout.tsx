@@ -100,23 +100,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         )}
       </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        <motion.main
-          key={pathname}
-          id="main-content"
-          initial={{ opacity: 0, scale: 0.98, filter: "blur(6px)" }}
-          animate={{ 
-            opacity: isTransitioning ? 0 : 1, 
-            scale: isTransitioning ? 0.97 : 1, 
-            filter: isTransitioning ? "blur(8px)" : "blur(0px)" 
-          }}
-          exit={{ opacity: 0, scale: 0.98, filter: "blur(6px)" }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="flex-grow pt-16 z-10"
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
+      <motion.main
+        key={pathname}
+        id="main-content"
+        initial={{ opacity: 0, scale: 0.99, filter: "blur(4px)" }}
+        animate={{ 
+          opacity: isTransitioning ? 0 : 1, 
+          scale: isTransitioning ? 0.98 : 1, 
+          filter: isTransitioning ? "blur(4px)" : "blur(0px)" 
+        }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="flex-grow pt-16 z-10"
+      >
+        {children}
+      </motion.main>
       {!isAiPage && <Footer />}
       </div>
     </MotionConfig>

@@ -29,6 +29,14 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
   const maxFloatCount = maxPairs * 6; // 2 vertices * 3 coordinates
   const positionsArray = useMemo(() => new Float32Array(maxFloatCount), [nodeCount]);
 
+  const activeCoords = useMemo(() => {
+    const list = [];
+    for (let i = 0; i < nodeCount; i++) {
+      list.push(new THREE.Vector3());
+    }
+    return list;
+  }, [nodeCount]);
+
   const nodes = useMemo(() => {
     const rand = createSeededRandom(22222);
     const items = [];
@@ -50,9 +58,9 @@ export default function NeuralNetwork({ nodeCount = 14 }) {
     if (!lineRef.current) return;
     const time = state.clock.getElapsedTime();
 
-    const activeCoords = nodes.map((node) => {
+    nodes.forEach((node, i) => {
       const offset = Math.sin(time * node.speed * config.orbitSpeedMult + node.phase) * 0.15;
-      return new THREE.Vector3(
+      activeCoords[i].set(
         node.position.x,
         node.position.y + offset,
         node.position.z

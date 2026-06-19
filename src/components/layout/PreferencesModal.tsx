@@ -277,7 +277,7 @@ export default function PreferencesModal() {
                       Live Graphics Telemetry
                     </h4>
                     
-                    <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-[10px] font-semibold text-[var(--text-secondary)]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[10px] font-semibold text-[var(--text-secondary)]">
                       <div className="flex justify-between border-b border-white/5 py-1">
                         <span>Rendering Performance</span>
                         <span className="font-mono text-green-500">{fps} FPS</span>
@@ -287,36 +287,12 @@ export default function PreferencesModal() {
                         <span className="font-mono text-[var(--text-primary)] uppercase">{reduceMotion ? "High-Quality (Reduced Motion)" : "High-Quality (Optimized)"}</span>
                       </div>
                       <div className="flex justify-between border-b border-white/5 py-1">
-                        <span>CPU logical Cores</span>
-                        <span className="font-mono text-[var(--text-primary)]">{detectedSpecs.cores} cores</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/5 py-1">
-                        <span>System Memory (RAM)</span>
-                        <span className="font-mono text-[var(--text-primary)]">{detectedSpecs.memory >= 4 ? `${detectedSpecs.memory} GB` : "Limited"}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-white/5 py-1">
                         <span>Display Pixel Ratio</span>
                         <span className="font-mono text-[var(--text-primary)]">{detectedSpecs.dpr.toFixed(1)}x</span>
                       </div>
                       <div className="flex justify-between border-b border-white/5 py-1">
-                        <span>Network Gateway</span>
-                        <span className="font-mono text-[var(--text-primary)] truncate max-w-[120px]">{detectedSpecs.connection}</span>
-                      </div>
-                      {detectedSpecs.batteryLevel !== undefined && (
-                        <div className="flex justify-between border-b border-white/5 py-1 col-span-2">
-                          <span className="flex items-center gap-1">
-                            <Battery className="w-3 h-3 text-[var(--accent-color)]" /> System Battery State
-                          </span>
-                          <span className="font-mono text-[var(--text-primary)]">
-                            {Math.round(detectedSpecs.batteryLevel)}% {detectedSpecs.isCharging ? "(Charging)" : "(Discharging)"}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex justify-between py-1 col-span-2">
-                        <span>WebGL Render Node</span>
-                        <span className="font-mono text-[var(--text-primary)] truncate text-right max-w-[340px]" title={detectedSpecs.gpu}>
-                          {detectedSpecs.gpu.length > 38 ? `${detectedSpecs.gpu.slice(0, 38)}...` : detectedSpecs.gpu}
-                        </span>
+                        <span>Motion Settings</span>
+                        <span className="font-mono text-[var(--text-primary)] uppercase">{reduceMotion ? "Reduced" : "Standard"}</span>
                       </div>
                     </div>
                   </div>

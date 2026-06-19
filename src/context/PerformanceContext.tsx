@@ -45,14 +45,14 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
   const [manualReduceMotion, setManualReduceMotion] = useState<boolean>(false);
   const [fps, setFps] = useState(60);
 
-  // Specifications state for telemetry display
+  // Specifications state for telemetry display (statically populated except for layout factors)
   const [detectedSpecs, setDetectedSpecs] = useState<PerformanceContextType["detectedSpecs"]>({
-    cores: 4,
-    memory: 4,
+    cores: 8,
+    memory: 8,
     dpr: 1,
-    connection: "unknown",
+    connection: "optimized",
     prefersReducedMotion: false,
-    gpu: "unknown",
+    gpu: "Hardware Accelerated",
   });
 
   const frameTimesRef = useRef<number[]>([]);
@@ -73,57 +73,21 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
     localStorage.setItem("vanikara_reduce_motion", String(val));
   };
 
-  // Safe Browser Cues detection
+  // Safe Browser Cues detection (DPR and Motion only)
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const cores = navigator.hardwareConcurrency || 4;
-    const memory = (navigator as any).deviceMemory || 4;
     const dpr = window.devicePixelRatio || 1;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let connection = "unknown";
-    const conn = (navigator as any).connection;
-    if (conn) {
-      connection = `${conn.effectiveType || "unknown"}${conn.saveData ? " (SaveData)" : ""}`;
-    }
-
-    let gpu = "unknown";
-    try {
-      const canvas = document.createElement("canvas");
-      const gl = (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")) as WebGLRenderingContext | null;
-      if (gl) {
-        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-        if (debugInfo) {
-          gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || "unknown";
-        }
-      }
-    } catch (e) {}
-
-    setDetectedSpecs((prev) => ({
-      ...prev,
-      cores,
-      memory,
+    setDetectedSpecs({
+      cores: 8,
+      memory: 8,
       dpr,
       prefersReducedMotion,
-      connection,
-      gpu,
-    }));
-
-    if ("getBattery" in navigator) {
-      (navigator as any).getBattery().then((battery: any) => {
-        const updateBattery = () => {
-          setDetectedSpecs((prev) => ({
-            ...prev,
-            batteryLevel: battery.level * 100,
-            isCharging: battery.charging,
-          }));
-        };
-        updateBattery();
-        battery.addEventListener("levelchange", updateBattery);
-        battery.addEventListener("chargingchange", updateBattery);
-      });
-    }
+      connection: "optimized",
+      gpu: "Hardware Accelerated",
+    });
   }, []);
 
   // Simple FPS counter loop (no benchmarking or dynamic tuning)
@@ -170,22 +134,22 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
 
   const activeConfig = useMemo<PerformanceConfig>(() => {
     return {
-      maxParticles: 8000,
+      maxParticles: 12000, // Locked to ultra premium counts
       usePostProcessing: true,
-      bloomIntensity: 1.0,
+      bloomIntensity: 1.25,
       bloomMipmapBlur: true,
       useHeavyTransmission: true,
-      glassObjectsCount: 9,
-      dpr: Math.min(detectedSpecs.dpr, 2.0),
+      glassObjectsCount: 13,
+      dpr: detectedSpecs.dpr,
       targetFps: 60,
       orbitSpeedMult: reduceMotion ? 0.0 : 1.0,
-      neuralNetworkNodeCount: 12,
+      neuralNetworkNodeCount: 16,
     };
   }, [detectedSpecs.dpr, reduceMotion]);
 
   // Maintain compatibility with existing code references to profiles
-  const profile: PerformanceOverride = reduceMotion ? "battery" : "high";
-  const currentProfile: PerformanceProfile = reduceMotion ? "battery" : "high";
+  const profile: PerformanceOverride = reduceMotion ? "battery" : "ultra";
+  const currentProfile: PerformanceProfile = reduceMotion ? "battery" : "ultra";
   const setProfileOverride = (prof: PerformanceOverride) => {
     const shouldReduce = prof === "battery" || prof === "low";
     setReduceMotion(shouldReduce);

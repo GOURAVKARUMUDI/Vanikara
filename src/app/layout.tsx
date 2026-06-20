@@ -8,6 +8,7 @@ import { CygmaWorldProvider } from '@/context/CygmaWorldContext';
 import { ConsentProvider } from '@/context/ConsentContext';
 import { PerformanceProvider } from '@/context/PerformanceContext';
 import { Inter, Outfit } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -88,6 +89,7 @@ export default function RootLayout({
             </ConsentProvider>
           </CygmaWorldProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

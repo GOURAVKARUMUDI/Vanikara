@@ -22,7 +22,7 @@ const IntelligenceWorld = dynamic(() => import("@/three/world/IntelligenceWorld"
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAiPage = pathname === "/ai";
-  const { view, isTransitioning } = useCygmaWorld();
+  const { view, isTransitioning, sceneReady } = useCygmaWorld();
   const { resolvedTheme } = useTheme();
   const [showFlash, setShowFlash] = useState(false);
 
@@ -97,7 +97,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Navbar />
 
       {/* Global 3D World Scene Backdrop */}
-      {showCanvas && <IntelligenceWorld />}
+      {showCanvas && (
+        <>
+          <IntelligenceWorld />
+          <div 
+            className={`fixed inset-0 z-0 bg-[#030712] transition-opacity duration-[1500ms] ease-in-out pointer-events-none ${
+              sceneReady ? "opacity-0" : "opacity-100"
+            }`}
+          />
+        </>
+      )}
 
       {/* Fullscreen Success White Flash overlay */}
       <AnimatePresence>

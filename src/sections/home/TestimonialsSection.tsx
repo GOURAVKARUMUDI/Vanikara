@@ -52,9 +52,9 @@ export default function TestimonialsSection() {
                     "{test.quote}"
                   </p>
                   <div>
-                    <h4 className="font-display font-bold text-sm text-[var(--text-primary)]">
+                    <h3 className="font-display font-bold text-sm text-[var(--text-primary)]">
                       {test.name}
-                    </h4>
+                    </h3>
                     <div className="flex justify-between items-center text-[10px] text-slate-400 mt-1">
                       <span>{test.role}</span>
                       <span className="text-[var(--accent-color)] uppercase font-extrabold tracking-widest text-[8px]">

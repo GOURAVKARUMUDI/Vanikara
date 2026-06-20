@@ -25,11 +25,11 @@ export default function PageHero({ tag, title, subtitle, cta }: PageHeroProps) {
     >
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <FadeUp>
-          <p className="section-tag mb-3">{tag}</p>
-          <h1 className="heading-xl mb-5">
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)] mb-3">{tag}</p>
+          <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-[var(--text-primary)] mb-5 uppercase tracking-tight text-balance">
             {title}
           </h1>
-          <p className="text-lg sm:text-xl text-slate-500 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed font-semibold">
             {subtitle}
           </p>
           {cta && (

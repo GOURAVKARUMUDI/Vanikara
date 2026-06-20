@@ -113,12 +113,6 @@ export default function IntelligenceWorld() {
         )}
       </Canvas>
 
-      {/* Black full-screen reveal cover layout block */}
-      <div 
-        className={`absolute inset-0 z-50 bg-[#030712] transition-opacity duration-[1500ms] ease-in-out pointer-events-none ${
-          sceneReady ? "opacity-0" : "opacity-100"
-        }`}
-      />
     </div>
   );
 }

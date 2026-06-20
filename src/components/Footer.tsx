@@ -52,9 +52,9 @@ export default function Footer() {
 
           {/* Links Column: Company */}
           <div>
-            <h4 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
+            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
               Company
-            </h4>
+            </h3>
             <FooterLinks
               links={[
                 { href: "/about", label: "About Us" },
@@ -71,9 +71,9 @@ export default function Footer() {
 
           {/* Links Column: Ecosystem */}
           <div>
-            <h4 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
+            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
               Ecosystem Tools
-            </h4>
+            </h3>
             <FooterLinks
               links={[
                 { href: "/ai", label: "CYGMA AI Node" },
@@ -87,9 +87,9 @@ export default function Footer() {
           {/* Links Column: Legal / Contact */}
           <div className="flex flex-col gap-6">
             <div>
-              <h4 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
+              <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
                 Legal Controls
-              </h4>
+              </h3>
               <FooterLinks
                 links={[
                   { href: "/privacy", label: "Privacy Policy" },

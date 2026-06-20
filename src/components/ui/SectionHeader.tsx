@@ -20,12 +20,12 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className={`${centered ? 'text-center' : ''} mb-14 ${className}`}>
-      {tag && <p className="section-tag mb-3">{tag}</p>}
-      <h2 className="heading-lg">
+      {tag && <p className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)] mb-3">{tag}</p>}
+      <h2 className="font-display font-black text-2xl sm:text-3xl text-[var(--text-primary)] uppercase tracking-tight">
         {title}
       </h2>
       {subtitle && (
-        <p className={`mt-4 text-slate-500 text-lg max-w-xl ${centered ? 'mx-auto' : ''} leading-relaxed`}>
+        <p className={`mt-4 text-[var(--text-secondary)] text-sm sm:text-base max-w-xl ${centered ? 'mx-auto' : ''} leading-relaxed font-semibold`}>
           {subtitle}
         </p>
       )}

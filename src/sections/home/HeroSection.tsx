@@ -235,7 +235,7 @@ export default function HeroSection() {
                 >
                   {/* Top specular reflection highlight */}
                   <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                  <img src="/logo.png" alt="Vanikara Logo" className="w-8.5 h-auto" />
+                  <img src="/logo.png" alt="Vanikara Logo" className="w-8.5 h-auto" width={34} height={23} />
                 </motion.div>
               )}
             </AnimatePresence>

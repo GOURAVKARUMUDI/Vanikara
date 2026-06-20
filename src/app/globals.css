@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 /* ============================================================
@@ -122,8 +121,8 @@ html[data-atmosphere="night"] {
   --color-brand-yellow:      #FFC400;
 
   /* Font Family */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-outfit), 'Outfit', var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Radius */
   --radius-sm:    6px;

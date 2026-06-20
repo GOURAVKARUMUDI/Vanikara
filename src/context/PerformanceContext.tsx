@@ -67,7 +67,7 @@ const PROFILE_CONFIGS: Record<PerformanceProfile, Omit<PerformanceConfig, "orbit
     usePostProcessing: true,
     bloomIntensity: 0.75,
     bloomMipmapBlur: false,
-    useHeavyTransmission: false,
+    useHeavyTransmission: true,
     glassObjectsCount: 8,
     targetFps: 60,
     neuralNetworkNodeCount: 8,
@@ -153,11 +153,9 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
       gpu: "Hardware Accelerated",
     });
 
-    if (isMobile) {
-      setAutoProfile("low");
-    } else {
-      setAutoProfile("high");
-    }
+    // Start all viewports at high to ensure identical immersive visuals on load,
+    // allowing the adaptive FPS feedback loop to downgrade performance dynamically if needed.
+    setAutoProfile("high");
   }, []);
 
   // Simple FPS counter loop with dynamic tuning

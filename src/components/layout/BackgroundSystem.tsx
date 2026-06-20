@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useTheme, AtmosphereMode } from "./ThemeContext";
+import { usePerformance } from "@/context/PerformanceContext";
 
 interface Particle {
   x: number;
@@ -15,9 +16,12 @@ interface Particle {
 
 export default function BackgroundSystem() {
   const { atmosphere } = useTheme();
+  const { currentProfile, reduceMotion } = usePerformance();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
+
+  // Disable 2D particles/glow dynamically on low performance presets or reduced motion
+  const isPerformanceLow = currentProfile === "low" || currentProfile === "battery" || reduceMotion;
 
   // Get particle color based on active atmosphere
   const getParticleColor = (mode: AtmosphereMode): string => {
@@ -34,24 +38,18 @@ export default function BackgroundSystem() {
     }
   };
 
-  // Detect mobile device on mount to prevent SSR hydration mismatches
   useEffect(() => {
-    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    setIsMobileDevice(mobileCheck);
-  }, []);
-
-  useEffect(() => {
-    if (isMobileDevice) return;
+    if (isPerformanceLow) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [isMobileDevice]);
+  }, [isPerformanceLow]);
 
   useEffect(() => {
-    if (isMobileDevice) return;
+    if (isPerformanceLow) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -140,7 +138,7 @@ export default function BackgroundSystem() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationId);
     };
-  }, [atmosphere, isMobileDevice]);
+  }, [atmosphere, isPerformanceLow]);
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none -z-50 select-none">
@@ -165,10 +163,10 @@ export default function BackgroundSystem() {
       />
 
       {/* Layer 3: Interactive Canvas Particles */}
-      {!isMobileDevice && <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />}
+      {!isPerformanceLow && <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />}
 
       {/* Layer 4: Interactive cursor glow effect */}
-      {!isMobileDevice && (
+      {!isPerformanceLow && (
         <div
           className="absolute w-[350px] h-[350px] rounded-full filter blur-[100px] transition-transform duration-300 ease-out pointer-events-none"
           style={{

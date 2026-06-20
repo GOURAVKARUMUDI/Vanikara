@@ -349,6 +349,7 @@ export default function CygmaPreviewSection() {
                       onClick={handleStopGeneration}
                       className="p-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl border border-red-500/20 transition-all cursor-pointer flex items-center justify-center"
                       title="Stop generation"
+                      aria-label="Stop generation"
                     >
                       <Square className="w-4 h-4 fill-current" />
                     </button>
@@ -357,6 +358,7 @@ export default function CygmaPreviewSection() {
                       type="submit"
                       disabled={!input.trim()}
                       className="p-3 bg-[var(--accent-color)] hover:bg-[var(--accent-color)]/90 disabled:bg-slate-500/10 text-white disabled:text-[var(--text-secondary)]/40 rounded-xl border border-transparent disabled:border-[var(--glass-border)] transition-all cursor-pointer flex items-center justify-center"
+                      aria-label="Send message"
                     >
                       <Send className="w-4 h-4" />
                     </button>

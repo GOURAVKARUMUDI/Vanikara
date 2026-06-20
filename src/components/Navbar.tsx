@@ -197,7 +197,6 @@ export default function Navbar() {
             href="/" 
             className="flex items-center gap-2 group select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:ring-offset-2 rounded-xl"
             onClick={(e) => handleLinkClick(e, "/")}
-            aria-label="VANIKARA Intelligence Home"
           >
             <div className="relative overflow-hidden w-8 h-8 rounded-xl flex items-center justify-center bg-white/10 dark:bg-white/5 shadow-sm border border-white/10 dark:border-white/5">
               <img 

@@ -86,3 +86,7 @@ next-env.d.ts
 # ─── Sensitive config snapshots ──────────────────────────────
 # Runtime privacy config cache (written under .next at runtime)
 .next/privacy_config.json
+
+# ─── Android signing secrets ──────────────────────────────────
+android/app/vanikara-release.jks
+android/key.properties

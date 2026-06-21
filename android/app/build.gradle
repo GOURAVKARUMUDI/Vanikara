@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 android {
     namespace = "com.vanikara.intelligence"
     compileSdk = rootProject.ext.compileSdkVersion
+    signingConfigs {
+        release {
+            storeFile file("vanikara-release.jks")
+            storePassword System.getenv("RELEASE_STORE_PASSWORD") ?: (project.findProperty("RELEASE_STORE_PASSWORD") ?: "")
+            keyAlias System.getenv("RELEASE_KEY_ALIAS") ?: (project.findProperty("RELEASE_KEY_ALIAS") ?: "vanikara")
+            keyPassword System.getenv("RELEASE_KEY_PASSWORD") ?: (project.findProperty("RELEASE_KEY_PASSWORD") ?: "")
+        }
+    }
     defaultConfig {
         applicationId "com.vanikara.intelligence"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -19,6 +27,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

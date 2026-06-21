@@ -4,23 +4,55 @@ import path from "path";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { isAdmin } from "@/lib/isAdmin";
+import { supabaseService } from "@/utils/supabase/service";
 
 const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
-const RUNTIME_PATH = path.join(process.cwd(), ".next/privacy_config.json");
 
 async function getConfig() {
   try {
-    const fileContent = await fs.readFile(RUNTIME_PATH, "utf-8");
-    return JSON.parse(fileContent);
-  } catch {
+    // 1. Try querying the Supabase database
+    const { data, error } = await supabaseService
+      .from("privacy_config")
+      .select("*")
+      .eq("id", 1)
+      .maybeSingle();
+
+    if (data && !error) {
+      return {
+        currentVersion: data.current_version,
+        policyText: data.policy_text,
+        optionalServices: data.optional_services,
+        stats: data.stats,
+      };
+    }
+  } catch (err) {
+    console.warn("Database privacy_config check failed, falling back to local file. Error:", err);
+  }
+
+  // 2. Fallback to local files if database is missing/table doesn't exist
+  try {
     const fileContent = await fs.readFile(STATIC_PATH, "utf-8");
-    const config = JSON.parse(fileContent);
-    try {
-      const dir = path.dirname(RUNTIME_PATH);
-      await fs.mkdir(dir, { recursive: true });
-      await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
-    } catch {}
-    return config;
+    return JSON.parse(fileContent);
+  } catch (err) {
+    console.error("Failed to read static fallback privacy_config file:", err);
+    return {
+      currentVersion: "1.0.0",
+      policyText: "We use essential cookies to operate our website and optional cookies.",
+      stats: {
+        totalVisits: 0,
+        acceptedAll: 0,
+        rejectedOptional: 0,
+        customized: 0,
+        analyticsAccepted: 0,
+        marketingAccepted: 0,
+        preferencesAccepted: 0
+      },
+      optionalServices: {
+        googleAnalytics: true,
+        facebookPixel: false,
+        hotjar: false
+      }
+    };
   }
 }
 
@@ -74,12 +106,30 @@ export async function POST(req: Request) {
     if (policyText) config.policyText = policyText;
     if (optionalServices) config.optionalServices = optionalServices;
 
-    // Write updated configuration to both static (for git) and runtime (for instant bypass)
-    await fs.writeFile(STATIC_PATH, JSON.stringify(config, null, 2), "utf-8");
-    await fs.writeFile(RUNTIME_PATH, JSON.stringify(config, null, 2), "utf-8");
+    try {
+      // 1. Try to upsert into the Supabase database
+      const { error } = await supabaseService
+        .from("privacy_config")
+        .upsert({
+          id: 1,
+          current_version: config.currentVersion,
+          policy_text: config.policyText,
+          optional_services: config.optionalServices,
+          stats: config.stats,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+    } catch (dbErr) {
+      console.warn("Failed to write to database privacy_config, falling back to local file. Error:", dbErr);
+      try {
+        await fs.writeFile(STATIC_PATH, JSON.stringify(config, null, 2), "utf-8");
+      } catch {}
+    }
 
     return NextResponse.json({ success: true, data: config });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+

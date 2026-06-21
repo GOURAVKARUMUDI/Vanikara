@@ -25,11 +25,8 @@ export async function GET() {
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
   } catch (error: any) {
-    // Return mock data fallback if table isn't fully migrated yet in active db
-    return NextResponse.json(apiResponse(true, [
-      { id: "1", name: "Rohan Verma", email: "rohan@gmail.com", position: "React Frontend Developer Intern", cover_letter: "I want to build gorgeous three.js experiences in public.", status: "new", created_at: new Date().toISOString() },
-      { id: "2", name: "Ananya Roy", email: "ananya@gmail.com", position: "Node.js Fullstack Intern", cover_letter: "Excited about optimizing PostgreSQL indexing logs.", status: "shortlisted", created_at: new Date().toISOString() }
-    ]));
+    logError("Admin Careers GET", error);
+    return NextResponse.json(apiResponse(false, null, "Failed to retrieve careers applications"), { status: 500 });
   }
 }
 

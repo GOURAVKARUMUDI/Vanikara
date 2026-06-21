@@ -5,6 +5,10 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function POST() {
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json({ error: 'Forbidden: Endpoint only available in development environment' }, { status: 403 });
+  }
+
   const sb = createClient(await cookies());
   const { data: { user } } = await sb.auth.getUser();
 

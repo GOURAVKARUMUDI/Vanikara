@@ -36,13 +36,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No user ID linked to this checkout session' }, { status: 400 });
     }
 
+    let currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    if (session.subscription) {
+      try {
+        const subscription = await s.subscriptions.retrieve(session.subscription as string) as any;
+        if (subscription && subscription.current_period_end) {
+          currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+        }
+      } catch (stripeErr: any) {
+        console.error('Stripe Webhook: Error retrieving subscription from Stripe API:', stripeErr.message);
+      }
+    }
+
     const { error } = await supabaseService
       .from('subscriptions')
       .upsert({
         user_id: userId,
         plan: 'pro',
         status: 'active',
-        current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        current_period_end: currentPeriodEnd,
       }, { onConflict: 'user_id' });
 
     if (error) {

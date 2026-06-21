@@ -69,3 +69,24 @@ CREATE POLICY "Users can insert their own ai_logs" ON public.ai_logs FOR INSERT 
 CREATE POLICY "Admins can view all ai_logs" ON public.ai_logs FOR ALL USING (
   EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
 );
+
+-- Create privacy_config table
+CREATE TABLE IF NOT EXISTS public.privacy_config (
+  id INT PRIMARY KEY DEFAULT 1,
+  current_version TEXT NOT NULL DEFAULT '1.0.0',
+  policy_text TEXT NOT NULL,
+  optional_services JSONB NOT NULL DEFAULT '{}'::jsonb,
+  stats JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  CONSTRAINT single_row CHECK (id = 1)
+);
+
+-- Enable RLS for privacy_config
+ALTER TABLE public.privacy_config ENABLE ROW LEVEL SECURITY;
+
+-- Policies for privacy_config
+CREATE POLICY "Public can select privacy_config" ON public.privacy_config FOR SELECT USING (true);
+CREATE POLICY "Admins can manage privacy_config" ON public.privacy_config FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+);
+

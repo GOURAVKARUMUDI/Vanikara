@@ -512,12 +512,34 @@ providerRegistry.register(new OpenAIProvider());
 
 // Factory mapping models to providers
 export function getProviderForModel(model: string): AIProvider {
-  // All models currently route through OpenAI as the primary provider
-  // Future: check model prefix/keyword to route to Anthropic, Google, etc.
-  if (model.startsWith('gpt-') || model === 'gpt-4o' || model === 'gpt-4o-mini') {
+  // 1. Check Anthropic API key availability for Claude models
+  if (model.includes('claude')) {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new CygmaAIError({
+        type: 'PROVIDER_UNAVAILABLE',
+        statusCode: 501,
+        userMessage: 'Claude 3.5 Sonnet is currently unavailable. Anthropic integration is not configured (missing ANTHROPIC_API_KEY).',
+        developerMessage: 'Claude model requested, but ANTHROPIC_API_KEY environment variable is not configured.',
+      });
+    }
+  }
+
+  // 2. Check Gemini API key availability for Gemini models
+  if (model.includes('gemini')) {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new CygmaAIError({
+        type: 'PROVIDER_UNAVAILABLE',
+        statusCode: 501,
+        userMessage: 'Gemini 1.5 Pro is currently unavailable. Google Gemini integration is not configured (missing GEMINI_API_KEY).',
+        developerMessage: 'Gemini model requested, but GEMINI_API_KEY environment variable is not configured.',
+      });
+    }
+  }
+
+  // 3. All configured models route through OpenAI provider registry for execution
+  if (model.startsWith('gpt-') || model === 'gpt-4o' || model === 'gpt-4o-mini' || model.includes('claude') || model.includes('gemini')) {
     return providerRegistry.getProvider('openai');
   }
 
-  // Claude and Gemini models also fall back through OpenAI for now
   return providerRegistry.getProvider('openai');
 }

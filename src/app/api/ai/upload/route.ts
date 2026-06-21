@@ -43,31 +43,50 @@ Content Summary Index:
 - Section 3: Vector matching rules for CYGMA context searches.`;
     }
 
-    // 3. Log file record to Supabase database (or upload to storage in production)
-    // Here we generate a safe local URL fallback if storage triggers RLS constraints
-    const mockFileUrl = `https://storage.vanikara.com/files/${user.id}/${Date.now()}_${encodeURIComponent(file.name)}`;
-    
+    // 3. Upload file to Supabase storage bucket 'files'
+    const uniqueFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+    const storagePath = `${user.id}/${uniqueFileName}`;
+    let fileUrl = `https://storage.vanikara.com/files/${user.id}/${uniqueFileName}`;
+
+    try {
+      const { data: uploadData, error: uploadError } = await sb.storage
+        .from('files')
+        .upload(storagePath, file, {
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = sb.storage.from('files').getPublicUrl(storagePath);
+      if (urlData && urlData.publicUrl) {
+        fileUrl = urlData.publicUrl;
+      }
+    } catch (storageErr: any) {
+      console.warn("Supabase Storage upload failed, falling back to dummy url. Error:", storageErr.message || storageErr);
+    }
+
     let fileId = crypto.randomUUID();
     try {
       const { data: dbFile, error: dbErr } = await sb
         .from('files')
         .insert({
           user_id: user.id,
-          file_url: mockFileUrl
+          file_url: fileUrl
         })
         .select()
         .single();
       
       if (dbFile) fileId = dbFile.id;
     } catch (insertErr) {
-      logError("Upload Route", "Failed inserting file record: " + insertErr);
+      logError("Upload Route Database Insert", insertErr);
     }
 
     // 4. Return grounded context to client
     return NextResponse.json({
       success: true,
       fileId,
-      fileUrl: mockFileUrl,
+      fileUrl,
       fileName: file.name,
       sizeBytes: file.size,
       textContext: extractedText,

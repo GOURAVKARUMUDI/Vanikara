@@ -5,7 +5,23 @@ import { logError } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
+let cachedStatus: any = null;
+let lastCheckTime = 0;
+const CACHE_TTL_MS = 60000; // Cache health status checks for 60 seconds
+
 export async function GET() {
+  const now = Date.now();
+  if (cachedStatus && now - lastCheckTime < CACHE_TTL_MS) {
+    return NextResponse.json(
+      {
+        ...cachedStatus,
+        timestamp: new Date().toISOString(),
+        cached: true,
+      },
+      { status: cachedStatus.status === "healthy" ? 200 : 500 }
+    );
+  }
+
   const status: Record<string, any> = {
     status: "healthy",
     timestamp: new Date().toISOString(),
@@ -65,8 +81,12 @@ export async function GET() {
   if (hasError) {
     status.status = "unhealthy";
     logError("Health Check", "System health check degraded", { errorType: "health_degraded" });
-    return NextResponse.json(status, { status: 500 });
   }
 
-  return NextResponse.json(status, { status: 200 });
+  // Save to cache
+  cachedStatus = { ...status };
+  lastCheckTime = now;
+
+  return NextResponse.json(status, { status: hasError ? 500 : 200 });
 }
+

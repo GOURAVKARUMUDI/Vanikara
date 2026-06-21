@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { isAdmin } from '@/lib/isAdmin';
 
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const forwarded = req.headers.get('x-forwarded-for');
   const ip = forwarded ? forwarded.split(',')[0] : (req as any).ip || '127.0.0.1';
   const now = Date.now();
@@ -12,9 +14,50 @@ export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith('/admin')) {
-    const cookieHeader = req.headers.get('cookie') || '';
-    const isAuthenticated = cookieHeader.includes('sb-') || cookieHeader.includes('vanikara_session');
-    if (!isAuthenticated) {
+    let isAuthenticated = false;
+    let isUserAdmin = false;
+
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (supabaseUrl && supabaseKey) {
+        let response = NextResponse.next({
+          request: {
+            headers: req.headers,
+          },
+        });
+
+        const supabase = createServerClient(supabaseUrl, supabaseKey, {
+          cookies: {
+            getAll() {
+              return req.cookies.getAll();
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                req.cookies.set(name, value);
+                response = NextResponse.next({
+                  request: {
+                    headers: req.headers,
+                  },
+                });
+                response.cookies.set(name, value, options);
+              });
+            },
+          },
+        });
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          isAuthenticated = true;
+          isUserAdmin = isAdmin(user.email);
+        }
+      }
+    } catch (err) {
+      console.error('Proxy admin authentication guard failed:', err);
+    }
+
+    if (!isAuthenticated || !isUserAdmin) {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }

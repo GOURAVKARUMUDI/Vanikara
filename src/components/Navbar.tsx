@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Sun, Moon, Sparkles, User as UserIcon, LogOut } from "lucide-react";
+import { Menu, X, Sun, Moon, Sparkles, User as UserIcon, LogOut, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { createClient } from "@/utils/supabase/client";
@@ -12,6 +12,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { useAuthRedirect } from "@/lib/authRedirect";
 import { useTheme, ThemeMode } from "./layout/ThemeContext";
 import { useCygmaWorld, CygmaView } from "@/context/CygmaWorldContext";
+import { usePWA } from "@/hooks/usePWA";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -32,6 +33,7 @@ export default function Navbar() {
   const supabase = createClient();
   const { theme, setTheme } = useTheme();
   const { navbarVisible, setNavbarVisible, setView, setIsTransitioning } = useCygmaWorld();
+  const { isInstallable, installApp } = usePWA();
   
   const [mounted, setMounted] = useState(false);
 
@@ -298,6 +300,17 @@ export default function Navbar() {
 
           {/* User Controls and Theme Switcher */}
           <div className="hidden md:flex items-center gap-3">
+            {isInstallable && (
+              <button
+                onClick={installApp}
+                className="p-2 rounded-full hover:bg-slate-500/10 border border-transparent hover:border-white/10 text-[var(--accent-color)] hover:text-[var(--accent-color)]/80 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
+                title="Install App"
+                aria-label="Install App"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+            )}
+
             {/* Theme Toggle Button */}
             <button
               onClick={cycleTheme}
@@ -423,6 +436,21 @@ export default function Navbar() {
             </nav>
 
             <div className="flex flex-col gap-4">
+              {isInstallable && (
+                <Button
+                  onClick={async () => {
+                    setMobileMenuOpen(false);
+                    await installApp();
+                  }}
+                  variant="secondary"
+                  size="lg"
+                  className="w-full flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5 text-[var(--accent-color)]" />
+                  Install App
+                </Button>
+              )}
+
               {user ? (
                 <div className="flex flex-col gap-3">
                   <div className="text-center text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider">

@@ -3,9 +3,10 @@
 import { useConsent, ConsentSettings } from "@/context/ConsentContext";
 import { usePerformance, usePerformanceFps, PerformanceOverride, PerformanceProfile } from "@/context/PerformanceContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock, Eye, Cpu, Zap, Activity, ShieldCheck, Battery } from "lucide-react";
+import { X, Lock, Eye, Cpu, Zap, Activity, ShieldCheck, Battery, Download } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
+import { usePWA } from "@/hooks/usePWA";
 
 /**
  * PreferencesModal: Re-usable privacy and performance panel modal allowing granular 
@@ -15,6 +16,7 @@ export default function PreferencesModal() {
   const { showModal, consent, closePreferences, savePreferences, acceptAll, rejectOptional } = useConsent();
   const { profile, currentProfile, setProfileOverride, detectedSpecs, reduceMotion, setReduceMotion } = usePerformance();
   const fps = usePerformanceFps();
+  const { isInstallable, installApp } = usePWA();
 
   const [activeTab, setActiveTab] = useState<"privacy" | "performance">("privacy");
 
@@ -297,6 +299,29 @@ export default function PreferencesModal() {
                       />
                     </button>
                   </div>
+
+                  {/* PWA App Installation Option */}
+                  {isInstallable && (
+                    <div className="flex items-center justify-between gap-6 p-4 rounded-2xl bg-[var(--accent-color)]/5 border border-[var(--accent-color)]/25 shadow-sm shadow-[var(--accent-color)]/5 animate-in fade-in duration-300">
+                      <div className="space-y-1 text-xs">
+                        <h4 className="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                          <Download className="w-4 h-4 text-[var(--accent-color)]" />
+                          Install VANIKARA App
+                        </h4>
+                        <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
+                          Install this platform as a standalone application on your home screen or desktop for instant launching and offline capabilities.
+                        </p>
+                      </div>
+                      <Button
+                        onClick={installApp}
+                        variant="primary"
+                        size="sm"
+                        className="font-bold text-[9px] uppercase tracking-wider py-2 px-4 shrink-0"
+                      >
+                        Install
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Telemetry Display */}
                   <div className="p-4 rounded-2xl bg-slate-500/5 border border-[var(--glass-border)] space-y-3">

@@ -45,6 +45,7 @@ export default function CameraController() {
     const pointer = state.pointer; // Mouse position normalized [-1, 1]
     const aspect = size.width / size.height;
     const scrollOffset = typeof window !== "undefined" ? window.scrollY : 0;
+    const isMobile = aspect < 1;
 
     // Responsive aspect multiplier
     const aspectModifier = aspect < 1 ? 1.0 + (1.0 - aspect) * 0.8 : 1.0;
@@ -66,78 +67,110 @@ export default function CameraController() {
     // Define route-based target parameters
     switch (view) {
       case "hero":
-        targetX = 0;
-        targetY = 0.4;
-        targetZ = 7.5 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = -0.15;
+          targetZ = 8.5;
+          targetLookY = -0.25;
+        } else {
+          targetX = 0;
+          targetY = 0.4;
+          targetZ = 7.5 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
+        useMouseParallax = !isMobile;
 
         // Apply scroll offsets for scrollytelling depth
-        const scrollZ = scrollOffset * 0.004;
-        const scrollYOffset = -scrollOffset * 0.0035;
+        const scrollZ = scrollOffset * (isMobile ? 0.003 : 0.004);
+        const scrollYOffset = -scrollOffset * (isMobile ? 0.0025 : 0.0035);
         targetZ += scrollZ;
         targetY += scrollYOffset;
         targetLookY += scrollYOffset * 0.25;
         break;
 
       case "about":
-        // Camera orbits to the side of the planet
-        targetX = 5.2 * aspectModifier;
-        targetY = 1.0;
-        targetZ = 5.2 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = 0.8;
+          targetZ = 7.5;
+          targetLookY = 0.2;
+        } else {
+          targetX = 5.2 * aspectModifier;
+          targetY = 1.0;
+          targetZ = 5.2 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
-        orbitScaleX = 0.2;
-        orbitScaleY = 0.15;
+        useMouseParallax = !isMobile;
+        orbitScaleX = isMobile ? 0.15 : 0.2;
+        orbitScaleY = isMobile ? 0.1 : 0.15;
         parallaxScaleX = 0.3;
         parallaxScaleY = 0.25;
 
         // About has timeline scroll tracking
-        const aboutScrollY = -scrollOffset * 0.003;
+        const aboutScrollY = -scrollOffset * (isMobile ? 0.002 : 0.003);
         targetY += aboutScrollY;
         targetLookY += aboutScrollY * 0.2;
         break;
 
       case "projects":
-        // Camera flies below the core facing upwards
-        targetX = 0;
-        targetY = -4.5;
-        targetZ = 4.8 * aspectModifier;
-        targetLookY = 0.4;
+        if (isMobile) {
+          targetX = 0;
+          targetY = -3.8;
+          targetZ = 5.5;
+          targetLookY = 0.3;
+        } else {
+          targetX = 0;
+          targetY = -4.5;
+          targetZ = 4.8 * aspectModifier;
+          targetLookY = 0.4;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
-        orbitScaleX = 0.15;
-        orbitScaleY = 0.1;
+        useMouseParallax = !isMobile;
+        orbitScaleX = isMobile ? 0.1 : 0.15;
+        orbitScaleY = isMobile ? 0.08 : 0.1;
         break;
 
       case "products":
-        // Camera orbits to an elevated side angle facing down slightly
-        targetX = -4.8 * aspectModifier;
-        targetY = 2.4;
-        targetZ = 5.2 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = 1.0;
+          targetZ = 7.0;
+          targetLookY = 0.2;
+        } else {
+          targetX = -4.8 * aspectModifier;
+          targetY = 2.4;
+          targetZ = 5.2 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
-        orbitScaleX = 0.18;
-        orbitScaleY = 0.12;
+        useMouseParallax = !isMobile;
+        orbitScaleX = isMobile ? 0.12 : 0.18;
+        orbitScaleY = isMobile ? 0.08 : 0.12;
         break;
 
       case "ai":
-        // Camera zooms INSIDE the core!
-        targetX = 0;
-        targetY = 0.2;
-        targetZ = 0.25; // Inside coordinates
-        targetLookY = 0.2;
-        targetLookZ = -3.0; // Looking deep forward
+        if (isMobile) {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = 0.35;
+          targetLookY = 0.2;
+          targetLookZ = -2.5;
+        } else {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = 0.25;
+          targetLookY = 0.2;
+          targetLookZ = -3.0;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
+        useMouseParallax = !isMobile;
         orbitScaleX = 0.04;
         orbitScaleY = 0.03;
         parallaxScaleX = 0.08;
@@ -145,14 +178,20 @@ export default function CameraController() {
         break;
 
       case "login":
-        // Close cinematic view
-        targetX = 0;
-        targetY = 0.2;
-        targetZ = 3.6 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = 0.0;
+          targetZ = 4.2;
+          targetLookY = 0.0;
+        } else {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = 3.6 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
+        useMouseParallax = !isMobile;
         orbitScaleX = 0.08;
         orbitScaleY = 0.05;
         parallaxScaleX = 0.15;
@@ -161,50 +200,75 @@ export default function CameraController() {
 
       case "dashboard":
       case "success":
-        // Passes past the core
-        targetX = 0;
-        targetY = 0.2;
-        targetZ = -3.5 * aspectModifier;
-        targetLookY = 0.2;
-        targetLookZ = -7.0;
+        if (isMobile) {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = -4.5;
+          targetLookY = 0.2;
+          targetLookZ = -6.0;
+        } else {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = -3.5 * aspectModifier;
+          targetLookY = 0.2;
+          targetLookZ = -7.0;
+        }
         break;
 
       case "admin":
-        // Angled professional command view
-        targetX = -2.8 * aspectModifier;
-        targetY = 2.2;
-        targetZ = 4.8 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = 1.2;
+          targetZ = 6.0;
+          targetLookY = 0.2;
+        } else {
+          targetX = -2.8 * aspectModifier;
+          targetY = 2.2;
+          targetZ = 4.8 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
-        useMouseParallax = true;
+        useMouseParallax = !isMobile;
         parallaxScaleX = 0.2;
         parallaxScaleY = 0.15;
         break;
 
       case "careers":
-        // Angled perspective from below right
-        targetX = 2.8 * aspectModifier;
-        targetY = -1.5;
-        targetZ = 5.6 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = -1.0;
+          targetZ = 6.5;
+          targetLookY = 0.2;
+        } else {
+          targetX = 2.8 * aspectModifier;
+          targetY = -1.5;
+          targetZ = 5.6 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
-        orbitScaleX = 0.15;
-        orbitScaleY = 0.1;
+        useMouseParallax = !isMobile;
+        orbitScaleX = isMobile ? 0.1 : 0.15;
+        orbitScaleY = isMobile ? 0.08 : 0.1;
         break;
 
       case "contact":
-        // Side perspective
-        targetX = -3.8 * aspectModifier;
-        targetY = -0.5;
-        targetZ = 5.2 * aspectModifier;
-        targetLookY = 0.2;
+        if (isMobile) {
+          targetX = 0;
+          targetY = -0.4;
+          targetZ = 6.5;
+          targetLookY = 0.1;
+        } else {
+          targetX = -3.8 * aspectModifier;
+          targetY = -0.5;
+          targetZ = 5.2 * aspectModifier;
+          targetLookY = 0.2;
+        }
 
         useOrbitDrift = true;
-        useMouseParallax = true;
-        orbitScaleX = 0.18;
-        orbitScaleY = 0.12;
+        useMouseParallax = !isMobile;
+        orbitScaleX = isMobile ? 0.12 : 0.18;
+        orbitScaleY = isMobile ? 0.08 : 0.12;
         break;
 
       default:

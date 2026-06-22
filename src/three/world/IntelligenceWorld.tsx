@@ -59,30 +59,6 @@ export default function IntelligenceWorld() {
   const { resolvedTheme } = useTheme();
   const { config } = usePerformance();
 
-  const [isMobile, setIsMobile] = React.useState(false);
-  const [initStage, setInitStage] = React.useState(0);
-
-  React.useEffect(() => {
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
-    if (!mobile) {
-      setInitStage(6);
-      return;
-    }
-
-    // Sequence stages on mobile to remove CPU instantiation spikes
-    let current = 0;
-    const interval = setInterval(() => {
-      current++;
-      setInitStage(current);
-      if (current >= 6) {
-        clearInterval(interval);
-      }
-    }, 80);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const initialFogColor = resolvedTheme === "dark" ? "#020617" : "#c8d7e6";
   const bloomIntensity = view === "success" ? 5.5 : resolvedTheme === "dark" ? 1.25 : 0.65;
 
@@ -104,44 +80,34 @@ export default function IntelligenceWorld() {
         <CameraController />
 
         {/* Fog preset interpolation */}
-        {initStage >= 6 && <FogController />}
+        <FogController />
 
         {/* Dynamic Light coordinates & materials rigs */}
-        {initStage >= 1 && (
-          <>
-            <Lighting />
-            <ThemeLighting />
-          </>
-        )}
+        <Lighting />
+        <ThemeLighting />
 
         {/* Wrap massive components and initializer in Suspense so gl.compile waits for chunks */}
         <Suspense fallback={null}>
-          {initStage >= 6 && <SceneInitializer />}
+          <SceneInitializer />
 
           {/* Neural Network Segments Grid */}
-          {initStage >= 3 && (
-            <NeuralNetwork key={`neural-net-${config.neuralNetworkNodeCount}`} nodeCount={config.neuralNetworkNodeCount} />
-          )}
+          <NeuralNetwork key={`neural-net-${config.neuralNetworkNodeCount}`} nodeCount={config.neuralNetworkNodeCount} />
 
           {/* 600+ Space dust energy particles */}
-          {initStage >= 4 && (
-            <ParticleField key={`particles-${config.maxParticles}`} count={config.maxParticles} />
-          )}
+          <ParticleField key={`particles-${config.maxParticles}`} count={config.maxParticles} />
 
           {/* Orbital rings */}
-          {initStage >= 5 && <EnergyRings />}
+          <EnergyRings />
 
           {/* Floating crystal dodecahedrons */}
-          {initStage >= 5 && (
-            <GlassObjects key={`glass-objects-${config.glassObjectsCount}`} />
-          )}
+          <GlassObjects key={`glass-objects-${config.glassObjectsCount}`} />
 
           {/* Core Glass Sphere */}
-          {initStage >= 2 && <AIPlanet />}
+          <AIPlanet />
         </Suspense>
 
         {/* Bloom post-processing - Defer until sceneReady to keep postprocessing out of critical FCP */}
-        {config.usePostProcessing && sceneReady && initStage >= 6 && (
+        {config.usePostProcessing && sceneReady && (
           <Suspense fallback={null}>
             <PostProcessingEffects bloomIntensity={bloomIntensity} config={config} />
           </Suspense>

@@ -1,24 +1,50 @@
 /** @type {import('next').NextConfig} */
 
 // Validate Environment Variables before Boot
-const requiredEnvVars = [
-  'NEXT_PUBLIC_SUPABASE_URL',
-  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'RAZORPAY_KEY_ID',
-  'RAZORPAY_KEY_SECRET',
-  'SMTP_HOST',
-  'SMTP_USER',
-  'SMTP_PASS',
+const envChecks = [
+  // ===== REQUIRED =====
+  { key: "NEXT_PUBLIC_SUPABASE_URL", required: true },
+  { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", required: true },
+  { key: "SUPABASE_SERVICE_ROLE_KEY", required: true },
+  { key: "JWT_SECRET", required: false },
+
+  // ===== OPTIONAL =====
+  { key: "RAZORPAY_KEY_ID", required: false },
+  { key: "RAZORPAY_KEY_SECRET", required: false },
+
+  { key: "SMTP_HOST", required: false },
+  { key: "SMTP_PORT", required: false },
+  { key: "SMTP_USER", required: false },
+  { key: "SMTP_PASS", required: false },
 ];
 
-const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
+const missingRequired = [];
 
-if (missingEnvVars.length > 0) {
+for (const env of envChecks) {
+  if (env.required && !process.env[env.key]) {
+    missingRequired.push(env.key);
+  }
+}
+
+if (missingRequired.length > 0) {
   console.error(`\n❌ CRITICAL ERROR: Missing Production Environment Variables:`);
-  missingEnvVars.forEach((envVar) => console.error(`  - ${envVar}`));
+  missingRequired.forEach((key) => console.error(`  - ${key}`));
   console.error(`\nServer startup aborted to prevent unpredictable runtime states.\n`);
   process.exit(1);
+}
+
+console.log("✅ Required environment variables validated.");
+
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  console.log("✅ Razorpay Enabled");
+} else {
+  console.warn("⚠️ Razorpay Disabled");
+}
+
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  console.log("✅ SMTP Enabled");
+} else {
+  console.warn("⚠️ SMTP Disabled");
 }
 
 const nextConfig = {

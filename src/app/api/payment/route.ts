@@ -8,16 +8,19 @@ import { apiResponse, logError } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-  logError("Payment Module", new Error("Missing Razorpay Keys"));
-  // Don't throw immediately to avoid crashing the build, but prevent instantiation
+let razorpay: any = null;
+
+if (
+    process.env.RAZORPAY_KEY_ID &&
+    process.env.RAZORPAY_KEY_SECRET
+) {
+    razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+} else {
+    logError("Payment Module", new Error("Missing Razorpay Keys. Module Disabled."));
 }
-
-const razorpay = process.env.RAZORPAY_KEY_ID ? new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-}) : null;
-
 export async function POST(req: any) {
   try {
     // 1. Authenticate user

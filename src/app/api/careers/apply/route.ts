@@ -137,14 +137,17 @@ export async function POST(req: Request) {
 
 
 
+    const smtpEnabled = !!process.env.SMTP_HOST && !!process.env.SMTP_USER && !!process.env.SMTP_PASS;
+
     // 5. Send Transactional Confirmation Emails via SMTP Nodemailer
-    if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+    if (smtpEnabled) {
       try {
         const transporter = nodemailer.createTransport({
-          service: "gmail",
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 587,
           auth: {
-            user: process.env.GMAIL_USER,
-            pass: process.env.GMAIL_PASS,
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
           },
         });
 
@@ -153,7 +156,7 @@ export async function POST(req: Request) {
         // A. Alert Company Admissions
         try {
           await transporter.sendMail({
-            from: `"VANIKARA Careers Portal" <${process.env.GMAIL_USER}>`,
+            from: `"VANIKARA Careers Portal" <${process.env.SMTP_USER}>`,
             to: "vanikara26@gmail.com",
             subject: `[APPLICANT] ${sPosition} - ${sName}`,
             text: `New job application received:\n\n` +
@@ -206,7 +209,7 @@ export async function POST(req: Request) {
         // B. Send Confirmation to Candidate
         try {
           await transporter.sendMail({
-            from: `"VANIKARA Admissions Office" <${process.env.GMAIL_USER}>`,
+            from: `"VANIKARA Admissions Office" <${process.env.SMTP_USER}>`,
             to: sEmail,
             subject: `Application Confirmation - ${sPosition}`,
             text: `Dear ${sName},\n\n` +

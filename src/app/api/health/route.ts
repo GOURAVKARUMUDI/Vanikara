@@ -81,17 +81,17 @@ export async function GET() {
     hasError = true;
   }
 
-  // 3. Check Nodemailer SMTP gmail configuration
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-    status.services.email = "unhealthy: Gmail authentication environment variables not configured";
-    hasError = true;
+  // 3. Check Nodemailer SMTP configuration
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    status.services.email = "disabled: SMTP authentication environment variables not configured";
   } else {
     try {
       const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 587,
         auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_PASS,
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
         },
       });
       // Verifies connection configuration and SMTP credentials

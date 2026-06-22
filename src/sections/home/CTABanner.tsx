@@ -1,7 +1,6 @@
-"use client";
-
 import { FadeUp } from "@/components/Animate";
 import Button from "@/components/ui/Button";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface CTABannerProps {
   title: string;
@@ -21,8 +20,8 @@ export default function CTABanner({
   secondaryHref,
 }: CTABannerProps) {
   return (
-    <section id="cta-banner" className="py-24 bg-transparent">
-      <div className="max-w-4xl mx-auto px-6">
+    <SectionContainer id="cta-banner">
+      <ContentContainer className="max-w-4xl">
         <FadeUp>
           <div className="relative overflow-hidden rounded-[2.5rem] border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md p-10 sm:p-16 text-center shadow-xl shadow-black/5">
             {/* Inner background spotlight glow */}
@@ -54,7 +53,7 @@ export default function CTABanner({
             </div>
           </div>
         </FadeUp>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

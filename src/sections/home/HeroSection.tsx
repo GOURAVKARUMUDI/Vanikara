@@ -13,6 +13,7 @@ const easeOutQuart = [0.25, 1, 0.5, 1] as const;
 import HeroScene from "@/components/hero/HeroScene";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileHero from "@/components/mobile/MobileHero";
+import { HeroContainer } from "@/components/ui/Containers";
 
 
 // Particles mapping coordinates (Converge to circular ring of radius 24px and inner V shape)
@@ -122,9 +123,9 @@ export default function HeroSection() {
   }
 
   return (
-    <section
+    <HeroContainer
       id="hero"
-      className="relative min-h-[100vh] w-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-32 pb-24 px-6"
+      className="pt-32 pb-24"
     >
       {/* Coordinates 3D Scene states and scroll tracking */}
       <HeroScene />
@@ -329,6 +330,6 @@ export default function HeroSection() {
         <span className="text-[8px] font-black uppercase tracking-widest font-mono">SCROLL</span>
         <ChevronDown className="w-3.5 h-3.5" />
       </motion.div>
-    </section>
+    </HeroContainer>
   );
 }

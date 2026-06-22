@@ -4,6 +4,7 @@ import PageHero from "@/components/ui/PageHero";
 import ContactForm from "@/sections/contact/ContactForm";
 import ContactInfo from "@/sections/contact/ContactInfo";
 import ContactScene from "@/components/contact/ContactScene";
+import { PageContainer, SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 export const metadata: Metadata = { 
   title: "Contact",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-transparent pb-20">
+    <PageContainer className="pb-20">
       <ContactScene />
       <PageHero
         tag="Get in Touch"
@@ -24,8 +25,8 @@ export default function ContactPage() {
         subtitle="Want to collaborate, support our journey, or explore what we're building? We'd love to hear from you."
       />
       
-      <section id="contact-body" className="py-16 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer id="contact-body">
+        <ContentContainer>
           <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 items-start">
             {/* Left Column: Office details, Map, WhatsApp */}
             <FadeUp>
@@ -37,8 +38,8 @@ export default function ContactPage() {
               <ContactForm />
             </FadeUp>
           </div>
-        </div>
-      </section>
-    </div>
+        </ContentContainer>
+      </SectionContainer>
+    </PageContainer>
   );
 }

@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 import { Briefcase, Heart, BookOpen, Star, CheckCircle, Upload } from "lucide-react";
 import dynamic from "next/dynamic";
+import { PageContainer, SectionContainer, ContentContainer, FormContainer } from "@/components/ui/Containers";
 
 const CareersScene = dynamic(() => import("@/components/careers/CareersScene"), { ssr: false });
 
@@ -129,7 +130,7 @@ export default function CareersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent pb-24">
+    <PageContainer className="pb-24">
       <CareersScene />
       <PageHero
         tag="Join the Team"
@@ -142,8 +143,8 @@ export default function CareersPage() {
       />
 
       {/* Culture Section */}
-      <section className="py-16 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer>
+        <ContentContainer>
           <div className="text-center max-w-2xl mx-auto mb-12">
             <FadeUp>
               <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -174,12 +175,12 @@ export default function CareersPage() {
               </StaggerItem>
             ))}
           </StaggerGrid>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       {/* Internship Positions */}
-      <section className="py-16 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer>
+        <ContentContainer>
           <div className="text-center max-w-2xl mx-auto mb-12">
             <FadeUp>
               <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -227,12 +228,12 @@ export default function CareersPage() {
               </StaggerItem>
             ))}
           </StaggerGrid>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       {/* Application Form */}
-      <section id="apply-form" className="py-16 bg-transparent">
-        <div className="max-w-2xl mx-auto px-6">
+      <SectionContainer id="apply-form">
+        <FormContainer>
           <FadeUp>
             <div className="relative overflow-hidden rounded-[2.5rem] border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md p-8 sm:p-12 shadow-xl">
               
@@ -397,9 +398,9 @@ export default function CareersPage() {
 
             </div>
           </FadeUp>
-        </div>
-      </section>
+        </FormContainer>
+      </SectionContainer>
 
-    </div>
+    </PageContainer>
   );
 }

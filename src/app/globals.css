@@ -24,6 +24,16 @@
   --scrollbar-thumb: #cbd5e1;
   --scrollbar-track: #f1f5f9;
   --card-shadow: 0 1px 3px rgba(0,0,0,.03), 0 1px 2px rgba(0,0,0,.01);
+
+  /* Spacing Scale (Unified Spacing System) */
+  --space-xs: 0.5rem;   /* 8px */
+  --space-sm: 0.75rem;  /* 12px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 1.5rem;   /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-xxl: 3rem;    /* 48px */
+  --space-3xl: 4rem;    /* 64px */
+  --space-4xl: 6rem;    /* 96px */
 }
 
 /* Morning (Alabaster cream/sunshine tint) */

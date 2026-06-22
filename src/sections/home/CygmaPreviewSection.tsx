@@ -5,6 +5,7 @@ import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { Send, Sparkles, Square, ArrowRight, Lightbulb } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface Message {
   id: string;
@@ -197,11 +198,11 @@ export default function CygmaPreviewSection() {
   };
 
   return (
-    <section id="cygma-preview" className="py-24 relative overflow-hidden">
+    <SectionContainer id="cygma-preview" className="overflow-hidden">
       {/* Background radial atmosphere blur glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#1E6BD6]/10 to-[#FF7A00]/10 opacity-30 filter blur-[120px] rounded-full pointer-events-none -z-10" />
 
-      <div className="max-w-6xl mx-auto px-6">
+      <ContentContainer>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Side: Product Intro + Prompt Pre-sets */}
@@ -375,7 +376,7 @@ export default function CygmaPreviewSection() {
           </div>
 
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

@@ -4,6 +4,7 @@ import FlagshipProduct from '@/sections/products/FlagshipProduct';
 import ProductShowcase from '@/sections/products/ProductShowcase';
 import CTABanner from '@/sections/home/CTABanner';
 import ProductsScene from '@/components/products/ProductsScene';
+import { PageContainer } from '@/components/ui/Containers';
 
 export const metadata: Metadata = { 
   title: 'Products',
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
  */
 export default function ProductsPage() {
   return (
-    <>
+    <PageContainer>
       <ProductsScene />
       <PageHero
         tag="Our Products"
@@ -31,6 +32,6 @@ export default function ProductsPage() {
         primaryLabel="Request a Demo"
         primaryHref="/contact"
       />
-    </>
+    </PageContainer>
   );
 }

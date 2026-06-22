@@ -5,6 +5,7 @@ import { FadeUp } from "@/components/Animate";
 import Badge from "@/components/ui/Badge";
 import Card, { CardBody } from "@/components/ui/Card";
 import { CheckCircle2, Server, Globe, Key, ShoppingBag, ArrowRight } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 export default function FlagshipProduct() {
   const features = [
@@ -22,11 +23,11 @@ export default function FlagshipProduct() {
   ];
 
   return (
-    <section id="flagship-product" className="py-24 relative overflow-hidden">
+    <SectionContainer id="flagship-product" className="overflow-hidden">
       {/* Background ambient light */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[var(--accent-color)]/5 blur-[120px] rounded-full pointer-events-none -z-10 animate-pulse" />
 
-      <div className="max-w-6xl mx-auto px-6">
+      <ContentContainer>
         <FadeUp>
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)] bg-[var(--glass-bg)] border border-[var(--glass-border)] px-3.5 py-1.5 rounded-full">
@@ -128,7 +129,7 @@ export default function FlagshipProduct() {
           </div>
 
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

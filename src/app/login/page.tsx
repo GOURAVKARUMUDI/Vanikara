@@ -14,6 +14,7 @@ import AuthSidebar from "@/components/auth/AuthSidebar";
 
 import LoginScene from "@/components/auth/LoginScene";
 import { useCygmaWorld } from "@/context/CygmaWorldContext";
+import { PageContainer } from "@/components/ui/Containers";
 
 type AuthView = "options" | "email" | "admin";
 
@@ -131,7 +132,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-transparent px-4 py-8">
+    <PageContainer className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden px-4 py-8">
       
       {/* Coordinates 3D Canvas Login states */}
       <LoginScene />
@@ -466,6 +467,6 @@ export default function LoginPage() {
         </AnimatePresence>
 
       </div>
-    </div>
+    </PageContainer>
   );
 }

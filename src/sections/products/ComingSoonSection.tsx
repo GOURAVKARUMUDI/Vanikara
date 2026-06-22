@@ -1,5 +1,6 @@
 import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const UPCOMING = [
   { icon: '🏢', title: 'FinFlow Dashboard', desc: 'Financial analytics for SMEs with AI-powered insights.' },
@@ -9,8 +10,8 @@ const UPCOMING = [
 
 export default function ComingSoonSection() {
   return (
-    <section id="coming-soon" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="coming-soon">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader tag="In the Pipeline" title="What's Next" />
         </FadeUp>
@@ -38,7 +39,7 @@ export default function ComingSoonSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

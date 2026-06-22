@@ -6,6 +6,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileProductShowcase from "@/components/mobile/MobileProductShowcase";
 import Card, { CardBody } from "@/components/ui/Card";
 import { Sparkles, Home, Shield, Cpu, Code2, Play } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface ProductShowcaseItem {
   title: string;
@@ -54,8 +55,8 @@ const PRODUCTS: ProductShowcaseItem[] = [
 export default function ProductShowcase() {
   const isMobile = useMediaQuery("(max-width: 767px)");
   return (
-    <section id="product-showcase" className="py-24 bg-transparent border-t border-[var(--glass-border)]">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="product-showcase" className="border-t border-[var(--glass-border)]">
+      <ContentContainer>
         
         <FadeUp>
           <div className="max-w-3xl mb-16">
@@ -180,7 +181,7 @@ export default function ProductShowcase() {
           )}
         </div>
 
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

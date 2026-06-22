@@ -1,5 +1,6 @@
 import { FadeUp } from '@/components/Animate';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const TIMELINE = [
   { year: '2026', event: 'April 17, 2026 — VANIKARA INTELLIGENCE PRIVATE LIMITED incorporated' },
@@ -10,8 +11,8 @@ const TIMELINE = [
 
 export default function TimelineSection() {
   return (
-    <section id="timeline" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="timeline">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader tag="Journey" title="Our Milestones" />
         </FadeUp>
@@ -35,7 +36,7 @@ export default function TimelineSection() {
             </FadeUp>
           ))}
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

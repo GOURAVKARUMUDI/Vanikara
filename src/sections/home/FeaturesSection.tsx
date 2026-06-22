@@ -4,6 +4,7 @@ import { StaggerGrid, StaggerItem, FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { Laptop, ShoppingBag, Palette, MapPin } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 const FEATURES = [
   { icon: <Laptop className="w-6 h-6 text-blue-500" />, title: "Web Development", desc: "High-performance, student-focused web experiences built for modern learning environments." },
@@ -14,8 +15,8 @@ const FEATURES = [
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="features">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader
             tag="What We Do"
@@ -42,7 +43,7 @@ export default function FeaturesSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

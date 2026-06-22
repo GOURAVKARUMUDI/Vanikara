@@ -51,10 +51,12 @@ function Counter({ end, suffix = "" }: CounterProps) {
   );
 }
 
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
+
 export default function StatsSection() {
   return (
-    <section id="statistics" className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="statistics">
+      <ContentContainer>
         <div className="text-center max-w-3xl mx-auto mb-16">
           <FadeUp>
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -118,7 +120,7 @@ export default function StatsSection() {
             </Card>
           </StaggerItem>
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

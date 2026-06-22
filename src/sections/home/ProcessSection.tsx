@@ -1,5 +1,6 @@
 import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const STEPS = [
   { step: '01', title: 'Discover',  desc: 'We deep-dive into your goals, users, and constraints.' },
@@ -10,8 +11,8 @@ const STEPS = [
 
 export default function ProcessSection() {
   return (
-    <section id="process" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="process">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader tag="Our Process" title="How We Work" />
         </FadeUp>
@@ -30,7 +31,7 @@ export default function ProcessSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

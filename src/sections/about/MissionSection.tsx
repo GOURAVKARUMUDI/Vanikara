@@ -1,6 +1,7 @@
 import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
 import Card, { CardBody } from '@/components/ui/Card';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const PILLARS = [
   { icon: '🎯', title: 'Our Mission', desc: 'To build practical and accessible digital solutions that simplify everyday challenges for students.' },
@@ -10,8 +11,8 @@ const PILLARS = [
 
 export default function MissionSection() {
   return (
-    <section id="mission" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="mission">
+      <ContentContainer>
         <StaggerGrid className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PILLARS.map(({ icon, title, desc }) => (
             <StaggerItem key={title}>
@@ -25,7 +26,7 @@ export default function MissionSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

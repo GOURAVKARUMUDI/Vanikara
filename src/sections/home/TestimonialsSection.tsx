@@ -1,7 +1,6 @@
-"use client";
-
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 const TESTIMONIALS = [
   {
@@ -26,9 +25,8 @@ const TESTIMONIALS = [
 
 export default function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
-        
+    <SectionContainer id="testimonials">
+      <ContentContainer>
         <div className="text-center max-w-3xl mx-auto mb-16">
           <FadeUp>
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -67,8 +65,7 @@ export default function TestimonialsSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

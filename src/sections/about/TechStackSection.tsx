@@ -1,5 +1,6 @@
 import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const TECH = [
   { icon: '⚛️', name: 'React / Next.js' },
@@ -12,8 +13,8 @@ const TECH = [
 
 export default function TechStackSection() {
   return (
-    <section id="tech-stack" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="tech-stack">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader tag="Technology" title="Our Tech Stack" />
         </FadeUp>
@@ -28,7 +29,7 @@ export default function TechStackSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

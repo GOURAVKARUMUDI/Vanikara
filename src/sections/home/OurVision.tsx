@@ -3,11 +3,12 @@
 import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import { Eye, ShieldAlert, Rocket } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 export default function OurVision() {
   return (
-    <section id="our-vision" className="py-24 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="our-vision">
+      <ContentContainer>
         <div className="text-center max-w-3xl mx-auto mb-16">
           <FadeUp>
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -33,7 +34,7 @@ export default function OurVision() {
                   Ecosystem Focus
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  Building isolated apps isn't enough. We are creating an interconnected ecosystem where assets in one platform (like Vanik) seamlessly unlock benefits in another (like FriskFree).
+                  Building isolated apps isn't enough. We are creating an interconnected ecosystem where assets in one platform (like Vanik (PG)) seamlessly unlock benefits in another (like FriskFree).
                 </p>
               </CardBody>
             </Card>
@@ -71,7 +72,7 @@ export default function OurVision() {
             </Card>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

@@ -3,6 +3,7 @@
 import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import { Brain, Code2, ShieldCheck, Zap, Layers, Sparkles } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 const VALUES = [
   { icon: <Brain className="w-5 h-5 text-[#FF7A00]" />, title: "AI Innovation", desc: "Powering applications with state-of-the-art conversational agents, dynamic query routing, and real-time intelligence layers." },
@@ -15,8 +16,8 @@ const VALUES = [
 
 export default function WhyChooseUs() {
   return (
-    <section id="why-choose-us" className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="why-choose-us">
+      <ContentContainer>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           <div className="lg:col-span-5 space-y-6">
@@ -57,7 +58,7 @@ export default function WhyChooseUs() {
           </div>
 
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

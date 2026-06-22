@@ -4,11 +4,12 @@ import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { Users, Code, Award } from "lucide-react";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 export default function WhoWeAre() {
   return (
-    <section id="who-we-are" className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="who-we-are">
+      <ContentContainer>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Column: Glass Visual Representation */}
@@ -68,7 +69,7 @@ export default function WhoWeAre() {
           </div>
 
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

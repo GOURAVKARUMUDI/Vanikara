@@ -112,5 +112,5 @@ export default function Card({ children, className = "", hover = true, style }: 
  * CardBody: Inner padding container for Card content.
  */
 export function CardBody({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`p-6 sm:p-8 ${className}`}>{children}</div>;
+  return <div className={`p-4 sm:p-6 lg:p-8 ${className}`}>{children}</div>;
 }

@@ -1,9 +1,8 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 const PROGRESS_ITEMS = [
   {
@@ -31,8 +30,8 @@ const PROGRESS_ITEMS = [
 
 export default function BuildingInPublicSection() {
   return (
-    <section id="building-in-public" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-6">
+    <SectionContainer id="building-in-public">
+      <ContentContainer>
         <FadeUp>
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -99,7 +98,7 @@ export default function BuildingInPublicSection() {
             </Button>
           </FadeUp>
         </div>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

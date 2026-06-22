@@ -10,6 +10,7 @@ import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { Linkedin, Mail, ExternalLink } from "lucide-react";
 import InnovationTimeline from "@/sections/home/InnovationTimeline";
+import { PageContainer, SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 const FOUNDERS = [
   {
@@ -46,7 +47,7 @@ const FOUNDERS = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-transparent">
+    <PageContainer>
       <AboutScene />
       <PageHero
         tag="Our Story"
@@ -59,19 +60,19 @@ export default function AboutPage() {
       />
 
       {/* Quote Banner */}
-      <section className="py-20 bg-transparent">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <SectionContainer className="text-center">
+        <ContentContainer className="max-w-4xl">
           <FadeUp>
             <p className="text-lg sm:text-2xl leading-relaxed text-[var(--text-primary)] font-medium italic">
               "Our mission is to simplify student life by building practical digital tools that solve everyday challenges — from accessing resources to finding the right place to stay."
             </p>
           </FadeUp>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       {/* Our Story Block */}
-      <section id="story" className="py-20 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer id="story">
+        <ContentContainer>
           <FadeUp>
             <SectionHeader tag="Our Journey" title="The Story of VANIKARA INTELLIGENCE" />
           </FadeUp>
@@ -90,14 +91,14 @@ export default function AboutPage() {
               </div>
             </FadeUp>
           </div>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       <MissionSection />
 
       {/* Founders Section */}
-      <section id="founders" className="py-24 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer id="founders">
+        <ContentContainer>
           <FadeUp>
             <SectionHeader tag="Leadership" title="The Founders" />
           </FadeUp>
@@ -147,15 +148,15 @@ export default function AboutPage() {
               </FadeUp>
             ))}
           </div>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       {/* Innovation Timeline */}
       <InnovationTimeline />
 
       {/* Collaborations Section */}
-      <section id="collaborations" className="py-24 bg-transparent">
-        <div className="max-w-6xl mx-auto px-6">
+      <SectionContainer id="collaborations">
+        <ContentContainer>
           <FadeUp>
             <div className="max-w-3xl mx-auto text-center space-y-6">
               <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
@@ -181,10 +182,10 @@ export default function AboutPage() {
               </div>
             </div>
           </FadeUp>
-        </div>
-      </section>
+        </ContentContainer>
+      </SectionContainer>
 
       <TeamSection />
-    </div>
+    </PageContainer>
   );
 }

@@ -1,6 +1,7 @@
 import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
 import Card, { CardBody } from '@/components/ui/Card';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const TEAM = [
   { name: 'Founding Team', role: 'Engineering & Product',  emoji: '🚀' },
@@ -11,8 +12,8 @@ const TEAM = [
 
 export default function TeamSection() {
   return (
-    <section id="team" className="py-24 bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer id="team">
+      <ContentContainer>
         <FadeUp>
           <SectionHeader tag="People" title="Meet the Team" />
         </FadeUp>
@@ -33,7 +34,7 @@ export default function TeamSection() {
             </StaggerItem>
           ))}
         </StaggerGrid>
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

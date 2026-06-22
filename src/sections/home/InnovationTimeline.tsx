@@ -5,6 +5,7 @@ import { motion, useScroll } from "framer-motion";
 import { FadeUp } from "@/components/Animate";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileTimeline from "@/components/mobile/MobileTimeline";
+import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface Milestone {
   phase: string;
@@ -60,7 +61,7 @@ const MILESTONES: Milestone[] = [
 ];
 
 export default function InnovationTimeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 767px)");
   
@@ -75,8 +76,8 @@ export default function InnovationTimeline() {
   };
 
   return (
-    <section id="innovation-timeline" ref={containerRef} className="py-24 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-6">
+    <SectionContainer id="innovation-timeline" ref={containerRef} className="overflow-hidden">
+      <ContentContainer className="max-w-4xl">
         
         <div className="text-center mb-20">
           <FadeUp>
@@ -214,7 +215,7 @@ export default function InnovationTimeline() {
             </div>
           </div>
         )}
-      </div>
-    </section>
+      </ContentContainer>
+    </SectionContainer>
   );
 }

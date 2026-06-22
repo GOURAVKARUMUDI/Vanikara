@@ -105,17 +105,82 @@ export default function DashboardClient({ initialUser, initialProfile, initialSu
     }
   };
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleUpgrade = async () => {
     try {
       setUpgrading(true);
-      const res = await fetch("/api/payment/dummy", { method: "POST" });
-      const json = await res.json();
-      if (json.success) {
-        setSub(json.data);
-        alert("Payment successful! You are now a PRO member (Demo).");
+      
+      const res = await loadRazorpayScript();
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
       }
+
+      // We pass the user id as the client id for now, 
+      // but in a fully operational CRM, this would map to their client record.
+      const orderRes = await fetch("/api/payment", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "create", clientId: user.id })
+      });
+      
+      const json = await orderRes.json();
+      
+      if (!orderRes.ok || !json.success) {
+        alert(json.message || "Failed to create order. Please check payment gateway configuration.");
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+        amount: json.data.amount,
+        currency: json.data.currency,
+        name: "VANIKARA",
+        description: "PRO Membership Upgrade",
+        order_id: json.data.id,
+        handler: async function (response: any) {
+          const verifyRes = await fetch("/api/payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "verify",
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          const verifyJson = await verifyRes.json();
+          if (verifyJson.success) {
+            setSub(verifyJson.data);
+            alert("Payment successful! You are now a PRO member.");
+          } else {
+            alert("Payment verification failed.");
+          }
+        },
+        prefill: {
+          name: profile?.name || user?.email || "",
+          email: user?.email || "",
+        },
+        theme: {
+          color: "#4f46e5"
+        }
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+
     } catch (err) {
       console.error("Upgrade failed:", err);
+      alert("Payment service unavailable.");
     } finally {
       setUpgrading(false);
     }

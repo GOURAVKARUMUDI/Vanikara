@@ -82,9 +82,7 @@ export async function GET() {
   }
 
   // 3. Check Nodemailer SMTP gmail configuration
-  if (process.env.CYGMA_MOCK_AI === "true") {
-    status.services.email = "healthy (mocked)";
-  } else if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
     status.services.email = "unhealthy: Gmail authentication environment variables not configured";
     hasError = true;
   } else {

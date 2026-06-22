@@ -25,7 +25,13 @@ interface Props {
   tab: string;
 }
 
-export default function AdminDashboardClient({ user, tab }: Props) {
+export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
+  const [activeTab, setActiveTab] = React.useState(initialTab || "overview");
+
+  const handleTabChange = (id: string) => {
+    setActiveTab(id);
+    window.history.pushState(null, '', `?tab=${id}`);
+  };
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "users", label: "Users" },
@@ -73,23 +79,23 @@ export default function AdminDashboardClient({ user, tab }: Props) {
         {/* Tab Navigation */}
         <nav className="flex flex-wrap gap-1.5 mb-10 bg-[var(--glass-bg)] border border-[var(--glass-border)] p-1.5 rounded-2xl w-fit backdrop-blur-md">
           {tabs.map((t) => (
-            <a 
+            <button 
               key={t.id}
-              href={`/admin?tab=${t.id}`}
+              onClick={() => handleTabChange(t.id)}
               className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
-                tab === t.id 
+                activeTab === t.id 
                   ? "bg-[var(--accent-color)] text-white shadow-md" 
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5"
               }`}
             >
               {t.label}
-            </a>
+            </button>
           ))}
         </nav>
 
         {/* Dynamic Content */}
         <main className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-          {tab === "overview" && (
+          {activeTab === "overview" && (
             <div className="space-y-8">
               <CRMOverview />
 
@@ -125,19 +131,14 @@ export default function AdminDashboardClient({ user, tab }: Props) {
             </div>
           )}
 
-          {tab === "users" && <UsersManager />}
+          {activeTab === "users" && <UsersManager />}
+          {activeTab === "projects" && <ProjectsManager />}
+          {activeTab === "products" && <ProductsManager />}
+          {activeTab === "ai" && <AIManager />}
+          {activeTab === "careers" && <CareersManager />}
+          {activeTab === "contacts" && <ContactManager />}
 
-          {tab === "projects" && <ProjectsManager />}
-
-          {tab === "products" && <ProductsManager />}
-
-          {tab === "ai" && <AIManager />}
-
-          {tab === "careers" && <CareersManager />}
-
-          {tab === "contacts" && <ContactManager />}
-
-          {tab === "roadmap" && (
+          {activeTab === "roadmap" && (
             <div className="p-12 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2.5rem] shadow-sm flex items-center justify-center text-center backdrop-blur-md">
               <div className="space-y-4">
                 <h2 className="text-2xl font-display font-black text-[var(--text-primary)]">Roadmap Management</h2>
@@ -147,7 +148,7 @@ export default function AdminDashboardClient({ user, tab }: Props) {
             </div>
           )}
 
-          {tab === "analytics" && (
+          {activeTab === "analytics" && (
             <div className="p-12 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2.5rem] shadow-sm flex items-center justify-center text-center backdrop-blur-md">
               <div className="space-y-4">
                 <h2 className="text-2xl font-display font-black text-[var(--text-primary)]">Product Analytics</h2>
@@ -157,12 +158,12 @@ export default function AdminDashboardClient({ user, tab }: Props) {
             </div>
           )}
 
-          {tab === "leads" && <LeadsTable />}
-          {tab === "clients" && <ClientsTable />}
-          {tab === "payments" && <PaymentsTable />}
-          {tab === "packages" && <PackagesManager />}
-          {tab === "settings" && <SettingsManager />}
-          {tab === "privacy" && <PrivacyManager />}
+          {activeTab === "leads" && <LeadsTable />}
+          {activeTab === "clients" && <ClientsTable />}
+          {activeTab === "payments" && <PaymentsTable />}
+          {activeTab === "packages" && <PackagesManager />}
+          {activeTab === "settings" && <SettingsManager />}
+          {activeTab === "privacy" && <PrivacyManager />}
         </main>
       </div>
     </div>

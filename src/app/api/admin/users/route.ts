@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -36,7 +36,7 @@ export async function PATCH(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 

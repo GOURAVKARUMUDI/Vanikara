@@ -73,69 +73,77 @@ export async function POST(req: Request) {
     }
 
     // 6. Send Transactional Notification Email via Nodemailer (Non-blocking/Resilient)
-    if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.GMAIL_USER,
-            pass: process.env.GMAIL_PASS,
-          },
-        });
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      logError("Contact Form", new Error("SMTP Credentials Missing"));
+      return NextResponse.json(
+        apiResponse(false, null, "Email service unavailable. Please configure SMTP credentials."),
+        { status: 500 }
+      );
+    }
 
-        const timestamp = new Date().toLocaleString("en-US", { timeZone: "UTC" }) + " (UTC)";
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
+        },
+      });
 
-        await transporter.sendMail({
-          from: `"VANIKARA Contact System" <${process.env.GMAIL_USER}>`,
-          to: "vanikara26@gmail.com",
-          subject: `[INQUIRY] ${sSubject} - ${sName}`,
-          text: `New contact submission received:\n\n` +
-                `Sender Name: ${sName}\n` +
-                `Sender Email: ${sEmail}\n` +
-                `Phone: ${sPhone}\n` +
-                `Company: ${sCompany}\n` +
-                `Subject: ${sSubject}\n` +
-                `Message: ${sMessage}\n` +
-                `Submitted At: ${timestamp}\n`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-              <h2 style="color: #1e6bd6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Inquiry Received</h2>
-              <table style="width: 100%; font-size: 14px; color: #334155; margin-bottom: 20px; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold; width: 120px;">Name:</td>
-                  <td style="padding: 8px 0;">${sName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Email:</td>
-                  <td style="padding: 8px 0;"><a href="mailto:${sEmail}" style="color: #1e6bd6; text-decoration: none;">${sEmail}</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
-                  <td style="padding: 8px 0;">${sPhone}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Company:</td>
-                  <td style="padding: 8px 0;">${sCompany}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Subject:</td>
-                  <td style="padding: 8px 0;">${sSubject}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Timestamp:</td>
-                  <td style="padding: 8px 0;">${timestamp}</td>
-                </tr>
-              </table>
-              <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 8px;">Message:</div>
-              <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${sMessage}</div>
-            </div>
-          `
-        });
-      } catch (mailError) {
-        logError("Contact Form Email Notification", mailError);
-      }
-    } else {
-      logInfo("Contact Form Email", "Skipping email notification because GMAIL credentials are not configured.");
+      const timestamp = new Date().toLocaleString("en-US", { timeZone: "UTC" }) + " (UTC)";
+
+      await transporter.sendMail({
+        from: `"VANIKARA Contact System" <${process.env.GMAIL_USER}>`,
+        to: "vanikara26@gmail.com",
+        subject: `[INQUIRY] ${sSubject} - ${sName}`,
+        text: `New contact submission received:\n\n` +
+              `Sender Name: ${sName}\n` +
+              `Sender Email: ${sEmail}\n` +
+              `Phone: ${sPhone}\n` +
+              `Company: ${sCompany}\n` +
+              `Subject: ${sSubject}\n` +
+              `Message: ${sMessage}\n` +
+              `Submitted At: ${timestamp}\n`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+            <h2 style="color: #1e6bd6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Inquiry Received</h2>
+            <table style="width: 100%; font-size: 14px; color: #334155; margin-bottom: 20px; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 120px;">Name:</td>
+                <td style="padding: 8px 0;">${sName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Email:</td>
+                <td style="padding: 8px 0;"><a href="mailto:${sEmail}" style="color: #1e6bd6; text-decoration: none;">${sEmail}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
+                <td style="padding: 8px 0;">${sPhone}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Company:</td>
+                <td style="padding: 8px 0;">${sCompany}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Subject:</td>
+                <td style="padding: 8px 0;">${sSubject}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Timestamp:</td>
+                <td style="padding: 8px 0;">${timestamp}</td>
+              </tr>
+            </table>
+            <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 8px;">Message:</div>
+            <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${sMessage}</div>
+          </div>
+        `
+      });
+    } catch (emailError: any) {
+      logError("Contact Form Email Dispatch", emailError);
+      return NextResponse.json(
+        apiResponse(false, null, "Failed to send email notification. Please try again later."),
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true, message: "Inquiry logged and processing started" });

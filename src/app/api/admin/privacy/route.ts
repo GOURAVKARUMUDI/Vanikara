@@ -65,7 +65,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    const isUserAdmin = user && isAdmin(user.email);
+    const isUserAdmin = user && isAdmin(user);
 
     if (isUserAdmin) {
       // Admins get the complete configuration including statistics
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

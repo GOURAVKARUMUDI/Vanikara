@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { MoreVertical, CheckCircle, XCircle, Clock } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function LeadsTable() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -29,6 +30,18 @@ export default function LeadsTable() {
 
   useEffect(() => {
     fetchData();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime:leads")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        fetchData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateStatus = async (id: string, status: string) => {

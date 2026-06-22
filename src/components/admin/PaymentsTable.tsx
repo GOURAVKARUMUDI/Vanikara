@@ -34,6 +34,17 @@ export default function PaymentsTable() {
       }
     }
     fetchPayments();
+
+    const channel = supabase
+      .channel("realtime:payments")
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
+        fetchPayments();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 
   if (loading) return <div className="p-12 text-center text-zinc-500">Loading payments...</div>;

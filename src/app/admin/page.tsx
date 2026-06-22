@@ -22,7 +22,8 @@ export default async function AdminPage({
     redirect("/login");
   }
 
-  if (!isAdmin(user.email)) {
+  // To strictly enforce database-backed RBAC, check the user object and metadata.
+  if (!isAdmin(user)) {
     redirect("/dashboard");
   }
 

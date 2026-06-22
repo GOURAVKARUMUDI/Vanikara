@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 

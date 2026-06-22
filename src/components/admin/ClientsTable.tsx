@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Edit2, ExternalLink, ShieldCheck } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function ClientsTable() {
   const [clients, setClients] = useState<any[]>([]);
@@ -29,6 +30,18 @@ export default function ClientsTable() {
 
   useEffect(() => {
     fetchData();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime:clients")
+      .on("postgres_changes", { event: "*", schema: "public", table: "clients" }, () => {
+        fetchData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateClient = async (id: string, updates: any) => {

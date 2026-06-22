@@ -17,7 +17,8 @@ export async function GET() {
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
   } catch (error: any) {
-    return NextResponse.json(apiResponse(true, []));
+    logError("Admin Products GET", error);
+    return NextResponse.json(apiResponse(false, null, "Database error: " + error.message), { status: 500 });
   }
 }
 
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -67,7 +68,7 @@ export async function PUT(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -104,7 +105,7 @@ export async function DELETE(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 

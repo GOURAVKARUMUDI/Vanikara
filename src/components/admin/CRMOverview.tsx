@@ -45,8 +45,8 @@ export default function CRMOverview() {
   const cards = [
     { title: "Total Revenue", value: `₹0`, icon: DollarSign, color: "text-green-400", bg: "bg-green-500/10" },
     { title: "Total Leads", value: stats?.totalLeads || 0, icon: Target, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { title: "Active Projects", value: "2", icon: Users, color: "text-purple-400", bg: "bg-purple-500/10" },
-    { title: "Team Size", value: "6+", icon: TrendingUp, color: "text-orange-400", bg: "bg-orange-500/10" },
+    { title: "Active Projects", value: stats?.totalProjects || 0, icon: Users, color: "text-purple-400", bg: "bg-purple-500/10" },
+    { title: "Team Size", value: stats?.totalUsers || 0, icon: TrendingUp, color: "text-orange-400", bg: "bg-orange-500/10" },
   ];
 
   return (
@@ -64,24 +64,6 @@ export default function CRMOverview() {
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-600/5 blur-3xl -mr-12 -mt-12"></div>
         </div>
       ))}
-
-      <div className="md:col-span-2 lg:col-span-4 mt-8 bg-slate-50 p-8 rounded-3xl border border-slate-200">
-        <h3 className="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight italic">Startup Progress</h3>
-        <ul className="space-y-2 text-slate-600 font-medium">
-          <li className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-            2 products in development (Vanik, FriskFree)
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-            Team size: 6+ builders
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-            Early-stage startup (Founded Mar 9, 2026)
-          </li>
-        </ul>
-      </div>
 
       <div className="md:col-span-2 lg:col-span-4 mt-8">
         <CRMCharts 

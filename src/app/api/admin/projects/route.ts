@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { apiResponse, logError, sanitize } from "@/lib/security";
+import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
@@ -17,8 +18,8 @@ export async function GET() {
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
   } catch (error: any) {
-    // Return empty array on database mismatch or fallback
-    return NextResponse.json(apiResponse(true, []));
+    logError("Admin Projects GET", error);
+    return NextResponse.json(apiResponse(false, null, "Database error: " + error.message), { status: 500 });
   }
 }
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -69,7 +70,7 @@ export async function PUT(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -107,7 +108,7 @@ export async function DELETE(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -122,6 +123,9 @@ export async function DELETE(req: Request) {
       .eq("id", id);
 
     if (error) throw error;
+
+    await logAdminAction(user.email || "unknown", "DELETE_PROJECT", id);
+
     return NextResponse.json(apiResponse(true, { success: true }));
   } catch (error: any) {
     logError("Projects DELETE", error);

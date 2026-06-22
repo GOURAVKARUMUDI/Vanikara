@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MessageSquare, Calendar, Mail, Trash2, ShieldCheck, Check } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import { createClient } from "@/utils/supabase/client";
 
 export default function ContactManager() {
   const [messages, setMessages] = useState<any[]>([]);
@@ -28,6 +29,18 @@ export default function ContactManager() {
 
   useEffect(() => {
     fetchMessages();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime:contact_leads")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        fetchMessages();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleArchive = async (id: string) => {

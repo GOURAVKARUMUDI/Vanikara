@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -24,14 +24,18 @@ export async function GET() {
       clientsCountResult,
       paymentsResult,
       leadsHistoryResult,
-      statusCountsResult
+      statusCountsResult,
+      projectsCountResult,
+      usersCountResult
     ] = await Promise.all([
       supabaseService.from("leads").select("*", { count: "exact", head: true }),
       supabaseService.from("leads").select("*", { count: "exact", head: true }).eq("status", "converted"),
       supabaseService.from("clients").select("*", { count: "exact", head: true }),
       supabaseService.from("payments").select("amount").eq("status", "success"),
       supabaseService.from("leads").select("created_at").order("created_at", { ascending: true }),
-      supabaseService.from("leads").select("status")
+      supabaseService.from("leads").select("status"),
+      supabaseService.from("projects").select("*", { count: "exact", head: true }),
+      supabaseService.from("users").select("*", { count: "exact", head: true })
     ]);
 
     // Check for errors
@@ -45,6 +49,8 @@ export async function GET() {
     const totalLeads = leadsCountResult.count || 0;
     const convertedLeads = convertedLeadsResult.count || 0;
     const totalClients = clientsCountResult.count || 0;
+    const totalProjects = projectsCountResult.count || 0;
+    const totalUsers = usersCountResult.count || 0;
     const payments = paymentsResult.data || [];
     const leadsHistory = leadsHistoryResult.data || [];
     const statusCounts = statusCountsResult.data || [];
@@ -72,6 +78,8 @@ export async function GET() {
         totalLeads: totalLeads || 0,
         convertedLeads: convertedLeads || 0,
         totalClients: totalClients || 0,
+        totalProjects: totalProjects || 0,
+        totalUsers: totalUsers || 0,
         totalRevenue,
         conversionRate: conversionRate.toFixed(2),
         leadsOverTime: leadsOverTime.slice(-7),

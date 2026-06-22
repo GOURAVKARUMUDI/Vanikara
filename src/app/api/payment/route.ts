@@ -8,10 +8,15 @@ import { apiResponse, logError } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "dummy",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "dummy",
-});
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  logError("Payment Module", new Error("Missing Razorpay Keys"));
+  // Don't throw immediately to avoid crashing the build, but prevent instantiation
+}
+
+const razorpay = process.env.RAZORPAY_KEY_ID ? new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+}) : null;
 
 export async function POST(req: any) {
   try {
@@ -34,6 +39,10 @@ export async function POST(req: any) {
     if (action === "create") {
       if (!clientId) {
         return NextResponse.json(apiResponse(false, null, "Missing client ID"), { status: 400 });
+      }
+
+      if (!razorpay) {
+        return NextResponse.json(apiResponse(false, null, "Payment Gateway not configured"), { status: 500 });
       }
 
       // Fetch client record to verify ownership and resolve package details

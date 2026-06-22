@@ -63,7 +63,8 @@ Content Summary Index:
         fileUrl = urlData.publicUrl;
       }
     } catch (storageErr: any) {
-      console.warn("Supabase Storage upload failed, falling back to dummy url. Error:", storageErr.message || storageErr);
+      logError("Storage Upload Failed", storageErr);
+      return NextResponse.json({ error: "Storage upload failed. Please ensure the 'files' bucket is properly configured." }, { status: 500 });
     }
 
     let fileId = crypto.randomUUID();

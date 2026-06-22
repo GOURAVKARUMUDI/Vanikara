@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { apiResponse, logError, sanitize } from "@/lib/security";
+import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "CREATE_PRODUCT", data.id, { newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Products POST", error);
@@ -77,6 +79,8 @@ export async function PUT(req: Request) {
 
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
 
+    const { data: previousState } = await supabaseService.from("products").select("*").eq("id", id).single();
+
     const { data, error } = await supabaseService
       .from("products")
       .update({
@@ -92,6 +96,7 @@ export async function PUT(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "UPDATE_PRODUCT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Products PUT", error);
@@ -114,12 +119,15 @@ export async function DELETE(req: Request) {
 
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
 
+    const { data: previousState } = await supabaseService.from("products").select("*").eq("id", id).single();
+
     const { error } = await supabaseService
       .from("products")
       .delete()
       .eq("id", id);
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "DELETE_PRODUCT", id, { previousState });
     return NextResponse.json(apiResponse(true, { success: true }));
   } catch (error: any) {
     logError("Products DELETE", error);

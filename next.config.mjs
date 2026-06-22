@@ -1,4 +1,26 @@
 /** @type {import('next').NextConfig} */
+
+// Validate Environment Variables before Boot
+const requiredEnvVars = [
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'RAZORPAY_KEY_ID',
+  'RAZORPAY_KEY_SECRET',
+  'SMTP_HOST',
+  'SMTP_USER',
+  'SMTP_PASS',
+];
+
+const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error(`\n❌ CRITICAL ERROR: Missing Production Environment Variables:`);
+  missingEnvVars.forEach((envVar) => console.error(`  - ${envVar}`));
+  console.error(`\nServer startup aborted to prevent unpredictable runtime states.\n`);
+  process.exit(1);
+}
+
 const nextConfig = {
   productionBrowserSourceMaps: false,
   images: {

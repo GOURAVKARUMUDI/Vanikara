@@ -1,57 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 import { MoreVertical, CheckCircle, XCircle, Clock } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function LeadsTable() {
-  const [leads, setLeads] = useState<any[]>([]);
-  const [clients, setClients] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: leadsRes, mutate: mutateLeads, isLoading: leadsLoading } = useSWR("/api/leads", fetcher);
+  const { data: clientsRes, isLoading: clientsLoading } = useSWR("/api/clients", fetcher);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [lRes, cRes] = await Promise.all([
-        fetch("/api/leads"),
-        fetch("/api/clients")
-      ]);
-      const [lJson, cJson] = await Promise.all([lRes.json(), cRes.json()]);
-      setLeads(lJson.data || []);
-      setClients(cJson.data || []);
-    } catch (err: any) {
-      console.error("Failed to fetch leads:", err);
-      setLeads([]);
-      setClients([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const leads = leadsRes?.data || [];
+  const clients = clientsRes?.data || [];
+  const loading = leadsLoading || clientsLoading;
 
   useEffect(() => {
-    fetchData();
-
     const supabase = createClient();
     const channel = supabase
       .channel("realtime:leads")
       .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
-        fetchData();
+        mutateLeads();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [mutateLeads]);
 
   const updateStatus = async (id: string, status: string) => {
     try {
+      mutateLeads({ ...leadsRes, data: leads.map((l: any) => l.id === id ? { ...l, status } : l) }, false);
       await fetch("/api/leads", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status })
       });
-      fetchData();
+      mutateLeads();
     } catch (err: any) {
       console.error("Failed to update status:", err);
     }

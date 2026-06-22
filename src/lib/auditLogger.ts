@@ -9,7 +9,7 @@ import { logError } from "@/lib/security";
  * @param targetId The ID of the record being modified
  * @param details Additional context or JSON stringified payload
  */
-export async function logAdminAction(adminEmail: string, action: string, targetId: string, details?: string) {
+export async function logAdminAction(adminEmail: string, action: string, targetId: string, details?: any) {
   try {
     const { error } = await supabaseService
       .from("admin_audit_logs")
@@ -18,7 +18,7 @@ export async function logAdminAction(adminEmail: string, action: string, targetI
           admin_email: adminEmail,
           action: action,
           target_id: targetId,
-          details: details || "",
+          details: typeof details === 'string' ? details : JSON.stringify(details || {}),
         }
       ]);
 

@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { sanitize, apiResponse, logError } from "@/lib/security";
+import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -42,7 +43,7 @@ export async function PATCH(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -52,6 +53,8 @@ export async function PATCH(req: Request) {
     // Sanitize relevant fields
     if (updates.name) updates.name = sanitize(updates.name).slice(0, 100);
 
+    const { data: previousState } = await supabaseService.from("clients").select("*").eq("id", id).single();
+
     const { data, error } = await supabaseService
       .from("clients")
       .update(updates)
@@ -60,6 +63,7 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "UPDATE_CLIENT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Clients PATCH", error);
@@ -73,12 +77,14 @@ export async function DELETE(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
     const { id } = await req.json();
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
+
+    const { data: previousState } = await supabaseService.from("clients").select("*").eq("id", id).single();
 
     const { error } = await supabaseService
       .from("clients")
@@ -86,6 +92,7 @@ export async function DELETE(req: Request) {
       .eq("id", id);
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "DELETE_CLIENT", id, { previousState });
     return NextResponse.json(apiResponse(true, { success: true }));
   } catch (error: any) {
     logError("Clients DELETE", error);

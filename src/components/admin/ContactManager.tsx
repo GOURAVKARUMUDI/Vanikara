@@ -1,58 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 import { MessageSquare, Calendar, Mail, Trash2, ShieldCheck, Check } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { createClient } from "@/utils/supabase/client";
 
 export default function ContactManager() {
-  const [messages, setMessages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: messagesRes, mutate: mutateMessages, isLoading: loading } = useSWR("/api/leads", fetcher);
+  const messages = messagesRes?.data || [];
+
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "new" | "converted">("all");
 
-  const fetchMessages = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/leads");
-      const json = await res.json();
-      setMessages(json.data || []);
-    } catch (err) {
-      console.error("Failed to fetch messages:", err);
-      setMessages([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchMessages();
-
     const supabase = createClient();
     const channel = supabase
       .channel("realtime:contact_leads")
       .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
-        fetchMessages();
+        mutateMessages();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [mutateMessages]);
 
   const handleArchive = async (id: string) => {
     try {
       setUpdatingId(id);
+      mutateMessages({ ...messagesRes, data: messages.map((m: any) => m.id === id ? { ...m, status: "converted" } : m) }, false);
+
       const res = await fetch("/api/leads", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status: "converted" })
       });
       if (res.ok) {
-        fetchMessages();
+        mutateMessages();
       }
     } catch (err) {
       console.error("Failed to archive message:", err);

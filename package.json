@@ -52,6 +52,7 @@
     "react-dom": "19.2.3",
     "recharts": "^3.8.0",
     "stripe": "^20.4.1",
+    "swr": "^2.4.1",
     "three": "^0.184.0"
   },
   "overrides": {

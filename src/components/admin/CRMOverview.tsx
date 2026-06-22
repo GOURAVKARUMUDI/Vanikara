@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 import { 
   TrendingUp, 
   Users, 
@@ -20,27 +22,11 @@ const CRMCharts = dynamic(() => import("./CRMCharts"), {
 });
 
 export default function CRMOverview() {
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: response, error, isLoading } = useSWR("/api/admin/stats", fetcher);
+  const stats = response?.data || null;
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/admin/stats");
-        const json = await res.json();
-        setStats(json.data || null);
-      } catch (err) {
-        console.error("Failed to fetch stats:", err);
-        setStats(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
-
-  if (loading) return <div className="p-8 text-zinc-500">Calculating stats...</div>;
+  if (isLoading) return <div className="p-8 text-zinc-500">Calculating stats...</div>;
+  if (error) return <div className="p-8 text-red-500">Failed to load stats.</div>;
 
   const cards = [
     { title: "Total Revenue", value: `₹0`, icon: DollarSign, color: "text-green-400", bg: "bg-green-500/10" },

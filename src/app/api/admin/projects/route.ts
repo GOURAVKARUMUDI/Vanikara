@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "CREATE_PROJECT", data.id, { newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Projects POST", error);
@@ -79,6 +80,8 @@ export async function PUT(req: Request) {
 
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
 
+    const { data: previousState } = await supabaseService.from("projects").select("*").eq("id", id).single();
+
     const { data, error } = await supabaseService
       .from("projects")
       .update({
@@ -95,6 +98,7 @@ export async function PUT(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "UPDATE_PROJECT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Projects PUT", error);
@@ -117,6 +121,8 @@ export async function DELETE(req: Request) {
 
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
 
+    const { data: previousState } = await supabaseService.from("projects").select("*").eq("id", id).single();
+
     const { error } = await supabaseService
       .from("projects")
       .delete()
@@ -124,7 +130,7 @@ export async function DELETE(req: Request) {
 
     if (error) throw error;
 
-    await logAdminAction(user.email || "unknown", "DELETE_PROJECT", id);
+    await logAdminAction(user.email || user.id, "DELETE_PROJECT", id, { previousState });
 
     return NextResponse.json(apiResponse(true, { success: true }));
   } catch (error: any) {

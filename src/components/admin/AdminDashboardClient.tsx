@@ -40,8 +40,6 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
     { id: "ai", label: "AI Console" },
     { id: "careers", label: "Careers" },
     { id: "contacts", label: "Contacts" },
-    { id: "roadmap", label: "Roadmap" },
-    { id: "analytics", label: "Analytics" },
     { id: "leads", label: "Leads" },
     { id: "clients", label: "Clients" },
     { id: "payments", label: "Payments" },
@@ -138,25 +136,7 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
           {activeTab === "careers" && <CareersManager />}
           {activeTab === "contacts" && <ContactManager />}
 
-          {activeTab === "roadmap" && (
-            <div className="p-12 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2.5rem] shadow-sm flex items-center justify-center text-center backdrop-blur-md">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-display font-black text-[var(--text-primary)]">Roadmap Management</h2>
-                <p className="text-[var(--text-secondary)] text-sm max-w-md mx-auto">Plan future feature rollouts, schedule ecosystem expansions, and align the founding team on long-term goals.</p>
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold px-4 py-2 bg-blue-500/10 text-blue-500 rounded-full border border-blue-500/15">🚧 Module In Development</div>
-              </div>
-            </div>
-          )}
 
-          {activeTab === "analytics" && (
-            <div className="p-12 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2.5rem] shadow-sm flex items-center justify-center text-center backdrop-blur-md">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-display font-black text-[var(--text-primary)]">Product Analytics</h2>
-                <p className="text-[var(--text-secondary)] text-sm max-w-md mx-auto">Monitor user engagement, track active sessions, and analyze core metrics across the VANIKARA ecosystem.</p>
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold px-4 py-2 bg-blue-500/10 text-blue-500 rounded-full border border-blue-500/15">🚧 Module In Development</div>
-              </div>
-            </div>
-          )}
 
           {activeTab === "leads" && <LeadsTable />}
           {activeTab === "clients" && <ClientsTable />}

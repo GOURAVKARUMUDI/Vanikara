@@ -1,63 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 import { Edit2, ExternalLink, ShieldCheck } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function ClientsTable() {
-  const [clients, setClients] = useState<any[]>([]);
-  const [packages, setPackages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: clientsRes, mutate: mutateClients, isLoading: clientsLoading } = useSWR("/api/clients", fetcher);
+  const { data: packagesRes, isLoading: packagesLoading } = useSWR("/api/packages", fetcher);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [cRes, pRes] = await Promise.all([
-        fetch("/api/clients"),
-        fetch("/api/packages")
-      ]);
-      const [cJson, pJson] = await Promise.all([cRes.json(), pRes.json()]);
-      setClients(cJson.data || []);
-      setPackages(pJson.data || []);
-    } catch (err: any) {
-      console.error("Failed to fetch clients/packages:", err);
-      setClients([]);
-      setPackages([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const clients = clientsRes?.data || [];
+  const packages = packagesRes?.data || [];
+  const loading = clientsLoading || packagesLoading;
 
   useEffect(() => {
-    fetchData();
-
     const supabase = createClient();
     const channel = supabase
       .channel("realtime:clients")
       .on("postgres_changes", { event: "*", schema: "public", table: "clients" }, () => {
-        fetchData();
+        mutateClients();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [mutateClients]);
 
   const updateClient = async (id: string, updates: any) => {
     try {
       // If package changed, update amount automatically
       if (updates.package_id) {
-        const pkg = (Array.isArray(packages) ? packages : []).find(p => p.id === updates.package_id);
+        const pkg = (Array.isArray(packages) ? packages : []).find((p: any) => p.id === updates.package_id);
         if (pkg) updates.amount = pkg.price;
       }
+
+      mutateClients({ ...clientsRes, data: clients.map((c: any) => c.id === id ? { ...c, ...updates } : c) }, false);
 
       await fetch("/api/clients", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...updates })
       });
-      fetchData();
+      mutateClients();
     } catch (err: any) {
       console.error("Failed to update client:", err);
     }

@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { apiResponse, logError } from "@/lib/security";
+import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
@@ -45,6 +46,8 @@ export async function PATCH(req: Request) {
       return NextResponse.json(apiResponse(false, null, "Missing required parameters"), { status: 400 });
     }
 
+    const { data: previousState } = await supabaseService.from("careers_applications").select("*").eq("id", id).single();
+
     const { data, error } = await supabaseService
       .from("careers_applications")
       .update({ status })
@@ -53,6 +56,7 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "UPDATE_CAREER_APPLICATION", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Admin Careers PATCH", error);

@@ -1,51 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 import { supabaseService } from "@/utils/supabase/service";
 import { createClient } from "@/utils/supabase/client";
 
 export default function PaymentsTable() {
-  const [payments, setPayments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const { data: paymentsRes, mutate: mutatePayments, isLoading: loading } = useSWR("/api/admin/payments", fetcher);
+  
+  const payments = paymentsRes?.data || [];
 
   useEffect(() => {
-    async function fetchPayments() {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("payments")
-          .select(`
-            *,
-            clients (
-              name,
-              email
-            )
-          `)
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        setPayments(data || []);
-      } catch (err) {
-        console.error("Error fetching payments:", err);
-        setPayments([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPayments();
-
+    const supabase = createClient();
     const channel = supabase
       .channel("realtime:payments")
       .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
-        fetchPayments();
+        mutatePayments();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [mutatePayments]);
 
   if (loading) return <div className="p-12 text-center text-zinc-500">Loading payments...</div>;
 

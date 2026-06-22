@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { isAdmin } from "@/lib/isAdmin";
 import { supabaseService } from "@/utils/supabase/service";
+import { logAdminAction } from "@/lib/auditLogger";
 
 const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
 
@@ -126,6 +127,8 @@ export async function POST(req: Request) {
         await fs.writeFile(STATIC_PATH, JSON.stringify(config, null, 2), "utf-8");
       } catch {}
     }
+
+    await logAdminAction(user.email || user.id, "UPDATE_PRIVACY_POLICY", "1", { previousState: config, newState: { currentVersion, policyText, optionalServices } });
 
     return NextResponse.json({ success: true, data: config });
   } catch (error: any) {

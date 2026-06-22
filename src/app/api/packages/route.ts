@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { apiResponse, logError, sanitize } from "@/lib/security";
+import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
@@ -28,7 +29,7 @@ export async function PATCH(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -38,6 +39,8 @@ export async function PATCH(req: Request) {
 
     const sFeatures = (Array.isArray(features) ? features : []).map(f => sanitize(f).slice(0, 200));
 
+    const { data: previousState } = await supabaseService.from("packages").select("*").eq("id", id).single();
+
     const { data, error } = await supabaseService
       .from("packages")
       .update({ price, features: sFeatures, updated_at: new Date().toISOString() })
@@ -46,6 +49,7 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error) throw error;
+    await logAdminAction(user.email || user.id, "UPDATE_PACKAGE", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   } catch (error: any) {
     logError("Packages PATCH", error);

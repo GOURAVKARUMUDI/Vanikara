@@ -57,14 +57,14 @@ export default function ContactManager() {
         method: "DELETE"
       });
       if (res.ok) {
-        fetchMessages();
+        mutateMessages();
       }
     } catch (err) {
       console.error("Failed to delete message:", err);
     }
   };
 
-  const filteredMessages = messages.filter((msg) => {
+  const filteredMessages = messages.filter((msg: any) => {
     const matchesSearch = 
       msg.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       msg.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -124,7 +124,7 @@ export default function ContactManager() {
             No matching submissions found.
           </div>
         ) : (
-          filteredMessages.map((msg) => (
+          filteredMessages.map((msg: any) => (
             <Card key={msg.id} hover>
               <CardBody className="p-6 sm:p-8 space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--glass-border)] pb-3 select-none">

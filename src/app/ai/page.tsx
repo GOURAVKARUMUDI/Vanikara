@@ -41,11 +41,11 @@ export default function AIPage() {
 
   useEffect(() => {
     // Check authentication state
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: any) => {
       setUser(user);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_: any, session: any) => {
       setUser(session?.user || null);
     });
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useCygmaWorld } from "@/context/CygmaWorldContext";
 
 interface Props {
   onComplete: () => void;
@@ -56,37 +55,32 @@ const GLASS_WAVES = [
 ];
 
 export default function IntroAnimation({ onComplete, onExitStart }: Props) {
-  const { sceneReady } = useCygmaWorld();
   const [phase, setPhase] = useState<"playing" | "exiting" | "done">("playing");
-  const [minPlayDone, setMinPlayDone] = useState(false);
-  const [reducedMotion] = useState<boolean>(() => {
+  const [reducedMotion, setReducedMotion] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }
     return false;
   });
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // Guarantee a minimum display duration of 1 second for visual polish
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMinPlayDone(true);
-    }, reducedMotion ? 400 : 1000);
-    return () => clearTimeout(timer);
-  }, [reducedMotion]);
+    const play = reducedMotion ? 800 : 4000;
+    const exit = reducedMotion ? 400 : 900;
 
-  // Transition to exiting when both minimum duration is met AND Three.js is fully ready
-  useEffect(() => {
-    if (minPlayDone && sceneReady && phase === "playing") {
+    const t1 = setTimeout(() => {
       setPhase("exiting");
       if (onExitStart) onExitStart();
+    }, play);
 
-      const timer = setTimeout(() => {
-        setPhase("done");
-        onComplete();
-      }, reducedMotion ? 300 : 900);
-      return () => clearTimeout(timer);
-    }
-  }, [minPlayDone, sceneReady, phase, onComplete, onExitStart, reducedMotion]);
+    const t2 = setTimeout(() => {
+      setPhase("done");
+      onComplete();
+    }, play + exit);
+
+    timers.current = [t1, t2];
+    return () => timers.current.forEach(clearTimeout);
+  }, [reducedMotion, onComplete, onExitStart]);
 
   if (phase === "done") return null;
 

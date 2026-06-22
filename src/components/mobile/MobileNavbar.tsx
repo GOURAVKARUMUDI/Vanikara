@@ -122,11 +122,21 @@ export default function MobileNavbar({
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-1.5 rounded-lg text-[var(--text-primary)] hover:bg-slate-500/10 active:scale-95 transition-all cursor-pointer"
+              className="flex items-center justify-center w-11 h-11 rounded-xl text-[var(--text-primary)] hover:bg-slate-500/10 active:scale-95 transition-all cursor-pointer relative"
               aria-label="Toggle menu"
               aria-expanded={menuOpen}
             >
-              {menuOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+              <AnimatePresence mode="wait">
+                {menuOpen ? (
+                  <motion.div key="close" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }} transition={{ duration: 0.2 }}>
+                    <X className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  <motion.div key="menu" initial={{ opacity: 0, rotate: 90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: -90 }} transition={{ duration: 0.2 }}>
+                    <Menu className="w-5 h-5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
@@ -136,58 +146,78 @@ export default function MobileNavbar({
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-white/98 dark:bg-slate-950/98 backdrop-blur-2xl flex flex-col justify-between p-6 pt-24 mobile-menu-safe-area pointer-events-auto"
+            initial={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col justify-between p-6 pt-24 mobile-menu-safe-area pointer-events-auto"
           >
             {/* Nav list */}
-            <nav className="flex flex-col gap-4 items-center my-auto">
+            <motion.nav 
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
+                hidden: { transition: { staggerChildren: 0.03, staggerDirection: -1 } }
+              }}
+              className="flex flex-col gap-5 items-center my-auto"
+            >
               {NAV_LINKS.map((link) => {
                 const active = pathname === link.href;
                 return (
-                  <Link
+                  <motion.div
                     key={link.href}
-                    href={link.href === "/" ? "/#hero" : link.href}
-                    className={`text-lg font-display font-black uppercase tracking-wider transition-colors ${
-                      active ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)]"
-                    }`}
-                    onClick={(e) => {
-                      handleLinkClick(e, link.href);
-                      setMenuOpen(false);
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
                     }}
                   >
-                    {link.label}
-                  </Link>
+                    <Link
+                      href={link.href === "/" ? "/#hero" : link.href}
+                      className={`text-2xl font-display font-black uppercase tracking-widest transition-colors block py-2 ${
+                        active ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)] active:scale-95"
+                      }`}
+                      onClick={(e) => {
+                        handleLinkClick(e, link.href);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
                 );
               })}
 
               {user && (
                 <>
-                  <Link
-                    href="/dashboard"
-                    className={`text-lg font-display font-black uppercase tracking-wider transition-colors ${
-                      pathname === "/dashboard" ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)]"
-                    }`}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Portal
-                  </Link>
-                  {isAdminUser && (
+                  <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } } }}>
                     <Link
-                      href="/admin"
-                      className={`text-lg font-display font-black uppercase tracking-wider transition-colors ${
-                        pathname === "/admin" ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)]"
+                      href="/dashboard"
+                      className={`text-2xl font-display font-black uppercase tracking-widest transition-colors block py-2 ${
+                        pathname === "/dashboard" ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)] active:scale-95"
                       }`}
                       onClick={() => setMenuOpen(false)}
                     >
-                      Admin
+                      Portal
                     </Link>
+                  </motion.div>
+                  {isAdminUser && (
+                    <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } } }}>
+                      <Link
+                        href="/admin"
+                        className={`text-2xl font-display font-black uppercase tracking-widest transition-colors block py-2 ${
+                          pathname === "/admin" ? "text-[var(--accent-color)]" : "text-[var(--text-primary)] hover:text-[var(--accent-color)] active:scale-95"
+                        }`}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Admin
+                      </Link>
+                    </motion.div>
                   )}
                 </>
               )}
-            </nav>
+            </motion.nav>
 
             {/* Footer action keys */}
             <div className="flex flex-col gap-3">

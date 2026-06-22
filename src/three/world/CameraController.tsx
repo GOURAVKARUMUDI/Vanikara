@@ -69,9 +69,9 @@ export default function CameraController() {
       case "hero":
         if (isMobile) {
           targetX = 0;
-          targetY = -0.15;
-          targetZ = 8.5;
-          targetLookY = -0.25;
+          targetY = -0.35;
+          targetZ = 10.5;
+          targetLookY = -0.35;
         } else {
           targetX = 0;
           targetY = 0.4;
@@ -93,8 +93,8 @@ export default function CameraController() {
       case "about":
         if (isMobile) {
           targetX = 0;
-          targetY = 0.8;
-          targetZ = 7.5;
+          targetY = 1.2;
+          targetZ = 9.5;
           targetLookY = 0.2;
         } else {
           targetX = 5.2 * aspectModifier;
@@ -105,8 +105,8 @@ export default function CameraController() {
 
         useOrbitDrift = true;
         useMouseParallax = !isMobile;
-        orbitScaleX = isMobile ? 0.15 : 0.2;
-        orbitScaleY = isMobile ? 0.1 : 0.15;
+        orbitScaleX = isMobile ? 0.08 : 0.2;
+        orbitScaleY = isMobile ? 0.05 : 0.15;
         parallaxScaleX = 0.3;
         parallaxScaleY = 0.25;
 
@@ -119,8 +119,8 @@ export default function CameraController() {
       case "projects":
         if (isMobile) {
           targetX = 0;
-          targetY = -3.8;
-          targetZ = 5.5;
+          targetY = -4.2;
+          targetZ = 7.5;
           targetLookY = 0.3;
         } else {
           targetX = 0;
@@ -131,15 +131,15 @@ export default function CameraController() {
 
         useOrbitDrift = true;
         useMouseParallax = !isMobile;
-        orbitScaleX = isMobile ? 0.1 : 0.15;
-        orbitScaleY = isMobile ? 0.08 : 0.1;
+        orbitScaleX = isMobile ? 0.05 : 0.15;
+        orbitScaleY = isMobile ? 0.04 : 0.1;
         break;
 
       case "products":
         if (isMobile) {
           targetX = 0;
-          targetY = 1.0;
-          targetZ = 7.0;
+          targetY = 1.4;
+          targetZ = 9.0;
           targetLookY = 0.2;
         } else {
           targetX = -4.8 * aspectModifier;
@@ -150,15 +150,15 @@ export default function CameraController() {
 
         useOrbitDrift = true;
         useMouseParallax = !isMobile;
-        orbitScaleX = isMobile ? 0.12 : 0.18;
-        orbitScaleY = isMobile ? 0.08 : 0.12;
+        orbitScaleX = isMobile ? 0.06 : 0.18;
+        orbitScaleY = isMobile ? 0.04 : 0.12;
         break;
 
       case "ai":
         if (isMobile) {
           targetX = 0;
           targetY = 0.2;
-          targetZ = 0.35;
+          targetZ = 0.55;
           targetLookY = 0.2;
           targetLookZ = -2.5;
         } else {

@@ -132,9 +132,9 @@ export default function Navbar() {
     
     window.addEventListener("scroll", handleScroll, { passive: true });
     
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    supabase.auth.getUser().then(({ data: { user } }: any) => setUser(user));
     
-    const { data: { subscription: sub } } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription: sub } } = supabase.auth.onAuthStateChange((_: any, session: any) => {
       setUser(session?.user || null);
     });
 

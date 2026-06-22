@@ -15,8 +15,6 @@ import PreferencesModal from "./layout/PreferencesModal";
 import { useTheme } from "./layout/ThemeContext";
 import { usePerformance } from "@/context/PerformanceContext";
 import CapacitorManager from "./layout/CapacitorManager";
-import IntroAnimation from "./IntroAnimation";
-
 // Dynamic import for client-only R3F Canvas
 const IntelligenceWorld = dynamic(() => import("@/three/world/IntelligenceWorld"), {
   ssr: false,
@@ -32,7 +30,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [deferCanvas, setDeferCanvas] = useState(false);
   const [reducedMotionState, setReducedMotionState] = useState<"user" | "always">("always");
   const [isMobileDevice, setIsMobileDevice] = useState(true); // Optimistic mobile to avoid hydration mismatch
-  const [introComplete, setIntroComplete] = useState(false);
 
   const mainRoutes = ["/", "/about", "/projects", "/products", "/ai", "/login", "/careers", "/contact", "/dashboard", "/admin"];
   const showCanvas = mainRoutes.includes(pathname);
@@ -121,12 +118,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <MotionConfig reducedMotion={reducedMotionState}>
       <div className="flex flex-col min-h-screen bg-transparent relative">
-        {/* Intro Loading Screen Overlay */}
-        {!introComplete && (
-          <IntroAnimation
-            onComplete={() => setIntroComplete(true)}
-          />
-        )}
 
         {/* Global 3D World Scene Backdrop */}
         {shouldRenderCanvas && (
@@ -140,9 +131,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </>
         )}
 
-        {/* Dynamic UI Wrapper: Fades in only when the intro screen has resolved */}
+        {/* Dynamic UI Wrapper */}
         <motion.div
-          animate={{ opacity: introComplete ? 1 : 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
           className="flex flex-col min-h-screen bg-transparent relative w-full"
         >

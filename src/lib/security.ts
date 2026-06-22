@@ -1,3 +1,4 @@
+// @ts-ignore
 import DOMPurify from 'isomorphic-dompurify';
 
 /**

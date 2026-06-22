@@ -55,7 +55,7 @@ export default function MobileHero({ handleScrollClick }: MobileHeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display font-black leading-[1.2] tracking-tight mb-4 text-[var(--text-primary)] uppercase text-balance text-2xl px-2"
+          className="font-display font-black leading-none tracking-tight mb-5 text-[var(--text-primary)] uppercase text-balance text-3xl px-2"
         >
           Engineering Tomorrow&apos;s <br />
           <span className="gradient-text">Intelligent Digital Experiences</span>
@@ -66,7 +66,7 @@ export default function MobileHero({ handleScrollClick }: MobileHeroProps) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-xs text-[var(--text-secondary)] w-full max-w-[320px] mx-auto mb-6 leading-relaxed font-semibold"
+          className="text-sm text-[var(--text-secondary)] w-full max-w-[340px] mx-auto mb-8 leading-relaxed font-semibold px-4"
         >
           VANIKARA Intelligence Private Limited is an Indian technology company engineering high-performance AI layers, unified student systems, and secure cloud platforms.
         </motion.p>

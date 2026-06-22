@@ -59,7 +59,7 @@ export default function DashboardClient({ initialUser, initialProfile, initialSu
         .from("conversations")
         .select("*")
         .order("created_at", { ascending: false })
-        .then(({ data }) => {
+        .then(({ data }: any) => {
           setConversations(data || []);
         });
     }

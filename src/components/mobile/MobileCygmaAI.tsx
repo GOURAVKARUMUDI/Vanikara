@@ -81,7 +81,7 @@ export default function MobileCygmaAI({
       </div>
 
       {/* Main viewport is 100% ChatArea */}
-      <div className="flex-grow relative overflow-hidden">
+      <div className="flex-grow relative overflow-hidden chat-input-safe-area">
         <ChatArea
           messages={messages}
           setMessages={setMessages}
@@ -105,7 +105,7 @@ export default function MobileCygmaAI({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowSidebar(false)}
-              className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xs pointer-events-auto"
+              className="fixed inset-0 z-30 bg-black/40 backdrop-blur-md pointer-events-auto"
             />
             {/* Drawer Body */}
             <motion.div
@@ -113,7 +113,7 @@ export default function MobileCygmaAI({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed left-0 top-16 bottom-0 w-72 bg-slate-950 border-r border-[var(--glass-border)] z-40 flex flex-col pointer-events-auto"
+              className="fixed left-0 top-16 bottom-0 w-[85vw] max-w-[340px] bg-slate-950/85 backdrop-blur-3xl border-r border-[var(--glass-border)] z-40 flex flex-col pointer-events-auto shadow-2xl"
             >
               <div className="p-3 border-b border-[var(--glass-border)] flex items-center justify-between shrink-0">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-primary)]">
@@ -159,7 +159,7 @@ export default function MobileCygmaAI({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowContext(false)}
-              className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xs pointer-events-auto"
+              className="fixed inset-0 z-30 bg-black/40 backdrop-blur-md pointer-events-auto"
             />
             {/* Drawer Body */}
             <motion.div
@@ -167,7 +167,7 @@ export default function MobileCygmaAI({
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed right-0 top-16 bottom-0 w-72 bg-slate-950 border-l border-[var(--glass-border)] z-40 flex flex-col pointer-events-auto"
+              className="fixed right-0 top-16 bottom-0 w-[85vw] max-w-[340px] bg-slate-950/85 backdrop-blur-3xl border-l border-[var(--glass-border)] z-40 flex flex-col pointer-events-auto shadow-2xl"
             >
               <div className="p-3 border-b border-[var(--glass-border)] flex items-center justify-between shrink-0">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-primary)]">

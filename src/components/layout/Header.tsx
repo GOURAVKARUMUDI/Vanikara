@@ -12,7 +12,7 @@ export function Header() {
   const sb = createClient();
 
   useEffect(() => {
-    const { data: { subscription } } = sb.auth.onAuthStateChange((_, s) => {
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_: any, s: any) => {
       setU(s?.user || null);
     });
     return () => subscription.unsubscribe();

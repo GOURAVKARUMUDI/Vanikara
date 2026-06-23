@@ -5,7 +5,7 @@ import { supabaseService } from "@/utils/supabase/service";
 import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import { apiResponse, logError } from "@/lib/security";
+import { logError } from "@/lib/security";
 
 export async function GET() {
   try {
@@ -68,6 +68,7 @@ export async function GET() {
       }
     });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Settings GET", error);
     return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });

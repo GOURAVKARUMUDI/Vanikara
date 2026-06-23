@@ -2,8 +2,7 @@
 
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
-import { Scale, FileText, ArrowRight, ShieldCheck } from "lucide-react";
+import { Scale, FileText, ArrowRight } from "lucide-react";
 import { FadeUp } from "@/components/Animate";
 
 export default function LegalPage() {
@@ -57,7 +56,7 @@ export default function LegalPage() {
             </h2>
             <div className="border-l-2 border-[var(--accent-color)] pl-6 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed space-y-3 font-medium">
               <p>
-                The terms "VANIKARA", "CYGMA AI", "Vanik", "FriskFree", and their associated symbols, logotypes, and assets are registered trademark holdings of VANIKARA Intelligence Private Limited.
+                The terms &quot;VANIKARA&quot;, &quot;CYGMA AI&quot;, &quot;Vanik&quot;, &quot;FriskFree&quot;, and their associated symbols, logotypes, and assets are registered trademark holdings of VANIKARA Intelligence Private Limited.
               </p>
               <p>
                 All software source codes, WebGL configurations, mesh gradient shaders, and database schemas are the copyright property of the company. Accessing or browsing our platforms does not transfer intellectual property rights.

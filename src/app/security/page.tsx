@@ -1,9 +1,8 @@
 "use client";
 
 import PageHero from "@/components/ui/PageHero";
-import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Shield, Key, Mail, HeartHandshake } from "lucide-react";
+import { Key, Mail, HeartHandshake } from "lucide-react";
 import { FadeUp } from "@/components/Animate";
 
 export default function SecurityPage() {

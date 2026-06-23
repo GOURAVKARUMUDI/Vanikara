@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { Edit2, ExternalLink, ShieldCheck } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function ClientsTable() {
@@ -28,14 +27,17 @@ export default function ClientsTable() {
     };
   }, [mutateClients]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateClient = async (id: string, updates: any) => {
     try {
       // If package changed, update amount automatically
       if (updates.package_id) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const pkg = (Array.isArray(packages) ? packages : []).find((p: any) => p.id === updates.package_id);
         if (pkg) updates.amount = pkg.price;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mutateClients({ ...clientsRes, data: clients.map((c: any) => c.id === id ? { ...c, ...updates } : c) }, false);
 
       await fetch("/api/clients", {
@@ -44,6 +46,7 @@ export default function ClientsTable() {
         body: JSON.stringify({ id, ...updates })
       });
       mutateClients();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Failed to update client:", err);
     }

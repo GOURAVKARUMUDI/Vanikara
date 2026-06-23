@@ -3,8 +3,6 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
 import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
 import { sanitize, apiResponse, logError } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
 import { isRateLimited } from "@/lib/rateLimit";
@@ -79,7 +77,7 @@ export async function POST(req: Request) {
 
       const uniqueFileName = `${Date.now()}_${resumeFileName.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
 
-      const { data: uploadData, error: uploadError } = await supabaseService.storage
+      const { data: _uploadData, error: uploadError } = await supabaseService.storage
         .from("resumes")
         .upload(uniqueFileName, fileBuffer, {
           contentType: isPDF ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -125,7 +123,7 @@ export async function POST(req: Request) {
 
     // 5. Sync to Google Form (Secondary Operational Flow)
     const isInternship = sPosition.toLowerCase().includes("intern") || sPosition.toLowerCase().includes("coordinator");
-    const formType = isInternship ? "internship" : "careers";
+    const _formType = isInternship ? "internship" : "careers";
 
     const googleFormSuccess = isInternship
       ? await submitToGoogleForm("internship", {
@@ -266,6 +264,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(apiResponse(true, { message: "Application persisted and emails dispatched", data: dbData }));
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     logError("Careers Apply API POST handler", err);
     return NextResponse.json(apiResponse(false, null, "Internal server error"), { status: 500 });

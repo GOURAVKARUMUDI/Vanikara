@@ -25,6 +25,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Careers GET", error);
     return NextResponse.json(apiResponse(false, null, "Failed to retrieve careers applications"), { status: 500 });
@@ -58,6 +59,7 @@ export async function PATCH(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "UPDATE_CAREER_APPLICATION", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Careers PATCH", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

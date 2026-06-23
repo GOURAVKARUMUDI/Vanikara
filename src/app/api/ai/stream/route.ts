@@ -100,6 +100,7 @@ interface ValidatedRequest {
   history: AIMessage[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateRequestBody(body: any): ValidatedRequest | { error: string; status: number } {
   if (!body || typeof body !== 'object') {
     return { error: 'Request body must be a JSON object.', status: 400 };
@@ -168,6 +169,7 @@ export async function POST(req: Request) {
     }
     
     // 1. Parse and validate request body
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let body: any;
     try {
       body = await req.json();
@@ -238,7 +240,7 @@ export async function POST(req: Request) {
           sender_role: 'user',
           content: sPrompt,
         });
-      } catch (dbErr) {
+      } catch (_dbErr) {
         logError('Stream Route', 'Failed logging user prompt', { requestId });
       }
     } else {
@@ -263,12 +265,13 @@ export async function POST(req: Request) {
         if (dbMessages && dbMessages.length > 0) {
           // Exclude the last message (it's the prompt we just inserted)
           const historyMessages = dbMessages.slice(0, -1);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           conversationHistory = historyMessages.map((m: any) => ({
             role: m.sender_role as 'user' | 'assistant',
             content: m.content,
           }));
         }
-      } catch (histErr) {
+      } catch (_histErr) {
         logError('Stream Route', 'Failed fetching conversation history', { requestId });
       }
     } else if (isGuest && clientHistory.length > 0) {
@@ -362,6 +365,7 @@ Sign in to unlock:
             } finally {
               clearTimeout(timeoutId);
             }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (aiErr: any) {
             const classified = aiErr instanceof CygmaAIError
               ? aiErr
@@ -399,7 +403,7 @@ Sign in to unlock:
               sender_role: 'assistant',
               content: fullReply,
             });
-          } catch (dbErr) {
+          } catch (_dbErr) {
             logError('Stream Route', 'Failed logging assistant message', { requestId });
           }
         }
@@ -424,6 +428,7 @@ Sign in to unlock:
         'X-Request-Id': requestId,
       },
     });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError('Stream Route', error, {
       requestId,

@@ -9,6 +9,7 @@ import { logError } from "@/lib/security";
  * @param targetId The ID of the record being modified
  * @param details Additional context or JSON stringified payload
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function logAdminAction(adminEmail: string, action: string, targetId: string, details?: any) {
   try {
     const { error } = await supabaseService
@@ -27,6 +28,7 @@ export async function logAdminAction(adminEmail: string, action: string, targetI
       // We don't throw here to avoid failing the main request if logging fails,
       // but we log it internally for monitoring.
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     logError("Audit Logger", err);
   }

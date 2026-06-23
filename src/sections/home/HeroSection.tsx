@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
@@ -11,7 +10,6 @@ const easeOutExpo = [0.16, 1, 0.3, 1] as const;
 const easeOutQuart = [0.25, 1, 0.5, 1] as const;
 
 import HeroScene from "@/components/hero/HeroScene";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { HeroContainer } from "@/components/ui/Containers";
 
 
@@ -57,12 +55,12 @@ const badgeVariants = {
   visible: { opacity: 1, y: 0, pointerEvents: "auto" as const, transition: { duration: 0.6, delay: 0, ease: easeOutExpo } }
 };
 
-const h1Variants = {
+const _h1Variants = {
   hidden: { opacity: 0, y: 25 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0, ease: easeOutExpo } }
 };
 
-const pVariants = {
+const _pVariants = {
   hidden: { opacity: 0, y: 15 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0, ease: easeOutQuart } }
 };
@@ -74,9 +72,10 @@ const ctaVariants = {
 
 export default function HeroSection() {
   const [phase, setPhase] = useState<number>(4); // Default to stage 4 (completed/static) for mobile-first/instant rendering
-  const [isMobile, setIsMobile] = useState<boolean>(true); // Default to true (optimistic mobile)
+  const [isMobile, _setIsMobile] = useState<boolean>(true); // Default to true (optimistic mobile)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let scrollTimer: any = null;
     if (typeof window !== "undefined" && window.location.hash === "#hero") {
       scrollTimer = setTimeout(() => {
@@ -128,6 +127,7 @@ export default function HeroSection() {
         className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[85vw] max-w-[700px] rounded-full filter blur-[130px] pointer-events-none animate-orb-slow hidden md:block" 
         style={{
           background: `radial-gradient(circle, var(--accent-color), transparent 70%)`,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           mixBlendMode: "var(--orb-blend)" as any,
           opacity: "calc(var(--orb-opacity) * 0.7)",
         }}
@@ -234,7 +234,7 @@ export default function HeroSection() {
             style={{ fontSize: "clamp(1.5rem, 4.2vw, 3.2rem)" }}
           >
             <span>ENGINEERING</span>
-            <span>TOMORROW'S</span>
+            <span>TOMORROW&apos;S</span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent-color)] via-blue-400 to-indigo-500 w-full md:w-auto">
               INTELLIGENT
             </span>

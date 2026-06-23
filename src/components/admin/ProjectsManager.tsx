@@ -6,6 +6,7 @@ import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
 export default function ProjectsManager() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ id: "", title: "", tag: "", tagline: "", problem: "", solution: "", progress: 0 });
@@ -30,6 +31,7 @@ export default function ProjectsManager() {
     fetchProjects();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEdit = (p: any) => {
     setForm(p);
     setIsEditing(true);

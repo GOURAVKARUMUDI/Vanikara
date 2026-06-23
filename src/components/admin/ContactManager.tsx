@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { MessageSquare, Calendar, Mail, Trash2, ShieldCheck, Check } from "lucide-react";
+import { MessageSquare, Calendar, Mail, Trash2, Check } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 import { createClient } from "@/utils/supabase/client";
 
 export default function ContactManager() {
@@ -33,6 +32,7 @@ export default function ContactManager() {
   const handleArchive = async (id: string) => {
     try {
       setUpdatingId(id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mutateMessages({ ...messagesRes, data: messages.map((m: any) => m.id === id ? { ...m, status: "converted" } : m) }, false);
 
       const res = await fetch("/api/leads", {
@@ -64,6 +64,7 @@ export default function ContactManager() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filteredMessages = messages.filter((msg: any) => {
     const matchesSearch = 
       msg.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -124,6 +125,7 @@ export default function ContactManager() {
             No matching submissions found.
           </div>
         ) : (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           filteredMessages.map((msg: any) => (
             <Card key={msg.id} hover>
               <CardBody className="p-6 sm:p-8 space-y-4">

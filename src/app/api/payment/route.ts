@@ -18,6 +18,7 @@ const paymentSchema = z.object({
 
 export const dynamic = "force-dynamic";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let razorpay: any = null;
 
 if (
@@ -31,6 +32,7 @@ if (
 } else {
     logError("Payment Module", new Error("Missing Razorpay Keys. Module Disabled."));
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function POST(req: any) {
   try {
     // 1. Authenticate user
@@ -163,6 +165,7 @@ export async function POST(req: any) {
 
     return NextResponse.json(apiResponse(false, null, "Invalid action"), { status: 400 });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Payment API", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

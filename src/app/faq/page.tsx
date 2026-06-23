@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import PageHero from "@/components/ui/PageHero";
-import Card, { CardBody } from "@/components/ui/Card";
+import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { ChevronDown, ChevronUp, MessageSquare, HelpCircle, ArrowUpRight } from "lucide-react";
 import { FadeUp } from "@/components/Animate";

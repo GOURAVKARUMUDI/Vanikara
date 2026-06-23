@@ -52,7 +52,7 @@ export default function ParticleField({ count = 650 }) {
   }, []);
 
   // Generate deterministic coordinates
-  const [positions, speeds] = useMemo(() => {
+  const [positions, _speeds] = useMemo(() => {
     const rand = createSeededRandom(11111);
     const pos = new Float32Array(count * 3);
     const spd = new Float32Array(count * 3);

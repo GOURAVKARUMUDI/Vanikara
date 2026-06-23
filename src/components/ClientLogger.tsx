@@ -7,6 +7,7 @@ export default function ClientLogger() {
   useEffect(() => {
     // Suppress third-party Three.js deprecation warnings (e.g. THREE.Clock instantiated internally by R3F)
     const originalWarn = console.warn;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     console.warn = (...args: any[]) => {
       if (args[0] && typeof args[0] === 'string' && args[0].includes('THREE.Clock: This module has been deprecated')) {
         return;

@@ -8,6 +8,7 @@ import { logError } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedStatus: any = null;
 let lastCheckTime = 0;
 const CACHE_TTL_MS = 60000; // Cache health status checks for 60 seconds
@@ -24,7 +25,7 @@ export async function GET() {
     if (user && isAdmin(user)) {
       isUserAdmin = true;
     }
-  } catch (authErr) {
+  } catch (_authErr) {
     // Fail silent, treat as anonymous
   }
 
@@ -48,6 +49,7 @@ export async function GET() {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const status: Record<string, any> = {
     status: "healthy",
     timestamp: new Date().toISOString(),
@@ -67,6 +69,7 @@ export async function GET() {
       status.services.database = `unhealthy: ${error.message}`;
       hasError = true;
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     status.services.database = `unhealthy: ${err.message}`;
     hasError = true;
@@ -96,6 +99,7 @@ export async function GET() {
       });
       // Verifies connection configuration and SMTP credentials
       await transporter.verify();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       status.services.email = `unhealthy: SMTP verification failed - ${err.message}`;
       hasError = true;

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Briefcase, Mail, CheckCircle, XCircle, RefreshCw, MessageSquare } from "lucide-react";
+import { Briefcase, Mail, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 
 export default function CareersManager() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [candidates, setCandidates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);

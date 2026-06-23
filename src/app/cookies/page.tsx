@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Cookie, Check, Shield, RefreshCw } from "lucide-react";
+import { Cookie, Check, RefreshCw } from "lucide-react";
 import { FadeUp } from "@/components/Animate";
 import { useConsent } from "@/context/ConsentContext";
 

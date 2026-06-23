@@ -17,6 +17,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Projects GET", error);
     return NextResponse.json(apiResponse(false, null, "Database error: " + error.message), { status: 500 });
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "CREATE_PROJECT", data.id, { newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Projects POST", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -100,6 +102,7 @@ export async function PUT(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "UPDATE_PROJECT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Projects PUT", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -133,6 +136,7 @@ export async function DELETE(req: Request) {
     await logAdminAction(user.email || user.id, "DELETE_PROJECT", id, { previousState });
 
     return NextResponse.json(apiResponse(true, { success: true }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Projects DELETE", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

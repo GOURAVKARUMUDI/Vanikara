@@ -7,6 +7,7 @@ const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 
 export async function proxy(req: NextRequest) {
   const forwarded = req.headers.get('x-forwarded-for');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ip = forwarded ? forwarded.split(',')[0] : (req as any).ip || '127.0.0.1';
   const now = Date.now();
   const limit = 5;

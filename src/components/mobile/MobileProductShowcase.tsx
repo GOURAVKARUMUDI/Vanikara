@@ -46,7 +46,7 @@ export default function MobileProductShowcase({ products }: MobileProductShowcas
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {products.map((prod, idx) => (
+        {products.map((prod, _idx) => (
           <div
             key={prod.title}
             className="w-full shrink-0 snap-center border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md rounded-3xl p-6 shadow-md flex flex-col gap-4 relative overflow-hidden"

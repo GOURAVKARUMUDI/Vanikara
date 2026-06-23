@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { supabaseService } from "@/utils/supabase/service";
 import { createClient } from "@/utils/supabase/client";
 
 export default function PaymentsTable() {

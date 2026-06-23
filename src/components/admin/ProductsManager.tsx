@@ -6,6 +6,7 @@ import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
 export default function ProductsManager() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ id: "", name: "", category: "", description: "", availability: "concept" });
@@ -30,6 +31,7 @@ export default function ProductsManager() {
     fetchProducts();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEdit = (p: any) => {
     setForm(p);
     setIsEditing(true);

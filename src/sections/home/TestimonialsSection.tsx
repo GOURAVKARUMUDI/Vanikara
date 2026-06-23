@@ -47,7 +47,7 @@ export default function TestimonialsSection() {
               <Card hover className="h-full flex flex-col justify-between">
                 <CardBody className="flex flex-col justify-between h-full space-y-6">
                   <p className="text-xs text-[var(--text-secondary)] italic leading-relaxed">
-                    "{test.quote}"
+                    &quot;{test.quote}&quot;
                   </p>
                   <div>
                     <h3 className="font-display font-bold text-sm text-[var(--text-primary)]">

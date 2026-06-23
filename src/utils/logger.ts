@@ -87,6 +87,7 @@ export const logger = {
   /**
    * Standardized helper for API request lifecycle events.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   api: (endpoint: string, status: 'start' | 'success' | 'failure', details?: any): void => {
     const level = status === 'failure' ? 'error' : 'info';
     if (level === 'error') {

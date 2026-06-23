@@ -24,7 +24,7 @@ function createSeededRandom(seed: number) {
 export default function AIPlanet() {
   const { resolvedTheme } = useTheme();
   const { view, sceneReady } = useCygmaWorld();
-  const { config, currentProfile } = usePerformance();
+  const { config } = usePerformance();
   const theme = resolvedTheme;
   const isDark = theme === "dark";
 

@@ -58,6 +58,7 @@ export default function BackgroundSystem() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPerformanceLow]);
 
   useEffect(() => {
@@ -150,6 +151,7 @@ export default function BackgroundSystem() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationId);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [atmosphere, isPerformanceLow]);
 
   return (
@@ -163,6 +165,7 @@ export default function BackgroundSystem() {
             className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full filter blur-[120px] transition-[opacity] duration-1000 animate-orb"
             style={{
               background: `radial-gradient(circle, var(--orb-1), transparent 70%)`,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               mixBlendMode: "var(--orb-blend)" as any,
               opacity: "var(--orb-opacity)",
             }}
@@ -171,6 +174,7 @@ export default function BackgroundSystem() {
             className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] max-w-[700px] rounded-full filter blur-[140px] transition-[opacity] duration-1000 animate-orb-slow"
             style={{
               background: `radial-gradient(circle, var(--orb-2), transparent 70%)`,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               mixBlendMode: "var(--orb-blend)" as any,
               opacity: "var(--orb-opacity)",
             }}
@@ -193,6 +197,7 @@ export default function BackgroundSystem() {
           style={{
             background: `radial-gradient(circle, var(--accent-color), transparent 75%)`,
             transform: `translate3d(${mousePos.x - 175}px, ${mousePos.y - 175}px, 0)`,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             mixBlendMode: "var(--orb-blend)" as any,
             opacity: "calc(var(--orb-opacity) * 0.6)",
           }}

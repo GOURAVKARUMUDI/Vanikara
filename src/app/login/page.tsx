@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { useAuthRedirect } from "@/lib/authRedirect";
 import { isAdmin } from "@/lib/isAdmin";
-import { Eye, EyeOff, Mail, Lock, Sparkles, AlertCircle, Compass, LogIn, ArrowLeft, ArrowRight, ShieldCheck, MailCheck } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, AlertCircle, Compass, LogIn, ArrowLeft, ArrowRight, ShieldCheck, MailCheck } from "lucide-react";
 import Button from "@/components/ui/Button";
 import AuthSidebar from "@/components/auth/AuthSidebar";
 
@@ -101,7 +100,7 @@ export default function LoginPage() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { _data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });

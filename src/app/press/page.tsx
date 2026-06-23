@@ -2,8 +2,7 @@
 
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
-import { Download, Mail, Calendar, MapPin, Globe } from "lucide-react";
+import { Download, Mail, Calendar, Globe } from "lucide-react";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 
 const RELEASES = [

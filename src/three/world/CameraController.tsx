@@ -51,7 +51,7 @@ export default function CameraController() {
     const isTabletPortrait = size.width >= 768 && size.width < 1024 && aspect < 1;
     const isTabletLandscape = size.width >= 768 && size.width < 1024 && aspect >= 1;
     const isTablet = isTabletPortrait || isTabletLandscape;
-    const isDesktop = size.width >= 1024;
+    const _isDesktop = size.width >= 1024;
 
     // Responsive aspect multiplier
     const aspectModifier = aspect < 1 ? 1.0 + (1.0 - aspect) * 0.8 : 1.0;

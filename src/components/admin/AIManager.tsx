@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Server, Key, ShieldCheck, RefreshCw, BarChart } from "lucide-react";
+import { Cpu, Server, Key, ShieldCheck, RefreshCw } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 
 export default function AIManager() {

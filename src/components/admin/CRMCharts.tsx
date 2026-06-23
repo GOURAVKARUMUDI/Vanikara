@@ -6,8 +6,11 @@ import {
 } from 'recharts';
 
 interface ChartProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   leadsData: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   revenueData: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   conversionData: any[];
 }
 
@@ -97,7 +100,7 @@ export default function CRMCharts({ leadsData, revenueData, conversionData }: Ch
             </PieChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-2 gap-4 w-full md:w-1/2">
-            {conversionData.map((item, idx) => (
+            {conversionData.map((item, _idx) => (
               <div key={item.name} className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                 <p className="text-[10px] font-black uppercase text-slate-400 mb-1">{item.name}</p>
                 <p className="text-xl font-black text-slate-900">{item.value}</p>

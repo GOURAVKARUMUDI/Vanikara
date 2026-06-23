@@ -61,12 +61,13 @@ export default function ContactForm() {
         body: JSON.stringify(form),
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let data: any = null;
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         try {
           data = await response.json();
-        } catch (jsonErr) {
+        } catch (_jsonErr) {
           // Ignore json parse error here as we'll check response.ok next
         }
       }
@@ -77,6 +78,7 @@ export default function ContactForm() {
 
       logger.form("Contact", "success");
       setStatus("success");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       logger.error("Failed to submit contact form", err);
       // Clean up raw JSON parser error tokens for user display

@@ -19,7 +19,7 @@ export default function ContactPage() {
         tag="Get in Touch"
         title={
           <>
-            Let's <span className="gradient-text">Connect</span>
+            Let&apos;s <span className="gradient-text">Connect</span>
           </>
         }
         subtitle="Want to collaborate, support our journey, or explore what we're building? We'd love to hear from you."

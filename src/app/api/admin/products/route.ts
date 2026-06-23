@@ -17,6 +17,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Products GET", error);
     return NextResponse.json(apiResponse(false, null, "Database error: " + error.message), { status: 500 });
@@ -58,6 +59,7 @@ export async function POST(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "CREATE_PRODUCT", data.id, { newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Products POST", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -98,6 +100,7 @@ export async function PUT(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "UPDATE_PRODUCT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Products PUT", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -129,6 +132,7 @@ export async function DELETE(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "DELETE_PRODUCT", id, { previousState });
     return NextResponse.json(apiResponse(true, { success: true }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Products DELETE", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

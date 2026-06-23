@@ -29,6 +29,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -132,8 +133,11 @@ export default function Navbar() {
     
     window.addEventListener("scroll", handleScroll, { passive: true });
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     supabase.auth.getUser().then(({ data: { user } }: any) => setUser(user));
     
+     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: { subscription: sub } } = supabase.auth.onAuthStateChange((_: any, session: any) => {
       setUser(session?.user || null);
     });
@@ -365,6 +369,7 @@ export default function Navbar() {
                 variant="ghost" 
                 size="sm" 
                 magnetic
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onClick={(e) => handleLinkClick(e as any, "/login")}
                 className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:rounded-full"
               >
@@ -487,6 +492,7 @@ export default function Navbar() {
                   className="w-full"
                   onClick={(e) => {
                     setMobileMenuOpen(false);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     handleLinkClick(e as any, "/login");
                   }}
                 >

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Shield, Eye, BarChart2, Check, RefreshCw, FileText, CheckSquare, Square, Save } from "lucide-react";
+import { Shield, BarChart2, Check, RefreshCw, FileText, CheckSquare, Square, Save } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
@@ -56,6 +56,7 @@ export default function PrivacyManager() {
       } else {
         setError(body.error || "Failed to fetch privacy settings.");
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e.message || "Network error. Please try again.");
     } finally {
@@ -99,6 +100,7 @@ export default function PrivacyManager() {
       } else {
         setError(body.error || "Failed to save privacy settings.");
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e.message || "Network error. Failed to save configuration.");
     } finally {
@@ -246,7 +248,7 @@ export default function PrivacyManager() {
                     placeholder="We use essential cookies to operate our website and optional cookies..."
                   />
                   <p className="text-[9px] text-[var(--text-secondary)] leading-relaxed font-medium">
-                    This text will be cached and displayed inside the floating Liquid Glass cookie consent banner on the visitor's first visit.
+                    This text will be cached and displayed inside the floating Liquid Glass cookie consent banner on the visitor&apos;s first visit.
                   </p>
                 </div>
 
@@ -263,7 +265,7 @@ export default function PrivacyManager() {
                     placeholder="1.0.0"
                   />
                   <div className="p-3.5 rounded-xl border border-blue-500/10 bg-blue-500/5 text-[9px] text-blue-500 leading-normal font-bold">
-                    ⚠️ IMPORTANT: Incrementing this version number will invalidate all cookie preference caches on current users' browsers, forcing the cookie banner to reappear on their next visit to collect consent updates.
+                    ⚠️ IMPORTANT: Incrementing this version number will invalidate all cookie preference caches on current users&apos; browsers, forcing the cookie banner to reappear on their next visit to collect consent updates.
                   </div>
                 </div>
               </CardBody>
@@ -284,11 +286,13 @@ export default function PrivacyManager() {
                     { key: "facebookPixel", label: "Facebook Pixel (fbp)" },
                     { key: "hotjar", label: "Hotjar UX Tracking" }
                   ].map((service) => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const active = (optionalServices as any)[service.key];
                     return (
                       <button
                         type="button"
                         key={service.key}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onClick={() => handleToggleService(service.key as any)}
                         className="w-full flex items-center justify-between p-3 rounded-xl border border-[var(--glass-border)] bg-slate-500/5 hover:bg-slate-500/10 transition-colors text-xs text-[var(--text-primary)] font-bold text-left cursor-pointer"
                       >

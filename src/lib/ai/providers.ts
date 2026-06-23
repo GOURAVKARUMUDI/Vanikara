@@ -68,6 +68,7 @@ export class CygmaAIError extends Error {
 /**
  * Classify a raw OpenAI SDK error into a structured CygmaAIError.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function classifyOpenAIError(err: any): CygmaAIError {
   const status = err?.status || err?.response?.status || 0;
   const code = err?.code || err?.error?.code || '';
@@ -285,6 +286,7 @@ export class OpenAIProvider implements AIProvider {
       for (let attempt = 0; attempt <= RATE_LIMIT_MAX_RETRIES; attempt++) {
         try {
           return await this.createStream(openai, apiMessages, model, options, rid);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           lastError = classifyOpenAIError(err);
 
@@ -360,6 +362,7 @@ export class OpenAIProvider implements AIProvider {
           });
 
           controller.close();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (streamErr: any) {
           const classified = classifyOpenAIError(streamErr);
           logError('OpenAI Stream', classified, {
@@ -428,6 +431,7 @@ export class OpenAIProvider implements AIProvider {
           });
 
           return response.choices[0]?.message?.content || '';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           lastError = classifyOpenAIError(err);
 

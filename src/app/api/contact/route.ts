@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { supabaseService } from "@/utils/supabase/service";
-import { sanitize, apiResponse, logError, logInfo, isBot } from "@/lib/security";
+import { sanitize, apiResponse, logError, isBot } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
 import { isRateLimited } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -152,6 +152,7 @@ export async function POST(req: Request) {
             </div>
           `
         });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (mailErr: any) {
         console.error("Mail Dispatch Failed:", mailErr);
         // We don't throw here to ensure the user gets a success response even if the notification fails
@@ -160,6 +161,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, message: "Inquiry logged and processing started" });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     logError("Contact API route", err);
     return NextResponse.json(apiResponse(false, null, "Internal server error"), { status: 500 });

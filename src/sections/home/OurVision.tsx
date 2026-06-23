@@ -34,7 +34,7 @@ export default function OurVision() {
                   Ecosystem Focus
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  Building isolated apps isn't enough. We are creating an interconnected ecosystem where assets in one platform (like Vanik (PG)) seamlessly unlock benefits in another (like FriskFree).
+                  Building isolated apps isn&apos;t enough. We are creating an interconnected ecosystem where assets in one platform (like Vanik (PG)) seamlessly unlock benefits in another (like FriskFree).
                 </p>
               </CardBody>
             </Card>

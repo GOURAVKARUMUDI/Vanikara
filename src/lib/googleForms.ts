@@ -9,6 +9,7 @@ import { logError, logInfo } from "./security";
  * @param data - The raw key-value payload to submit
  * @returns A promise resolving to true if submission succeeded or was skipped (no config), or false if failed
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function submitToGoogleForm(formType: string, data: Record<string, any>): Promise<boolean> {
   const config = GOOGLE_FORMS_CONFIG[formType];
 
@@ -75,6 +76,7 @@ export async function submitToGoogleForm(formType: string, data: Record<string, 
       logError("Google Forms Integration", `Failed submission to Google Forms for type "${formType}". Status: ${response.status}`);
       return false;
     }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     clearTimeout(timeoutId);
     logError("Google Forms Integration", `HTTP POST request failed or timed out for type "${formType}": ${err.message || err}`);

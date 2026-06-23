@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Server, Database, Cpu, CreditCard, Globe, CheckCircle2, AlertTriangle, RefreshCw } from "lucide-react";
+import { Server, Database, Cpu, CreditCard, Globe, RefreshCw } from "lucide-react";
 import { FadeUp } from "@/components/Animate";
 
 interface ServiceNode {

@@ -5,7 +5,6 @@ import ProjectsScene from "@/components/projects/ProjectsScene";
 import { motion } from "framer-motion";
 import PageHero from "@/components/ui/PageHero";
 import Button from "@/components/ui/Button";
-import Card, { CardBody } from "@/components/ui/Card";
 import { FadeUp } from "@/components/Animate";
 import { Hammer, CheckCircle, Hourglass, ArrowRight } from "lucide-react";
 

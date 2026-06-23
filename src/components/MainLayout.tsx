@@ -24,27 +24,17 @@ const IntelligenceWorld = dynamic(() => import("@/three/world/IntelligenceWorld"
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAiPage = pathname === "/ai";
-  const { view, isTransitioning, sceneReady, setSceneReady, appRevealComplete } = useCygmaWorld();
+  const { view, sceneReady, setSceneReady, appRevealComplete } = useCygmaWorld();
   const { resolvedTheme } = useTheme();
   const { currentProfile } = usePerformance();
   const [showFlash, setShowFlash] = useState(false);
   const [reducedMotionState, setReducedMotionState] = useState<"user" | "always">("always");
-  const [isMobileDevice, setIsMobileDevice] = useState(true); // Optimistic mobile to avoid hydration mismatch
 
   const mainRoutes = ["/", "/about", "/projects", "/products", "/ai", "/login", "/careers", "/contact", "/dashboard", "/admin"];
   const showCanvas = mainRoutes.includes(pathname);
   const isPerformanceLow = currentProfile === "low" || currentProfile === "battery";
   const shouldRenderCanvas = showCanvas && !isPerformanceLow;
 
-
-
-  // Detect mobile viewport on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const mobile = window.innerWidth < 768;
-      setIsMobileDevice(mobile);
-    }
-  }, []);
 
   // Mark scene as ready immediately if canvas is bypassed to unblock state transition gates
   useEffect(() => {
@@ -78,7 +68,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     ) {
       navigator.serviceWorker
         .register("/sw.js")
-        .then((registration) => {
+        .then((_registration) => {
         })
         .catch((error) => {
           console.error("VANIKARA SW registration failed:", error);

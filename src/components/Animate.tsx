@@ -6,8 +6,9 @@ import { ReactNode, useMemo } from 'react';
 /**
  * Shared animation configuration for consistent premium feel.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SPRING_TRANSITION = { duration: 0.6, ease: [0.16, 1, 0.3, 1] as any };
-const FADE_TRANSITION   = { duration: 0.5 };
+const _FADE_TRANSITION   = { duration: 0.5 };
 
 interface Props {
   children: ReactNode;

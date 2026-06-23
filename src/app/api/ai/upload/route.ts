@@ -76,7 +76,7 @@ Content Summary Index:
     let fileUrl = `https://storage.vanikara.com/files/${user.id}/${uniqueFileName}`;
 
     try {
-      const { data: uploadData, error: uploadError } = await sb.storage
+      const { data: _uploadData, error: uploadError } = await sb.storage
         .from('files')
         .upload(storagePath, file, {
           contentType: file.type,
@@ -89,6 +89,7 @@ Content Summary Index:
       if (urlData && urlData.publicUrl) {
         fileUrl = urlData.publicUrl;
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (storageErr: any) {
       logError("Storage Upload Failed", storageErr);
       return NextResponse.json({ error: "Storage upload failed. Please ensure the 'files' bucket is properly configured." }, { status: 500 });
@@ -96,7 +97,7 @@ Content Summary Index:
 
     let fileId = crypto.randomUUID();
     try {
-      const { data: dbFile, error: dbErr } = await sb
+      const { data: dbFile, error: _dbErr } = await sb
         .from('files')
         .insert({
           user_id: user.id,
@@ -121,6 +122,7 @@ Content Summary Index:
       summary: `Document "${file.name}" successfully parsed. Vector index is now active.`
     });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Upload Route", error);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });

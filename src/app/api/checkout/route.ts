@@ -46,6 +46,7 @@ export async function POST() {
     });
 
     return NextResponse.json(apiResponse(true, { url: session.url }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Checkout API", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

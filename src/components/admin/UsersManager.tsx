@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Search, RefreshCw, UserCheck, Shield, Ban } from "lucide-react";
+import { Users, Search, RefreshCw } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 
 export default function UsersManager() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

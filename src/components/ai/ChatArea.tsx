@@ -2,10 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { 
-  Send, AlertCircle, Copy, Check, RotateCw, Square, MessageSquare, 
-  Terminal, Lightbulb, Mic, MicOff, Volume2, VolumeX, Download, UploadCloud 
+  Send, Copy, Check, RotateCw, Square, Lightbulb, Mic, MicOff, Volume2, VolumeX, Download, UploadCloud 
 } from "lucide-react";
-import Button from "@/components/ui/Button";
 
 interface Message {
   id: string;
@@ -61,7 +59,6 @@ const highlightSyntax = (code: string, lang: string): string => {
 
 export default function ChatArea({
   messages,
-  setMessages,
   streamingText,
   isStreaming,
   onSendMessage,
@@ -77,6 +74,7 @@ export default function ChatArea({
   // Voice speech states
   const [isListening, setIsListening] = useState(false);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
   // Drag-and-drop states
@@ -90,6 +88,7 @@ export default function ChatArea({
   // STT initialization on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         const rec = new SpeechRecognition();
@@ -97,6 +96,7 @@ export default function ChatArea({
         rec.interimResults = true;
         rec.lang = "en-IN"; // Default English India locale
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rec.onresult = (event: any) => {
           let text = "";
           for (let i = event.resultIndex; i < event.results.length; ++i) {

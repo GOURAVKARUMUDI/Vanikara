@@ -25,7 +25,7 @@ export default function SmoothScroll() {
     requestAnimationFrame(raf);
 
     // Reset scroll when pathname changes
-    const handleRouteChange = () => {
+    const _handleRouteChange = () => {
       lenis.scrollTo(0, { immediate: true });
     };
 

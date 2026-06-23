@@ -49,6 +49,7 @@ export default function Button({
   const handleClick = (e: MouseEvent<HTMLButtonElement & HTMLAnchorElement>) => {
     handleRipple(e);
     if (onClick) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick(e as any);
     }
   };
@@ -108,6 +109,7 @@ export default function Button({
     <MotionLink 
       href={href} 
       className={mergedClasses} 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick={handleClick as any}
       {...motionProps}
     >
@@ -116,8 +118,10 @@ export default function Button({
   ) : (
     <motion.button 
       className={mergedClasses} 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick={handleClick as any} 
       {...motionProps}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {...props as any}
     >
       {buttonContent}

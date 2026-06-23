@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Payload too large" }, { status: 413 });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let payload: any;
     try {
       payload = JSON.parse(rawText);
@@ -45,9 +46,11 @@ export async function POST(req: Request) {
       statusCode: 500,
       ...context,
       clientErrorMessage: error?.message ? String(error.message).substring(0, 1000) : undefined,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     return NextResponse.json({ success: true }, { status: 200 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }

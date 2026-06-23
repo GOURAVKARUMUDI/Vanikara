@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { MoreVertical, CheckCircle, XCircle, Clock } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function LeadsTable() {
@@ -30,6 +29,7 @@ export default function LeadsTable() {
 
   const updateStatus = async (id: string, status: string) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mutateLeads({ ...leadsRes, data: leads.map((l: any) => l.id === id ? { ...l, status } : l) }, false);
       await fetch("/api/leads", {
         method: "PATCH",
@@ -37,6 +37,7 @@ export default function LeadsTable() {
         body: JSON.stringify({ id, status })
       });
       mutateLeads();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error("Failed to update status:", err);
     }

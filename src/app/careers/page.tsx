@@ -5,7 +5,7 @@ import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
-import { Briefcase, Heart, BookOpen, Star, CheckCircle, Upload } from "lucide-react";
+import { Heart, BookOpen, Star, CheckCircle, Upload } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PageContainer, SectionContainer, ContentContainer, FormContainer } from "@/components/ui/Containers";
 
@@ -83,12 +83,13 @@ export default function CareersPage() {
             body: JSON.stringify(payload)
           });
           
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let resData: any = null;
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             try {
               resData = await response.json();
-            } catch (jsonErr) {
+            } catch (_jsonErr) {
               // Ignore json parse error here as we'll check response.ok next
             }
           }
@@ -107,6 +108,7 @@ export default function CareersPage() {
             coverLetter: ""
           });
           setFile(null);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (postErr: any) {
           const friendlyMsg = postErr.message.includes("is not valid JSON")
             ? "Server returned an invalid response. Please try again later."
@@ -120,6 +122,7 @@ export default function CareersPage() {
         setErrors("Failed to read file.");
         setStatus("idle");
       };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const friendlyMsg = err.message.includes("is not valid JSON")
         ? "Server returned an invalid response. Please try again later."

@@ -1,4 +1,4 @@
-import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
+import { StaggerGrid, StaggerItem } from '@/components/Animate';
 import Card, { CardBody } from '@/components/ui/Card';
 
 const SERVICES = [

@@ -34,6 +34,7 @@ export default function Sidebar({
   setIsOpen,
   isAuthenticated
 }: SidebarProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
@@ -294,7 +295,7 @@ export default function Sidebar({
 
           {!loading && conversations.length === 0 && isOpen && (
             <div className="text-[10px] text-[var(--text-secondary)] py-6 text-center italic leading-relaxed select-none">
-              No active threads. Let's initialize a new sequence.
+              No active threads. Let&apos;s initialize a new sequence.
             </div>
           )}
 

@@ -220,7 +220,9 @@ export default function NeuralNetwork({ nodeCount = 24 }) {
   const microPositions = useMemo(() => new Float32Array(microCount * 3), [microCount]);
 
   const maxLineVertices = uniqueConnections.length * 2;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const linePositions = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections, maxLineVertices]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const lineColors = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections, maxLineVertices]);
 
   const themeColor = useMemo(() => {

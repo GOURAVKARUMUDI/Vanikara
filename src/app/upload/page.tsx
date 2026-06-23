@@ -29,7 +29,7 @@ export default function UploadPage() {
       }
 
       const path = `${user.id}/${Date.now()}_${f.name}`;
-      const { data, error } = await sb.storage.from('files').upload(path, f);
+      const { _data, error } = await sb.storage.from('files').upload(path, f);
 
       if (error) {
         setS(error.message);
@@ -40,7 +40,8 @@ export default function UploadPage() {
         setS('File uploaded successfully! Our team will review it shortly.');
         setF(null);
       }
-    } catch (err: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (_err: any) {
       setS('An unexpected error occurred.');
       setIsError(true);
     } finally {

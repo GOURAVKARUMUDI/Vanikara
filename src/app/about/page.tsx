@@ -6,10 +6,10 @@ import PageHero from "@/components/ui/PageHero";
 import MissionSection from "@/sections/about/MissionSection";
 import TeamSection from "@/sections/about/TeamSection";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
+import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Linkedin, Mail, ExternalLink } from "lucide-react";
+import { Linkedin, ExternalLink } from "lucide-react";
 import InnovationTimeline from "@/sections/home/InnovationTimeline";
 import { PageContainer, SectionContainer, ContentContainer } from "@/components/ui/Containers";
 

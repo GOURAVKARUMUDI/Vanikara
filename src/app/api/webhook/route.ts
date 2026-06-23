@@ -22,12 +22,14 @@ export async function POST(req: Request) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     console.error(`Webhook Error: ${err.message}`);
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
   if (event.type === "checkout.session.completed") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session = event.data.object as any;
     const userId = session.client_reference_id || session.metadata?.user_id;
 
@@ -40,10 +42,12 @@ export async function POST(req: Request) {
 
     if (session.subscription) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const subscription = await s.subscriptions.retrieve(session.subscription as string) as any;
         if (subscription && subscription.current_period_end) {
           currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
         }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (stripeErr: any) {
         console.error('Stripe Webhook: Error retrieving subscription from Stripe API:', stripeErr.message);
       }

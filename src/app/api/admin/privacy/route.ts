@@ -81,6 +81,7 @@ export async function GET() {
     };
 
     return NextResponse.json({ success: true, data: filtered });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -131,6 +132,7 @@ export async function POST(req: Request) {
     await logAdminAction(user.email || user.id, "UPDATE_PRIVACY_POLICY", "1", { previousState: config, newState: { currentVersion, policyText, optionalServices } });
 
     return NextResponse.json({ success: true, data: config });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

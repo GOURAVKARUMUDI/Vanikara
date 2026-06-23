@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FadeUp } from "@/components/Animate";
-import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Send, Sparkles, Square, ArrowRight, Lightbulb } from "lucide-react";
+import { Send, Square, ArrowRight, Lightbulb } from "lucide-react";
 import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface Message {
@@ -57,7 +56,7 @@ export default function CygmaPreviewSection() {
       if (stored) {
         timestamps = JSON.parse(stored);
       }
-    } catch (e) {
+    } catch (_e) {
       timestamps = [];
     }
 
@@ -142,6 +141,7 @@ export default function CygmaPreviewSection() {
           { id: crypto.randomUUID(), role: "assistant", content: accumulated }
         ]);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.name !== "AbortError") {
         setMessages(prev => [

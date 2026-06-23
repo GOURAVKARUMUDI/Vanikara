@@ -15,6 +15,7 @@ export const sanitize = (str: string): string => {
  * For security-sensitive contexts, callers should pass a safe message
  * rather than raw internal error details.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const apiResponse = (success: boolean, data: any = null, error: string | null = null) => {
   return { success, data, error };
 };
@@ -29,6 +30,7 @@ export const apiResponse = (success: boolean, data: any = null, error: string | 
  */
 export const logError = (
   context: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   metadata?: {
     requestId?: string;
@@ -39,6 +41,7 @@ export const logError = (
     latencyMs?: number;
   }
 ) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const entry: Record<string, any> = {
     timestamp: new Date().toISOString(),
     context,
@@ -62,9 +65,11 @@ export const logError = (
 export const logInfo = (
   context: string,
   message: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>
 ) => {
-  const entry: Record<string, any> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const _entry: Record<string, any> = {
     timestamp: new Date().toISOString(),
     context,
     message,

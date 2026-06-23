@@ -15,6 +15,7 @@ interface PWAContextType {
 const PWAContext = createContext<PWAContextType | undefined>(undefined);
 
 export function PWAProvider({ children }: { children: React.ReactNode }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
@@ -27,6 +28,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
     // Check if app is running in standalone mode (already installed PWA)
     const isStandalone = 
       window.matchMedia("(display-mode: standalone)").matches || 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window.navigator as any).standalone === true;
 
     if (isStandalone) {
@@ -49,7 +51,9 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Check if a prompt was already captured by the layout head script
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).deferredPrompt) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setInstallPrompt((window as any).deferredPrompt);
       setIsInstallable(true);
       setPlatform("native");
@@ -61,6 +65,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       setInstallPrompt(e);
       setIsInstallable(true);
       setPlatform("native");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).deferredPrompt = e;
     };
 
@@ -69,6 +74,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       setIsInstalled(true);
       setIsInstallable(false);
       setInstallPrompt(null);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).deferredPrompt = null;
     };
 
@@ -122,6 +128,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       // Clear the stashed prompt regardless of outcome to avoid calling prompt() on an exhausted object
       setInstallPrompt(null);
       setIsInstallable(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).deferredPrompt = null;
 
       if (outcome === "accepted") {
@@ -133,6 +140,7 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       // Ensure we clear state on error to avoid double prompt attempts crashing the site
       setInstallPrompt(null);
       setIsInstallable(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).deferredPrompt = null;
     }
     

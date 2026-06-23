@@ -1,6 +1,5 @@
-import { FadeUp, StaggerGrid, StaggerItem } from '@/components/Animate';
+import { StaggerGrid, StaggerItem } from '@/components/Animate';
 import Card, { CardBody } from '@/components/ui/Card';
-import SectionHeader from '@/components/ui/SectionHeader';
 import { SectionContainer, ContentContainer } from '@/components/ui/Containers';
 
 const PILLARS = [

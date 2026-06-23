@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ChevronRight, ChevronLeft, FileText, HardDrive, Shield, Activity, Trash2, Upload, FileCheck, CheckCircle2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, FileText, Shield, Activity, Trash2, Upload } from "lucide-react";
 
 interface ContextPanelProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   files: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFiles: React.Dispatch<React.SetStateAction<any[]>>;
   activeContext: string;
   setActiveContext: (context: string) => void;
@@ -57,7 +59,7 @@ export default function ContextPanel({
       } else {
         setUploadStatus(data.error || "Failed upload.");
       }
-    } catch (err) {
+    } catch (_err) {
       setUploadStatus("Upload failed.");
     } finally {
       setUploading(false);

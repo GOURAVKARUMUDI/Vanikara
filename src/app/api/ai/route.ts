@@ -48,6 +48,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Parse and validate request body
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let body: any;
     try {
       body = await req.json();
@@ -96,12 +97,13 @@ export async function POST(req: Request) {
           .limit(20);
 
         if (dbMessages && dbMessages.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           conversationHistory = dbMessages.map((m: any) => ({
             role: m.sender_role as 'user' | 'assistant',
             content: m.content,
           }));
         }
-      } catch (histErr) {
+      } catch (_histErr) {
         logError('AI Route', 'Failed fetching conversation history', { requestId });
       }
     }
@@ -127,7 +129,7 @@ export async function POST(req: Request) {
         prompt: sPrompt,
         response: reply,
       });
-    } catch (dbErr) {
+    } catch (_dbErr) {
       logError('AI Route', 'Failed logging to ai_logs', { requestId });
     }
 
@@ -139,6 +141,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(apiResponse(true, { reply }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     const classified = e instanceof CygmaAIError ? e : null;
 

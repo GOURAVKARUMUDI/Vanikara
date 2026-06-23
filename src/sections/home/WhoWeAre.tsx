@@ -3,7 +3,6 @@
 import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Users, Code, Award } from "lucide-react";
 import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 export default function WhoWeAre() {

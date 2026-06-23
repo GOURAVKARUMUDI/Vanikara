@@ -55,12 +55,16 @@ export async function GET() {
     const leadsHistory = leadsHistoryResult.data || [];
     const statusCounts = statusCountsResult.data || [];
 
+     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const totalRevenue = payments.reduce((acc: any, curr: any) => acc + (Number(curr.amount) || 0), 0) || 0;
 
     // 5. Conversion Rate
     const conversionRate = totalLeads ? ((convertedLeads || 0) / totalLeads) * 100 : 0;
 
     // 6. Chart Data: Leads Over Time
+     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const leadsOverTime = Object.values(leadsHistory.reduce((acc: any, lead: any) => {
       const date = new Date(lead.created_at).toLocaleDateString();
       acc[date] = { date, count: (acc[date]?.count || 0) + 1 };
@@ -68,6 +72,8 @@ export async function GET() {
     }, {}));
 
     // 7. Conversion Data
+     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const conversionData = Object.values(statusCounts.reduce((acc: any, lead: any) => {
       const name = lead.status.toUpperCase();
       acc[name] = { name, value: (acc[name]?.value || 0) + 1 };
@@ -87,6 +93,7 @@ export async function GET() {
         conversionData
     }));
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Stats GET", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

@@ -141,6 +141,7 @@ export function PerformanceProvider({ children }: { children: React.ReactNode })
     if (typeof window === "undefined") return;
 
     const cores = navigator.hardwareConcurrency || 8;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const memory = (navigator as any).deviceMemory || 8;
     const dpr = window.devicePixelRatio || 1;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

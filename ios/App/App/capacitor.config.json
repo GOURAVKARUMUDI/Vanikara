@@ -1,0 +1,42 @@
+{
+	"appId": "com.vanikara.intelligence",
+	"appName": "VANIKARA Intelligence",
+	"webDir": "public",
+	"server": {
+		"url": "https://www.vanikara.com",
+		"cleartext": true,
+		"allowNavigation": [
+			"www.vanikara.com",
+			"*.supabase.co"
+		]
+	},
+	"plugins": {
+		"Keyboard": {
+			"resize": "body",
+			"resizeOnFullScreen": true
+		},
+		"SplashScreen": {
+			"launchShowDuration": 0,
+			"launchAutoHide": false,
+			"backgroundColor": "#1E6BD6",
+			"androidScaleType": "CENTER_CROP",
+			"showSpinner": false
+		},
+		"StatusBar": {
+			"overlaysWebView": true
+		}
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"DevicePlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"CAPNetworkPlugin",
+		"PreferencesPlugin",
+		"ScreenOrientationPlugin",
+		"SharePlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin"
+	]
+}

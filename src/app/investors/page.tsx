@@ -3,7 +3,7 @@
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { Building2, TrendingUp, Compass, Award } from "lucide-react";
+import { Building2, TrendingUp, Compass } from "lucide-react";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 
 const METADATA = [

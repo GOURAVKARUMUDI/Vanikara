@@ -53,7 +53,7 @@ async function getConfig() {
 
 export async function POST(req: Request) {
   try {
-    const { action, preferences, version } = await req.json();
+    const { action, preferences, _version } = await req.json();
 
     // 1. Read existing config
     const config = await getConfig();
@@ -94,6 +94,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

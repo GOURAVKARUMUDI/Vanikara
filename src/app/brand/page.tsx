@@ -2,7 +2,6 @@
 
 import PageHero from "@/components/ui/PageHero";
 import Card, { CardBody } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 import { Download, Palette, Type, Shield, Layout } from "lucide-react";
 import { FadeUp, StaggerGrid, StaggerItem } from "@/components/Animate";
 

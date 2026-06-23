@@ -5,8 +5,7 @@ import Image from "next/image";
 import { FadeUp } from "@/components/Animate";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileProductShowcase from "@/components/mobile/MobileProductShowcase";
-import Card, { CardBody } from "@/components/ui/Card";
-import { Sparkles, Home, Shield, Cpu, Code2, Play } from "lucide-react";
+import { Sparkles, Home, Play } from "lucide-react";
 import { SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
 interface ProductShowcaseItem {

@@ -14,6 +14,7 @@ interface Message {
 }
 
 interface MobileCygmaAIProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
   currentConvId: string | null;
   setCurrentConvId: (id: string | null) => void;
@@ -26,7 +27,9 @@ interface MobileCygmaAIProps {
   onSendMessage: (text: string) => Promise<void>;
   onStopGeneration: () => void;
   onNewChat: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   files: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFiles: React.Dispatch<React.SetStateAction<any[]>>;
   activeContext: string;
   setActiveContext: (context: string) => void;
@@ -34,7 +37,6 @@ interface MobileCygmaAIProps {
 }
 
 export default function MobileCygmaAI({
-  user,
   currentConvId,
   setCurrentConvId,
   selectedModel,

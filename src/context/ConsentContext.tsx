@@ -97,7 +97,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
           }
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Ignore background fetch errors
     }
   };
@@ -127,17 +127,19 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
           version: consentVersion
         })
       });
-    } catch (e) {
+    } catch (_e) {
       // Fail silently (local state persists)
     }
 
     // Trigger standard analytics initialization rules dynamically
     if (settings.analytics) {
       // E.g. trigger ga('consent', 'update', { 'analytics_storage': 'granted' })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).gtag?.("consent", "update", {
         analytics_storage: "granted"
       });
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).gtag?.("consent", "update", {
         analytics_storage: "denied"
       });

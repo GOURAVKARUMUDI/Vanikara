@@ -146,6 +146,8 @@ export default function GlassObjects() {
   const fragColor = isDark ? "#93c5fd" : "#e0f2fe";
 
   return (
+     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <instancedMesh ref={instancedMeshRef} args={[null as any, null as any, fragments.length]}>
       <dodecahedronGeometry args={[1]} />
       {config.useHeavyTransmission ? (

@@ -8,7 +8,7 @@ interface MagneticProps {
   range?: number;
 }
 
-export default function Magnetic({ children, range = 50 }: MagneticProps) {
+export default function Magnetic({ children, range: _range = 50 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 

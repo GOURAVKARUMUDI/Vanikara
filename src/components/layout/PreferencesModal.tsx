@@ -1,9 +1,9 @@
 "use client";
 
 import { useConsent, ConsentSettings } from "@/context/ConsentContext";
-import { usePerformance, usePerformanceFps, PerformanceOverride, PerformanceProfile } from "@/context/PerformanceContext";
+import { usePerformance, usePerformanceFps } from "@/context/PerformanceContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock, Eye, Cpu, Zap, Activity, ShieldCheck, Battery, Download } from "lucide-react";
+import { X, Lock, Activity, Download } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import { usePWA } from "@/hooks/usePWA";

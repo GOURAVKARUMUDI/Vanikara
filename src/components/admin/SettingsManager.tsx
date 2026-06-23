@@ -11,15 +11,14 @@ import {
   Moon, 
   RefreshCw, 
   AlertCircle, 
-  CheckCircle, 
-  Cpu,
-  Globe
+  CheckCircle
 } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 import { useTheme, AtmosphereMode, ThemeMode } from "@/components/layout/ThemeContext";
 
 export default function SettingsManager() {
   const { theme, resolvedTheme, atmosphere, setTheme } = useTheme();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbStatus, setDbStatus] = useState<any>(null);
   const [loadingDb, setLoadingDb] = useState(true);
   const [forcingAtmosphere, setForcingAtmosphere] = useState<AtmosphereMode | null>(null);

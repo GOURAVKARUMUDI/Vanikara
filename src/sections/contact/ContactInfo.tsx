@@ -2,7 +2,7 @@
 
 import React from "react";
 import Card, { CardBody } from "@/components/ui/Card";
-import { Mail, MapPin, Phone, Clock, Linkedin, Github } from "lucide-react";
+import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const ContactMap = dynamic(() => import("@/components/contact/ContactMap"), {

@@ -31,6 +31,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Clients GET", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -65,6 +66,7 @@ export async function PATCH(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "UPDATE_CLIENT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Clients PATCH", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -94,6 +96,7 @@ export async function DELETE(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "DELETE_CLIENT", id, { previousState });
     return NextResponse.json(apiResponse(true, { success: true }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Clients DELETE", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

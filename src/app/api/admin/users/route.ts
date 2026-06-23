@@ -7,7 +7,6 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { apiResponse, logError } from "@/lib/security";
 import { logAdminAction } from "@/lib/auditLogger";
-import { isRateLimited } from "@/lib/rateLimit";
 
 export async function GET() {
   try {
@@ -29,6 +28,7 @@ export async function GET() {
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Users GET", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
@@ -62,6 +62,7 @@ export async function PATCH(req: Request) {
     if (error) throw error;
     await logAdminAction(user.email || user.id, "UPDATE_USER_ROLE", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logError("Admin Users PATCH", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });

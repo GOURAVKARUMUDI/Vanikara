@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sun, Moon, Sparkles, User as UserIcon, LogOut, Download } from "lucide-react";
+import { Menu, X, LogOut, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { usePWA } from "@/hooks/usePWA";
 
 interface MobileNavbarProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
   handleLinkClick: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, href: string) => void;
   handleLogout: () => Promise<void>;
@@ -37,8 +38,6 @@ export default function MobileNavbar({
   handleLogout,
   cycleTheme,
   renderThemeIcon,
-  theme,
-  mounted,
   isAdminUser,
   navbarVisible
 }: MobileNavbarProps) {
@@ -247,6 +246,7 @@ export default function MobileNavbar({
                   className="w-full justify-center"
                   onClick={(e) => {
                     setMenuOpen(false);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     handleLinkClick(e as any, "/login");
                   }}
                 >

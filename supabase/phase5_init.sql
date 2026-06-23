@@ -56,10 +56,11 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 );
 
 -- 5. Audit Logs Table
-CREATE TABLE IF NOT EXISTS public.audit_logs (
+CREATE TABLE IF NOT EXISTS public.admin_audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  admin_id UUID REFERENCES auth.users(id),
+  admin_email TEXT NOT NULL,
   action TEXT NOT NULL,
+  target_id TEXT,
   details TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -69,7 +70,7 @@ ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.careers_applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- 6. RLS Policies
 
@@ -85,8 +86,8 @@ CREATE POLICY "Admins can manage products" ON public.products FOR ALL USING (
   EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
 );
 
--- Careers Applications: Admins can manage all, users can insert
-CREATE POLICY "Users can apply to careers" ON public.careers_applications FOR INSERT WITH CHECK (true);
+-- Careers Applications: Admins can manage all, users must use API
+-- Public inserts are disabled. All applications MUST go through the secure Next.js API route using the Service Role Key.
 CREATE POLICY "Admins can view careers" ON public.careers_applications FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
 );
@@ -102,7 +103,6 @@ CREATE POLICY "Admins can manage notifications" ON public.notifications FOR ALL 
 );
 
 -- Audit Logs: Admins only
-CREATE POLICY "Admins can view audit logs" ON public.audit_logs FOR SELECT USING (
+CREATE POLICY "Admins can view audit logs" ON public.admin_audit_logs FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
 );
-CREATE POLICY "System can log audits" ON public.audit_logs FOR INSERT WITH CHECK (true);

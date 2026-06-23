@@ -27,14 +27,58 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const { resolvedTheme } = useTheme();
   const { currentProfile } = usePerformance();
   const [showFlash, setShowFlash] = useState(false);
-  const [deferCanvas, setDeferCanvas] = useState(false);
+  const [deferCanvas, setDeferCanvas] = useState(true); // Start deferred to unblock LCP
   const [reducedMotionState, setReducedMotionState] = useState<"user" | "always">("always");
   const [isMobileDevice, setIsMobileDevice] = useState(true); // Optimistic mobile to avoid hydration mismatch
 
   const mainRoutes = ["/", "/about", "/projects", "/products", "/ai", "/login", "/careers", "/contact", "/dashboard", "/admin"];
   const showCanvas = mainRoutes.includes(pathname);
   const isPerformanceLow = currentProfile === "low" || currentProfile === "battery";
-  const shouldRenderCanvas = showCanvas && !isPerformanceLow;
+  const shouldRenderCanvas = showCanvas && !isPerformanceLow && !deferCanvas;
+
+  // Defer canvas initialization until browser is fully loaded and user interacts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let initialized = false;
+      const initCanvas = () => {
+        if (initialized) return;
+        initialized = true;
+        
+        // Use requestIdleCallback to avoid jitter when interaction happens
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(() => setDeferCanvas(false), { timeout: 1000 });
+        } else {
+          setTimeout(() => setDeferCanvas(false), 50);
+        }
+        
+        window.removeEventListener("scroll", initCanvas);
+        window.removeEventListener("touchstart", initCanvas);
+        window.removeEventListener("mousemove", initCanvas);
+        window.removeEventListener("keydown", initCanvas);
+      };
+      
+      const deferInit = () => {
+        window.addEventListener("scroll", initCanvas, { passive: true });
+        window.addEventListener("touchstart", initCanvas, { passive: true });
+        window.addEventListener("mousemove", initCanvas, { passive: true });
+        window.addEventListener("keydown", initCanvas, { passive: true });
+      };
+
+      if (document.readyState === "complete") {
+        deferInit();
+      } else {
+        window.addEventListener("load", deferInit);
+      }
+      
+      return () => {
+        window.removeEventListener("load", deferInit);
+        window.removeEventListener("scroll", initCanvas);
+        window.removeEventListener("touchstart", initCanvas);
+        window.removeEventListener("mousemove", initCanvas);
+        window.removeEventListener("keydown", initCanvas);
+      };
+    }
+  }, []);
 
   // Detect mobile viewport on mount
   useEffect(() => {
@@ -126,12 +170,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         )}
 
         {/* Dynamic UI Wrapper */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: sceneReady ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="flex flex-col min-h-screen bg-transparent relative w-full"
-        >
+        <div className="flex flex-col min-h-screen bg-transparent relative w-full z-10">
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--accent-color)] focus:text-white focus:rounded-xl focus:shadow-lg focus:outline-none"
@@ -160,20 +199,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             )}
           </AnimatePresence>
 
-          <motion.main
+          <main
             key={pathname}
             id="main-content"
-            initial={false}
-            animate={{ 
-              opacity: isTransitioning ? 0 : 1
-            }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="flex-grow pt-16 z-10 relative"
           >
             {children}
-          </motion.main>
+          </main>
           {!isAiPage && <Footer />}
-        </motion.div>
+        </div>
       </div>
     </MotionConfig>
   );

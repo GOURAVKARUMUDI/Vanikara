@@ -5,7 +5,7 @@ const { chromium } = require('@playwright/test');
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewportSize({ width: 412, height: 800 }); // Mobile viewport
-  await page.goto('http://localhost:3055');
+  await page.goto('http://localhost:3000');
   
   // Wait for page to settle
   await page.waitForTimeout(1000);

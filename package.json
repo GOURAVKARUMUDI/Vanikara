@@ -57,7 +57,8 @@
     "zod": "^4.4.3"
   },
   "overrides": {
-    "three": "$three"
+    "three": "$three",
+    "postcss": "^8.5.10"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",

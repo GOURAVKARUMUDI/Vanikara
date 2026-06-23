@@ -45,7 +45,13 @@ export default function CameraController() {
     const pointer = state.pointer; // Mouse position normalized [-1, 1]
     const aspect = size.width / size.height;
     const scrollOffset = typeof window !== "undefined" ? window.scrollY : 0;
-    const isMobile = aspect < 1;
+    
+    // Viewport Detection
+    const isMobile = size.width < 768;
+    const isTabletPortrait = size.width >= 768 && size.width < 1024 && aspect < 1;
+    const isTabletLandscape = size.width >= 768 && size.width < 1024 && aspect >= 1;
+    const isTablet = isTabletPortrait || isTabletLandscape;
+    const isDesktop = size.width >= 1024;
 
     // Responsive aspect multiplier
     const aspectModifier = aspect < 1 ? 1.0 + (1.0 - aspect) * 0.8 : 1.0;
@@ -72,7 +78,18 @@ export default function CameraController() {
           targetY = -0.35;
           targetZ = 10.5;
           targetLookY = -0.35;
+        } else if (isTabletPortrait) {
+          targetX = 0;
+          targetY = 0.2;
+          targetZ = 9.5;
+          targetLookY = 0.2;
+        } else if (isTabletLandscape) {
+          targetX = 0;
+          targetY = 0.3;
+          targetZ = 8.5;
+          targetLookY = 0.2;
         } else {
+          // Desktop
           targetX = 0;
           targetY = 0.4;
           targetZ = 7.5 * aspectModifier;
@@ -83,8 +100,8 @@ export default function CameraController() {
         useMouseParallax = !isMobile;
 
         // Apply scroll offsets for scrollytelling depth
-        const scrollZ = scrollOffset * (isMobile ? 0.003 : 0.004);
-        const scrollYOffset = -scrollOffset * (isMobile ? 0.0025 : 0.0035);
+        const scrollZ = scrollOffset * (isMobile ? 0.003 : isTablet ? 0.0035 : 0.004);
+        const scrollYOffset = -scrollOffset * (isMobile ? 0.0025 : isTablet ? 0.003 : 0.0035);
         targetZ += scrollZ;
         targetY += scrollYOffset;
         targetLookY += scrollYOffset * 0.25;

@@ -41,7 +41,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
   const [hasSetConsent, setHasSetConsent] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  
+
   // CMP Configs synced from the server configuration
   const [consentVersion, setConsentVersion] = useState("1.0.0");
   const [policyText, setPolicyText] = useState(
@@ -55,8 +55,32 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
 
   // Load policy configurations and user preferences on mount
   const loadConsentData = async () => {
+    // Immediately check local storage to prevent rendering delays
+    const stored = localStorage.getItem("cookie_consent_settings");
+    const storedVer = localStorage.getItem("cookie_consent_version");
+
+    if (stored) {
+      setConsent(JSON.parse(stored));
+      setHasSetConsent(true);
+      setShowBanner(false);
+    } else {
+      // Defer banner until first user interaction to prevent it from replacing the true LCP
+      const triggerBanner = () => {
+        setShowBanner(true);
+        window.removeEventListener("scroll", triggerBanner);
+        window.removeEventListener("touchstart", triggerBanner);
+        window.removeEventListener("mousemove", triggerBanner);
+        window.removeEventListener("keydown", triggerBanner);
+      };
+
+      window.addEventListener("scroll", triggerBanner, { passive: true });
+      window.addEventListener("touchstart", triggerBanner, { passive: true });
+      window.addEventListener("mousemove", triggerBanner, { passive: true });
+      window.addEventListener("keydown", triggerBanner, { passive: true });
+    }
+
+    // Fetch latest policy version from the admin privacy API in the background
     try {
-      // 1. Fetch latest policy version from the admin privacy API
       const res = await fetch("/api/admin/privacy");
       if (res.ok) {
         const body = await res.json();
@@ -64,32 +88,17 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
           setConsentVersion(body.data.currentVersion);
           setPolicyText(body.data.policyText);
           setOptionalServices(body.data.optionalServices);
-          
-          // Check local preferences
-          const stored = localStorage.getItem("cookie_consent_settings");
-          const storedVer = localStorage.getItem("cookie_consent_version");
-          
-          if (stored && storedVer === body.data.currentVersion) {
-            setConsent(JSON.parse(stored));
-            setHasSetConsent(true);
-            setShowBanner(false);
-          } else {
-            // No consent set or version changed -> trigger banner
-            setConsent(DEFAULT_CONSENT);
-            setHasSetConsent(false);
-            setShowBanner(true);
+
+          // If they consented to an older version, we might want to re-trigger the banner
+          // but for now we just update the text in case they open preferences.
+          if (stored && storedVer !== body.data.currentVersion) {
+            // Optional: trigger banner again for new version
+            // setShowBanner(true); 
           }
         }
       }
     } catch (e) {
-      // Fallback to local storage if API is offline
-      const stored = localStorage.getItem("cookie_consent_settings");
-      if (stored) {
-        setConsent(JSON.parse(stored));
-        setHasSetConsent(true);
-      } else {
-        setShowBanner(true);
-      }
+      // Ignore background fetch errors
     }
   };
 

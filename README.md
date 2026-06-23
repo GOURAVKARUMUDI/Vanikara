@@ -1,83 +1,116 @@
-# VANIKARA Intelligence Private Limited
+# VANIKARA Intelligence
 
-<div align="center">
+<p align="center">
+  <img src="./public/logo.png" alt="VANIKARA Intelligence" width="180"/>
+</p>
 
-# Engineering Tomorrow's Intelligent Digital Experiences
+<p align="center">
+  <strong>Building the Future of Intelligent Digital Experiences.</strong>
+</p>
 
-**Official Production Repository**
-
-Enterprise-grade AI Platform • Three.js Experience • CYGMA AI • Student Ecosystem • Intelligent Cloud Infrastructure
-
----
-
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![React](https://img.shields.io/badge/React-19-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Three.js](https://img.shields.io/badge/Three.js-R3F-black)
-![Supabase](https://img.shields.io/badge/Supabase-Database-green)
-![OpenAI](https://img.shields.io/badge/OpenAI-CYGMA_AI-orange)
-![License](https://img.shields.io/badge/Status-Production_Ready-success)
-
-</div>
+<p align="center">
+A production-grade Next.js platform integrating AI, enterprise management, secure authentication, real-time collaboration, and immersive 3D experiences into a unified ecosystem.
+</p>
 
 ---
 
 # Overview
 
-**VANIKARA Intelligence Private Limited** is an AI-first technology company focused on engineering intelligent digital experiences through immersive web technologies, cloud infrastructure, artificial intelligence, and scalable software platforms.
+VANIKARA Intelligence is the flagship digital platform developed by **VANIKARA Intelligence Private Limited**.
 
-This repository contains the complete production codebase powering:
+The platform combines modern web technologies with intelligent automation to provide:
 
-* Corporate Website
-* CYGMA AI Platform
-* Intelligent Student Services
-* Authentication System
-* Administrative Dashboard
-* CRM Workspace
-* Careers Portal
-* Contact Management
-* Analytics Platform
-* Payment Infrastructure
-* Future AI Products
+- AI-powered experiences
+- Student & client management
+- Project and product management
+- Real-time administration
+- Secure authentication
+- Interactive 3D visualization
+- Responsive mobile-first experience
+- Enterprise-grade backend infrastructure
 
 ---
 
-# Platform Architecture
+# Core Features
 
-```text
-                        VANIKARA PLATFORM
+## Intelligent Landing Experience
 
-                               │
-     ┌─────────────────────────┼─────────────────────────┐
-     │                         │                         │
-     ▼                         ▼                         ▼
+- Cinematic Three.js landing page
+- Dynamic Neural Network visualization
+- Premium glassmorphism UI
+- Responsive animations
+- Adaptive graphics engine
+- Intelligent loading system
+- Dynamic camera controller
 
-Corporate Website         CYGMA AI Platform       Admin Dashboard
+---
 
-     │                         │                         │
+## CYGMA AI
 
-     ▼                         ▼                         ▼
+Integrated AI workspace featuring:
 
-Hero Experience         AI Workspace           CRM Management
+- Conversational AI
+- Document upload
+- Streaming responses
+- Context-aware interactions
+- AI grounding support
+- Secure API architecture
 
-     │                         │                         │
+---
 
-     ▼                         ▼                         ▼
+## Authentication
 
-Authentication        OpenAI Integration      Analytics
+- Email & Password Authentication
+- Google OAuth
+- Secure session management
+- Protected routes
+- Role-Based Access Control (RBAC)
+- Server-side authentication
+- JWT session validation
 
-     │                         │                         │
+---
 
-     ▼                         ▼                         ▼
+## Admin Dashboard
 
-Supabase Database     Conversation Engine     Contact System
+Production-ready administration panel featuring:
 
-     │                         │                         │
+- User Management
+- Lead Management
+- Client Management
+- Career Applications
+- Project Management
+- Product Management
+- Analytics Dashboard
+- Audit Logs
+- Realtime synchronization
 
-     └─────────────────────────┼─────────────────────────┘
+---
 
-                           Cloud Infrastructure
-```
+## Contact & Careers
+
+Integrated systems for:
+
+- Contact Requests
+- Career Applications
+- Resume Upload
+- Google Forms Integration
+- Email Notifications
+- Admin Review Pipeline
+
+---
+
+## Mobile Experience
+
+Designed independently from desktop.
+
+Includes:
+
+- Mobile-first layouts
+- Native application feel
+- Optimized spacing
+- Touch-friendly interactions
+- Safe-area support
+- Capacitor Android packaging
 
 ---
 
@@ -85,200 +118,108 @@ Supabase Database     Conversation Engine     Contact System
 
 ## Frontend
 
-* Next.js App Router
-* React 19
-* TypeScript
-* Tailwind CSS
-* Framer Motion
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Framer Motion
 
 ---
 
-## Three.js Engine
+## Graphics
 
-* React Three Fiber
-* Three.js
-* Shared 3D World
-* Physically Based Rendering
-* Glass Materials
-* Dynamic Lighting
-* HDR Environment
-* Cinematic Camera
-* Neural Network Renderer
-* Floating Objects
-* Orbit Rings
-* Bloom Pipeline
-* Atmospheric Fog
+- Three.js
+- React Three Fiber
+- Custom GLSL Shaders
+- Instanced Rendering
+- Dynamic Lighting
+- GPU Optimizations
 
 ---
 
 ## Backend
 
-* Next.js API Routes
-* Server Components
-* Server Actions
-* REST APIs
+- Next.js App Router
+- Server Actions
+- Route Handlers
+- REST APIs
 
 ---
 
 ## Database
 
-Supabase
-
-* PostgreSQL
-* Authentication
-* Storage
-* Row Level Security
-* Realtime Database
+- Supabase PostgreSQL
+- Row Level Security (RLS)
+- Realtime Database
+- Supabase Storage
+- Database Triggers
 
 ---
 
 ## Authentication
 
-* Google OAuth
-* Microsoft OAuth
-* Email Login
-* Guest Preview
-* Protected Admin Access
+- Supabase Auth
+- Google OAuth
+- JWT Sessions
+- Secure Cookies
 
 ---
 
-## Artificial Intelligence
+## Infrastructure
 
-CYGMA AI Platform
-
-Powered by:
-
-* OpenAI API
-* Streaming Responses
-* Markdown Rendering
-* Code Highlighting
-* Chat History
-* Future Vector Search
-* Future RAG Pipeline
+- Vercel
+- Upstash Redis
+- Nodemailer
+- Google Forms
+- Capacitor Android
 
 ---
 
-## Cloud Services
+# Project Structure
 
-* Vercel
-* Supabase
-* Firebase
-* Gmail SMTP
-* Stripe
+```
+src/
+│
+├── app/
+├── components/
+├── contexts/
+├── hooks/
+├── lib/
+├── sections/
+├── three/
+├── utils/
+└── types/
 
----
+public/
 
-# Three.js World
+supabase/
 
-The website is powered by one synchronized Three.js universe.
+android/
 
-```text
-                Shared Three.js Universe
-
- ┌─────────────────────────────────────────────────────┐
-
-                 Glass Core Planet
-
-                 Neural Network
-
-                 Orbit Rings
-
-                 Floating AI Objects
-
-                 Dynamic Particles
-
-                 Ambient Fog
-
-                 HDR Lighting
-
-                 Bloom
-
-                 Cinematic Camera
-
- └─────────────────────────────────────────────────────┘
-
-                ▲                        ▲
-
-                │                        │
-
-        Hero Camera              Login Camera
-
-     Wide Cinematic          Close Cinematic
+scripts/
 ```
 
-Both Hero and Login pages use the same shared world with different camera presets to ensure visual consistency and seamless transitions.
-
 ---
 
-# Core Features
+# Architecture
 
-## Website
-
-* Responsive Landing Page
-* Dynamic Hero Section
-* Product Showcase
-* Company Timeline
-* Contact Page
-* Careers Page
-* AI Section
-* Cookie Consent
-* Accessibility Support
-
----
-
-## CYGMA AI
-
-* AI Chat
-* Real-time Streaming
-* Markdown Support
-* Code Rendering
-* Thread History
-* Guest Access
-* Authentication
-* Export Conversations
-* Voice Input (Future)
-* RAG Support (Future)
-
----
-
-## Admin Dashboard
-
-* CRM Dashboard
-* Contact Management
-* Career Applications
-* Analytics
-* AI Usage
-* User Administration
-* Internal Notes
-
----
-
-## Contact Platform
-
-* Contact Forms
-* SMTP Email Delivery
-* Admin Notifications
-* Inquiry Tracking
-
----
-
-## Careers Portal
-
-* Resume Upload
-* Applicant Tracking
-* Status Management
-* Admin Review
-
----
-
-## Payment System
-
-Stripe Integration
-
-* Checkout
-* Future Subscriptions
-* Payment Verification
-* Secure Webhooks
+```
+                    Client
+                       │
+                Next.js App Router
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+ Authentication      APIs          Three.js
+      │                │                │
+      │         Supabase DB       Graphics Engine
+      │                │                │
+      └───────────────┼────────────────┘
+                      │
+                Admin Dashboard
+                      │
+               Realtime Updates
+```
 
 ---
 
@@ -286,301 +227,253 @@ Stripe Integration
 
 The platform follows modern security practices.
 
-* Row Level Security (RLS)
-* API Rate Limiting
-* Secure Authentication
-* HTTP Security Headers
-* Content Security Policy
-* Permissions Policy
-* Cookie Consent Manager
-* Session Validation
-* Environment Variable Isolation
+## Authentication
+
+- JWT Authentication
+- Secure Sessions
+- Protected Routes
+- Google OAuth
+
+---
+
+## Authorization
+
+- Role-Based Access Control
+- Admin-only APIs
+- Route Protection
+- Server-side Validation
+
+---
+
+## Database
+
+- Row Level Security
+- Foreign Keys
+- Secure Policies
+- Cascading Relations
+
+---
+
+## API Security
+
+- Rate Limiting
+- Zod Validation
+- DOMPurify Sanitization
+- Magic Bytes File Validation
+- Secure Upload Pipeline
+
+---
+
+## HTTP Security
+
+- CSP Headers
+- Secure Cookies
+- HTTPS
+- CORS Protection
 
 ---
 
 # Performance
 
-The application is optimized for smooth production deployment.
+Optimizations include:
 
-* Shared Three.js Scene
-* Dynamic Imports
-* Lazy Loading
-* Object Pooling
-* Buffer Reuse
-* Shader Warm-Up
-* Static Geometry Allocation
-* Optimized Rendering
-* Zero Garbage Allocations
-* Cached Textures
-* Smooth 60 FPS Animations
+- Dynamic Imports
+- Code Splitting
+- Lazy Loading
+- GPU Resource Disposal
+- Shader Pre-compilation
+- Adaptive Rendering
+- Optimized Bundle Size
+- Image Optimization
+- Responsive Graphics
 
 ---
 
-# Accessibility
+# Responsive Design
 
-Designed according to WCAG 2.2 AA guidelines.
+Optimized independently for:
 
-* Keyboard Navigation
-* Skip Links
-* Screen Reader Support
-* ARIA Labels
-* Focus Indicators
-* Reduced Motion Support
-* Responsive Typography
-* High Contrast Themes
+- Desktop
+- Laptop
+- Tablet
+- Foldables
+- Mobile
+- Dynamic Aspect Ratios
+
+Each platform has its own layout strategy while maintaining the same visual identity.
+
+---
+
+# Android Application
+
+The project includes native Android packaging using Capacitor.
+
+Features:
+
+- Native Splash Screen
+- Safe Area Support
+- Keyboard Handling
+- Native Navigation
+- Android App Bundle (AAB)
 
 ---
 
 # Development
 
-## Install
+Install dependencies
 
 ```bash
 npm install
 ```
 
----
-
-## Start Development Server
+Run development server
 
 ```bash
 npm run dev
 ```
 
----
-
-## Production Build
+Build production
 
 ```bash
 npm run build
 ```
 
----
-
-## Lint
+Lint
 
 ```bash
 npm run lint
 ```
 
----
-
-## Type Checking
+Type Check
 
 ```bash
-npm run type-check
-```
-
----
-
-## End-to-End Tests
-
-```bash
-npm run test:e2e
-```
-
----
-
-## AI Backend Validation
-
-```bash
-npx tsx scripts/test-ai-backend.ts
-```
-
----
-
-## Validation Suite
-
-```bash
-npm run test:validate
+npx tsc --noEmit
 ```
 
 ---
 
 # Environment Variables
 
-Configure the following services before deployment.
+Create a `.env.local`
 
-## Database
+Required variables include:
 
-* DATABASE_URL
-* NEXT_PUBLIC_SUPABASE_URL
-* NEXT_PUBLIC_SUPABASE_ANON_KEY
-* SUPABASE_SERVICE_ROLE_KEY
+```env
+NEXT_PUBLIC_SUPABASE_URL=
 
----
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
-## OpenAI
+SUPABASE_SERVICE_ROLE_KEY=
 
-* OPENAI_API_KEY
+OPENAI_API_KEY=
 
----
+SMTP_HOST=
 
-## Firebase
+SMTP_PORT=
 
-* NEXT_PUBLIC_FIREBASE_API_KEY
-* NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-* NEXT_PUBLIC_FIREBASE_PROJECT_ID
-* NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-* NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-* NEXT_PUBLIC_FIREBASE_APP_ID
-* NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+SMTP_USER=
 
----
+SMTP_PASS=
 
-## Stripe
+UPSTASH_REDIS_REST_URL=
 
-* STRIPE_SECRET_KEY
-* STRIPE_WEBHOOK_SECRET
+UPSTASH_REDIS_REST_TOKEN=
+```
 
 ---
 
-## SMTP
+# Quality Assurance
 
-* SMTP_HOST
-* SMTP_PORT
-* SMTP_USER
-* SMTP_PASSWORD
+Before every deployment:
+
+```bash
+npm run lint
+
+npx tsc --noEmit
+
+npm run build
+```
+
+Recommended:
+
+- Lighthouse Desktop
+- Lighthouse Mobile
+- Playwright E2E
+- Manual Mobile Testing
 
 ---
 
-## Website
+# Deployment
 
-* NEXT_PUBLIC_SITE_URL
+Production deployment is hosted on:
 
----
+- Vercel
+- Supabase
+- Upstash Redis
 
-# Deployment Pipeline
+Deployment workflow:
 
-```text
-Developer
+```
+GitHub
 
-    │
+↓
 
-    ▼
+Vercel
 
-GitHub Repository
+↓
 
-    │
+Build
 
-    ▼
+↓
 
-GitHub Actions
+Deploy
 
-    │
-
-    ▼
-
-Type Check
-
-    │
-
-    ▼
-
-Lint
-
-    │
-
-    ▼
-
-Production Build
-
-    │
-
-    ▼
-
-Playwright Tests
-
-    │
-
-    ▼
-
-Vercel Deployment
-
-    │
-
-    ▼
-
-Health Checks
-
-    │
-
-    ▼
+↓
 
 Production
 ```
 
 ---
 
-# Project Structure
+# Current Status
 
-```text
-src/
+Current Version:
 
- ├── app/
- ├── api/
- ├── components/
- ├── three/
- ├── context/
- ├── hooks/
- ├── layouts/
- ├── lib/
- ├── services/
- ├── styles/
- ├── types/
- └── utils/
-```
+**Version 1.0**
+
+Status:
+
+**Production Ready**
 
 ---
 
 # Roadmap
 
-Upcoming platform enhancements include:
+Future enhancements include:
 
-* Multi-model AI Router
-* Vector Database Integration
-* Retrieval-Augmented Generation (RAG)
-* Team Collaboration
-* AI Agents
-* Enterprise Workspace
-* API Marketplace
-* AI Automation Flows
-* Mobile Applications
-* Analytics Platform 2.0
-
----
-
-# Contributing
-
-This repository is maintained by **VANIKARA Intelligence Private Limited**.
-
-Contributors should:
-
-* Follow the project architecture.
-* Maintain coding standards.
-* Write production-ready code.
-* Preserve accessibility compliance.
-* Optimize for performance.
-* Test all changes before merging.
+- AI Memory Engine
+- AI Agents
+- Workflow Automation
+- Advanced Analytics
+- Team Collaboration
+- Multi-Tenant Organizations
+- AI Document Intelligence
+- Native Desktop Application
 
 ---
 
 # License
 
-Copyright © VANIKARA Intelligence Private Limited.
+Copyright © 2026
 
-All rights reserved.
+**VANIKARA Intelligence Private Limited**
 
-Unauthorized copying, modification, redistribution, or commercial use of this software without written permission from VANIKARA Intelligence Private Limited is prohibited.
+All Rights Reserved.
 
 ---
 
-<div align="center">
+# Developed By
 
-## VANIKARA Intelligence Private Limited
+**VANIKARA Intelligence Private Limited**
 
-### Engineering Tomorrow's Intelligent Digital Experiences
-
-Built with ❤️ using Next.js, React, Three.js, Supabase, OpenAI, and modern cloud technologies.
-
-</div>
+Building Intelligent Digital Experiences.

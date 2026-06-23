@@ -443,7 +443,7 @@ Current Version:
 
 Status:
 
-**Production Ready**
+**Release Candidate (v1.0 RC1)**
 
 ---
 

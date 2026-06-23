@@ -220,8 +220,8 @@ export default function NeuralNetwork({ nodeCount = 24 }) {
   const microPositions = useMemo(() => new Float32Array(microCount * 3), [microCount]);
 
   const maxLineVertices = uniqueConnections.length * 2;
-  const linePositions = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections]);
-  const lineColors = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections]);
+  const linePositions = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections, maxLineVertices]);
+  const lineColors = useMemo(() => new Float32Array(maxLineVertices * 3), [uniqueConnections, maxLineVertices]);
 
   const themeColor = useMemo(() => {
     return new THREE.Color(isDark ? "#4f46e5" : "#60a5fa");

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FadeUp } from "@/components/Animate";
 import Badge from "@/components/ui/Badge";
 import Card, { CardBody } from "@/components/ui/Card";
@@ -96,7 +97,7 @@ export default function FlagshipProduct() {
           <div className="lg:col-span-7 space-y-6">
             <FadeUp delay={0.15}>
               <div className="relative overflow-hidden rounded-[2.5rem] border border-[var(--glass-border)] bg-[var(--glass-bg)] p-3 shadow-2xl backdrop-blur-md">
-                <img
+                <Image
                   src="/images/vanik_mockup.png"
                   alt="Vanik App Showcase"
                   className="w-full h-auto rounded-[2rem] object-cover"

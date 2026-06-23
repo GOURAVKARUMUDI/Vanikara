@@ -215,7 +215,7 @@ export default function CygmaPreviewSection() {
                 CYGMA AI sandbox
               </h2>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                Interact with the real-time AI core powering VANIKARA's logistics and automation systems. Ask anything directly. No registration required.
+                Interact with the real-time AI core powering VANIKARA&apos;s logistics and automation systems. Ask anything directly. No registration required.
               </p>
             </FadeUp>
 

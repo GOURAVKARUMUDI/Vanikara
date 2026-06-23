@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
 
@@ -99,9 +100,11 @@ export default function MobileProductShowcase({ products }: MobileProductShowcas
             <div className="mt-2 w-full">
               {prod.mockupUrl ? (
                 <div className="relative overflow-hidden rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] p-1.5 shadow-sm w-full max-w-full">
-                  <img
+                  <Image
                     src={prod.mockupUrl}
                     alt={`${prod.title} Mockup`}
+                    width={500}
+                    height={380}
                     className="w-full h-[120px] rounded-lg object-cover"
                   />
                 </div>
@@ -117,7 +120,7 @@ export default function MobileProductShowcase({ products }: MobileProductShowcas
                     <span className="text-[7px] text-slate-600 uppercase tracking-wider">cygma-node</span>
                   </div>
                   <div className="space-y-1 py-1 flex-grow text-[8px] leading-tight">
-                    <p className="text-slate-600">&gt; fetch("/api/ai/stream")</p>
+                    <p className="text-slate-600">&gt; fetch(&quot;/api/ai/stream&quot;)</p>
                     <p className="text-emerald-500">✔ Connected to gateway</p>
                     <p className="text-indigo-300">&gt; Stream chunk index: #0492</p>
                   </div>

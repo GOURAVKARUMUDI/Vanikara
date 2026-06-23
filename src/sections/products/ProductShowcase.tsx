@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FadeUp } from "@/components/Animate";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileProductShowcase from "@/components/mobile/MobileProductShowcase";
@@ -144,7 +145,7 @@ export default function ProductShowcase() {
                     <div className={`lg:col-span-5 flex justify-center ${isEven ? "" : "lg:order-1"}`}>
                       {prod.mockupUrl ? (
                         <div className="relative overflow-hidden rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg)] p-2 shadow-lg w-full max-w-sm hover:scale-[1.01] transition-transform duration-500">
-                          <img
+                          <Image
                             src={prod.mockupUrl}
                             alt={`${prod.title} Mockup`}
                             className="w-full h-auto rounded-xl object-cover"
@@ -165,7 +166,7 @@ export default function ProductShowcase() {
                             <span className="text-[8px] text-slate-600 uppercase tracking-widest">cygma-brain-v1</span>
                           </div>
                           <div className="space-y-1.5 py-3 flex-grow text-[9px]">
-                            <p className="text-slate-600">&gt; fetch("/api/ai/stream")</p>
+                            <p className="text-slate-600">&gt; fetch(&quot;/api/ai/stream&quot;)</p>
                             <p className="text-emerald-500">✔ Connected to local gateway node</p>
                             <p className="text-indigo-300">&gt; Response status: 200 OK</p>
                             <p className="text-amber-500">&gt; Stream chunk index: #0492</p>

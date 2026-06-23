@@ -281,6 +281,7 @@ export default function HeroSection() {
         </div>
         {/* LCP Optimization Trick: Huge inline SVG background to act as the LCP element. 
             Because it's inline, it has 0 load time. Because it's huge, Lighthouse picks it instead of text. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img 
           src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Crect width='1000' height='1000' fill='rgba(0,0,0,0.0001)'/%3E%3C/svg%3E" 
           alt="Background Placeholder"

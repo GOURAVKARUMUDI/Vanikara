@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import ProjectsScene from "@/components/projects/ProjectsScene";
 import { motion } from "framer-motion";
@@ -164,7 +165,7 @@ export default function ProjectsPage() {
                 <FadeUp className="w-full">
                   {project.mockupUrl ? (
                     <div className="relative overflow-hidden rounded-[2rem] border border-[var(--glass-border)] bg-[var(--glass-bg)] p-3 shadow-xl hover:scale-[1.02] transition-transform duration-500">
-                      <img
+                      <Image
                         src={project.mockupUrl}
                         alt={`${project.title} App Mockup`}
                         className="w-full h-auto rounded-[1.6rem] object-cover"

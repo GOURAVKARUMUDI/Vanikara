@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import AboutScene from "@/components/about/AboutScene";
 import PageHero from "@/components/ui/PageHero";
@@ -64,7 +65,7 @@ export default function AboutPage() {
         <ContentContainer className="max-w-4xl">
           <FadeUp>
             <p className="text-lg sm:text-2xl leading-relaxed text-[var(--text-primary)] font-medium italic">
-              "Our mission is to simplify student life by building practical digital tools that solve everyday challenges — from accessing resources to finding the right place to stay."
+              &quot;Our mission is to simplify student life by building practical digital tools that solve everyday challenges — from accessing resources to finding the right place to stay.&quot;
             </p>
           </FadeUp>
         </ContentContainer>
@@ -110,10 +111,11 @@ export default function AboutPage() {
                     <div>
                       {/* Professional Portrait Image */}
                       <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-6 border border-[var(--glass-border)] shadow-md group">
-                        <img 
+                        <Image 
                           src={founder.imgUrl} 
                           alt={`${founder.name} Profile`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
@@ -127,7 +129,7 @@ export default function AboutPage() {
                       
                       <div className="space-y-4 text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
                         <p><strong>Biography:</strong> {founder.bio}</p>
-                        <p><strong>Core Vision:</strong> "{founder.vision}"</p>
+                        <p><strong>Core Vision:</strong> &quot;{founder.vision}&quot;</p>
                         <p><strong>Responsibilities:</strong> {founder.responsibilities}</p>
                       </div>
                     </div>

@@ -4,7 +4,6 @@ import Image from "next/image";
 import AboutScene from "@/components/about/AboutScene";
 import PageHero from "@/components/ui/PageHero";
 import MissionSection from "@/sections/about/MissionSection";
-import TeamSection from "@/sections/about/TeamSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { FadeUp } from "@/components/Animate";
 import Card, { CardBody } from "@/components/ui/Card";
@@ -15,33 +14,33 @@ import { PageContainer, SectionContainer, ContentContainer } from "@/components/
 
 const FOUNDERS = [
   {
-    name: "Mirayla Giri Charan",
-    role: "Co-Founder & Product Director",
+    name: "Miryala Giri Charan",
+    role: "Co-Founder & Communication and Marketing Director",
     imgUrl: "/images/mirayla_avatar.png",
-    bio: "Passionate about user validation, project scoping, and scaling campus-scale applications.",
-    vision: "To structure student logistics into zero-friction automated tools.",
-    responsibilities: "Product roadmap, user validation, wireframing, feature design.",
-    linkedin: "https://linkedin.com",
+    bio: "Specializes in brand positioning, public relations, and strategic communications to amplify VANIKARA's outreach across campus ecosystems.",
+    vision: "To establish transparent, compelling brand narratives that connect students directly with essential digital tools.",
+    responsibilities: "Brand strategy, media outreach, campaign design, user communications.",
+    linkedin: "https://www.linkedin.com/in/giri-charan-miriyala-81a75336b/",
     color: "#1E6BD6"
   },
   {
     name: "Gourav Karumudi",
-    role: "Co-Founder & Technical Lead",
+    role: "Co-Founder & Technical Director",
     imgUrl: "/images/gourav_avatar.png",
-    bio: "Full-stack engineer focusing on secure system schemas, database scaling, and modular React architectures.",
-    vision: "To build bulletproof web frameworks that support high-density campus usage.",
-    responsibilities: "Technical architecture, database optimization, security models.",
-    linkedin: "https://linkedin.com",
+    bio: "Leads overall software engineering, system architecture, database optimization, and cloud infrastructure for high-scale digital platforms.",
+    vision: "To build resilient, high-performance technology frameworks engineered for enterprise-grade reliability and seamless user experience.",
+    responsibilities: "System architecture, engineering strategy, database scaling, platform security.",
+    linkedin: "https://www.linkedin.com/in/gourav-karumudi-a998b1379/",
     color: "#FF7A00"
   },
   {
-    name: "Chejarala Hari Charan Reddy",
-    role: "Co-Founder & Growth Lead",
+    name: "Chejarla Hari Charan Reddy",
+    role: "Co-Founder & Growth and Client Director",
     imgUrl: "/images/chejarala_avatar.png",
-    bio: "Expertise in community outreach, local host connections, and public relations.",
-    vision: "To onboard every local student hub into the VANIKARA ecosystem.",
-    responsibilities: "Strategic partnerships, student rep onboarding, branding campaigns.",
-    linkedin: "https://linkedin.com",
+    bio: "Drives business development, client relationship management, and strategic partner onboarding to expand market presence.",
+    vision: "To foster long-term client partnerships and scale operational adoption across key regional hubs.",
+    responsibilities: "Client success, strategic partnerships, market expansion, business operations.",
+    linkedin: "https://www.linkedin.com/in/haricharan28/",
     color: "#8B5CF6"
   }
 ];
@@ -186,8 +185,6 @@ export default function AboutPage() {
           </FadeUp>
         </ContentContainer>
       </SectionContainer>
-
-      <TeamSection />
     </PageContainer>
   );
 }

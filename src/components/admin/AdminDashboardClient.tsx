@@ -105,19 +105,19 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Vision & Ideation</span>
-                    <p className="text-[var(--text-primary)] font-bold text-base">Mirayla Giri Charan</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Founding partner focused on product scoping and roadmap wireframes.</p>
+                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Communication & Marketing</span>
+                    <p className="text-[var(--text-primary)] font-bold text-base">Miryala Giri Charan</p>
+                    <p className="text-[var(--text-secondary)] text-xs">Communication and Marketing Director leading brand positioning and strategic outreach.</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Technical Execution</span>
+                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Technical Architecture</span>
                     <p className="text-[var(--text-primary)] font-bold text-base">Gourav Karumudi</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Founding partner focused on secure React systems and database setups.</p>
+                    <p className="text-[var(--text-secondary)] text-xs">Technical Director leading system architecture, cloud engineering, and platform security.</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Marketing & Growth</span>
-                    <p className="text-[var(--text-primary)] font-bold text-base">Chejarala Hari Charan Reddy</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Founding partner focused on partner campaigns and student onboarding.</p>
+                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Growth & Client Relations</span>
+                    <p className="text-[var(--text-primary)] font-bold text-base">Chejarla Hari Charan Reddy</p>
+                    <p className="text-[var(--text-secondary)] text-xs">Growth and Client Director driving client success, partnerships, and market expansion.</p>
                   </div>
                 </div>
               </div>

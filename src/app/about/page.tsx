@@ -16,7 +16,6 @@ const FOUNDERS = [
   {
     name: "Miryala Giri Charan",
     role: "Co-Founder & Communication and Marketing Director",
-    imgUrl: "/images/mirayla_avatar.png",
     bio: "Specializes in brand positioning, public relations, and strategic communications to amplify VANIKARA's outreach across campus ecosystems.",
     vision: "To establish transparent, compelling brand narratives that connect students directly with essential digital tools.",
     responsibilities: "Brand strategy, media outreach, campaign design, user communications.",
@@ -26,7 +25,6 @@ const FOUNDERS = [
   {
     name: "Gourav Karumudi",
     role: "Co-Founder & Technical Director",
-    imgUrl: "/images/gourav_avatar.png",
     bio: "Leads overall software engineering, system architecture, database optimization, and cloud infrastructure for high-scale digital platforms.",
     vision: "To build resilient, high-performance technology frameworks engineered for enterprise-grade reliability and seamless user experience.",
     responsibilities: "System architecture, engineering strategy, database scaling, platform security.",
@@ -36,7 +34,6 @@ const FOUNDERS = [
   {
     name: "Chejarla Hari Charan Reddy",
     role: "Co-Founder & Growth and Client Director",
-    imgUrl: "/images/chejarala_avatar.png",
     bio: "Drives business development, client relationship management, and strategic partner onboarding to expand market presence.",
     vision: "To foster long-term client partnerships and scale operational adoption across key regional hubs.",
     responsibilities: "Client success, strategic partnerships, market expansion, business operations.",
@@ -86,7 +83,7 @@ export default function AboutPage() {
                   Today, VANIKARA is growing into an established technology company focused on practical technology solutions and future digital experiences. Each founder contributes a unique strength to the company—from vision and product thinking to development and growth—forming a balanced and execution-focused team.
                 </p>
                 <div className="border-l-4 border-[var(--accent-color)] pl-6 py-2 my-8 font-semibold text-[var(--text-primary)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-r-2xl">
-                  We believe in building transparently in public. Every line of code,PG inspection, and print routing is vetted by actual user testing on local campuses.
+                  We believe in building transparently in public. Every line of code and feature is vetted by actual user testing on local campuses.
                 </div>
               </div>
             </FadeUp>
@@ -96,7 +93,7 @@ export default function AboutPage() {
 
       <MissionSection />
 
-      {/* Founders Section */}
+      {/* Founders Section - WITHOUT PHOTOS */}
       <SectionContainer id="founders">
         <ContentContainer>
           <FadeUp>
@@ -108,17 +105,6 @@ export default function AboutPage() {
                 <Card hover className="h-full relative flex flex-col justify-between overflow-hidden">
                   <CardBody className="p-8 flex flex-col justify-between h-full space-y-6">
                     <div>
-                      {/* Professional Portrait Image */}
-                      <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-6 border border-[var(--glass-border)] shadow-md group">
-                        <Image 
-                          src={founder.imgUrl} 
-                          alt={`${founder.name} Profile`}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500" 
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-
                       <h3 className="font-display font-black text-xl text-[var(--text-primary)] mb-1">
                         {founder.name}
                       </h3>
@@ -167,7 +153,7 @@ export default function AboutPage() {
                 Ecosystem Collaborations
               </h2>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                VANIKARA is collaborating with <strong>Barg Technologies</strong> to support upcoming projects and expand technical and operational capabilities. This strategic alignment helps accelerate pg verifications and print distribution networks.
+                VANIKARA is collaborating with <strong>Barg Technologies</strong> to support upcoming projects and expand technical and operational capabilities.
               </p>
               <div className="pt-4">
                 <Button 

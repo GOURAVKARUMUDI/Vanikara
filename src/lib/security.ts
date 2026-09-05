@@ -10,6 +10,50 @@ export const sanitize = (str: string): string => {
 };
 
 /**
+ * Alias for sanitize - used by SecureForm component
+ */
+export const sanitizeInput = (str: string): string => {
+  return sanitize(str);
+};
+
+/**
+ * Validate payload for security threats (XSS, injection, etc.)
+ */
+export const validatePayload = (
+  payload: Record<string, any>
+): { isSafe: boolean; threats: string[] } => {
+  const threats: string[] = [];
+  const xssPatterns = [
+    /<script[^>]*>.*?<\/script>/gi,
+    /javascript:/gi,
+    /on\w+\s*=/gi,
+    /<iframe/gi,
+    /<object/gi,
+    /<embed/gi,
+  ];
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      xssPatterns.forEach((pattern) => {
+        if (pattern.test(value)) {
+          threats.push(`Potential XSS in field: ${key}`);
+        }
+      });
+
+      // Check for SQL injection patterns
+      if (/('|(--)|;|\/\*|\*\/|(xp_|sp_))/gi.test(value)) {
+        threats.push(`Potential SQL injection in field: ${key}`);
+      }
+    }
+  });
+
+  return {
+    isSafe: threats.length === 0,
+    threats,
+  };
+};
+
+/**
  * Unified API response formatter.
  * Returns the actual user-facing error string passed to the function.
  * For security-sensitive contexts, callers should pass a safe message
@@ -75,7 +119,6 @@ export const logInfo = (
     message,
     ...metadata,
   };
-
 };
 
 /**
@@ -83,4 +126,45 @@ export const logInfo = (
  */
 export const isBot = (honeypot: string): boolean => {
   return honeypot.length > 0;
+};
+
+/**
+ * Detect threats in a given string and return risk score and classification
+ */
+export const detectThreat = (
+  input: string
+): { score: number; classification: string } => {
+  if (typeof input !== 'string') {
+    return { score: 0, classification: 'safe' };
+  }
+
+  let score = 0;
+
+  // XSS patterns
+  if (/<script[^>]*>.*?<\/script>/gi.test(input)) score += 100;
+  if (/javascript:/gi.test(input)) score += 80;
+  if (/on\w+\s*=/gi.test(input)) score += 70;
+  if (/<iframe/gi.test(input)) score += 90;
+  if (/<object|<embed/gi.test(input)) score += 85;
+
+  // SQL injection patterns
+  if (/('|(--)|;|\/\*|\*\/)/gi.test(input)) score += 60;
+  if (/(xp_|sp_)/gi.test(input)) score += 75;
+
+  // Path traversal
+  if (/\.\.\//gi.test(input)) score += 50;
+
+  // Command injection
+  if (/[;&|`$()]/g.test(input)) score += 40;
+
+  // Normalize score to 0-100
+  const normalizedScore = Math.min(100, score);
+
+  let classification = 'safe';
+  if (normalizedScore > 70) classification = 'critical';
+  else if (normalizedScore > 50) classification = 'high';
+  else if (normalizedScore > 30) classification = 'medium';
+  else if (normalizedScore > 0) classification = 'low';
+
+  return { score: normalizedScore, classification };
 };

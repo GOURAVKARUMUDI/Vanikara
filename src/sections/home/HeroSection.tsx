@@ -141,7 +141,7 @@ export default function HeroSection() {
             ========================================== */}
         <motion.div
           layout
-          className="relative flex flex-col items-center select-none mb-3 md:mb-6 scale-75 md:scale-90"
+          className="relative flex flex-col items-center select-none mb-3 md:mb-6 scale-85 sm:scale-90 md:scale-100"
           transition={{ duration: 1.0, ease: easeOutExpo }}
         >
           {/* Logo assembly particles (visible only during converge phase) */}
@@ -192,7 +192,7 @@ export default function HeroSection() {
           </AnimatePresence>
 
           {/* Central Logo Image / Shape */}
-          <div className="w-12 h-12 md:w-16 md:h-16 relative flex items-center justify-center mb-2 md:mb-3">
+          <div className="w-14 sm:w-16 md:w-16 h-14 sm:h-16 md:h-16 relative flex items-center justify-center mb-2 md:mb-3">
             {/* Soft inner glow behind shape */}
             {phase >= 2 && (
               <div className="absolute inset-0 bg-[var(--accent-color)]/10 blur-xl rounded-full animate-pulse pointer-events-none" />
@@ -207,7 +207,7 @@ export default function HeroSection() {
                 >
                   {/* Top specular reflection highlight */}
                   <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                  <Image src="/logo.png" alt="Vanikara Logo" className="w-[28px] h-auto md:w-[34px]" width={34} height={23} priority fetchPriority="high" />
+                  <Image src="/logo.png" alt="Vanikara Logo" className="w-[32px] sm:w-[34px] h-auto" width={34} height={23} priority fetchPriority="high" />
                 </motion.div>
           </div>
 

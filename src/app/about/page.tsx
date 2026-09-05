@@ -15,7 +15,7 @@ import { PageContainer, SectionContainer, ContentContainer } from "@/components/
 const FOUNDERS = [
   {
     name: "Miryala Giri Charan",
-    role: "Co-Founder & Communication and Marketing Director",
+    role: "Managing Director (MD) / Chief Executive Officer (CEO)",
     bio: "Specializes in brand positioning, public relations, and strategic communications to amplify VANIKARA's outreach across campus ecosystems.",
     vision: "To establish transparent, compelling brand narratives that connect students directly with essential digital tools.",
     responsibilities: "Brand strategy, media outreach, campaign design, user communications.",
@@ -23,22 +23,31 @@ const FOUNDERS = [
     color: "#1E6BD6"
   },
   {
-    name: "Gourav Karumudi",
-    role: "Co-Founder & Technical Director",
-    bio: "Leads overall software engineering, system architecture, database optimization, and cloud infrastructure for high-scale digital platforms.",
-    vision: "To build resilient, high-performance technology frameworks engineered for enterprise-grade reliability and seamless user experience.",
-    responsibilities: "System architecture, engineering strategy, database scaling, platform security.",
+    name: "Karumudi Gourav",
+    role: "Executive Director / Chief Operating Officer (COO)",
+    bio: "Leads overall business operations, strategic planning, and organizational efficiency. Oversees operational execution and ensures seamless coordination across all departments.",
+    vision: "To build a scalable, operationally efficient organization that delivers excellence in execution and customer satisfaction.",
+    responsibilities: "Business operations, strategic planning, department coordination, operational efficiency.",
     linkedin: "https://www.linkedin.com/in/gourav-karumudi-a998b1379/",
     color: "#FF7A00"
   },
   {
     name: "Chejarla Hari Charan Reddy",
-    role: "Co-Founder & Growth and Client Director",
-    bio: "Drives business development, client relationship management, and strategic partner onboarding to expand market presence.",
-    vision: "To foster long-term client partnerships and scale operational adoption across key regional hubs.",
-    responsibilities: "Client success, strategic partnerships, market expansion, business operations.",
+    role: "Executive Director / Chief Technology Officer (CTO)",
+    bio: "Drives technology strategy, system architecture, and innovation. Leads the technical vision and ensures platform reliability, scalability, and security.",
+    vision: "To build resilient, high-performance technology frameworks engineered for enterprise-grade reliability and seamless user experience.",
+    responsibilities: "Technology strategy, system architecture, platform security, innovation leadership.",
     linkedin: "https://www.linkedin.com/in/haricharan28/",
     color: "#8B5CF6"
+  },
+  {
+    name: "Yarreddu Sri ChandraSekhar Reddy",
+    role: "Chief Human Resources Officer (CHRO)",
+    bio: "Leads human resources strategy, talent acquisition, and organizational culture development. Focuses on building high-performing teams and fostering employee growth.",
+    vision: "To create a dynamic, inclusive workplace culture that attracts top talent and drives organizational success through people excellence.",
+    responsibilities: "HR strategy, talent acquisition, employee development, organizational culture, compliance.",
+    linkedin: "https://www.linkedin.com/in/sri-chandrasekar-reddy/",
+    color: "#10B981"
   }
 ];
 
@@ -77,10 +86,10 @@ export default function AboutPage() {
             <FadeUp delay={0.1}>
               <div className="space-y-6 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
                 <p>
-                  VANIKARA began as a shared vision between three friends determined to build something meaningful of their own. What started as a simple idea evolved into a journey shaped by learning, persistence, and continuous building.
+                  VANIKARA began as a shared vision between founders determined to build something meaningful of their own. What started as a simple idea evolved into a journey shaped by learning, persistence, and continuous building.
                 </p>
                 <p>
-                  Today, VANIKARA is growing into an established technology company focused on practical technology solutions and future digital experiences. Each founder contributes a unique strength to the company—from vision and product thinking to development and growth—forming a balanced and execution-focused team.
+                  Today, VANIKARA is growing into an established technology company focused on practical technology solutions and future digital experiences. Each leader contributes a unique strength to the company—from executive leadership and operations to technology and human resources—forming a balanced and execution-focused team.
                 </p>
                 <div className="border-l-4 border-[var(--accent-color)] pl-6 py-2 my-8 font-semibold text-[var(--text-primary)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-r-2xl">
                   We believe in building transparently in public. Every line of code and feature is vetted by actual user testing on local campuses.
@@ -93,13 +102,13 @@ export default function AboutPage() {
 
       <MissionSection />
 
-      {/* Founders Section - WITHOUT PHOTOS */}
+      {/* Leadership Section - WITHOUT PHOTOS */}
       <SectionContainer id="founders">
         <ContentContainer>
           <FadeUp>
-            <SectionHeader tag="Leadership" title="The Founders" />
+            <SectionHeader tag="Leadership" title="Executive Leadership" />
           </FadeUp>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-12">
             {FOUNDERS.map((founder, i) => (
               <FadeUp key={founder.name} delay={i * 0.1}>
                 <Card hover className="h-full relative flex flex-col justify-between overflow-hidden">

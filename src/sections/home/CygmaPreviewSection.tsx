@@ -203,10 +203,10 @@ export default function CygmaPreviewSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#1E6BD6]/10 to-[#FF7A00]/10 opacity-30 filter blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <ContentContainer>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Side: Product Intro + Prompt Pre-sets */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-4 sm:space-y-6">
             <FadeUp>
               <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
                 PREVIEW WORKSPACE
@@ -261,7 +261,7 @@ export default function CygmaPreviewSection() {
           {/* Right Side: Glass Chat Console Mock */}
           <div className="lg:col-span-7 mt-4 sm:mt-0">
             <FadeUp delay={0.15}>
-              <div className="relative rounded-3xl sm:rounded-[2.5rem] bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-2xl backdrop-blur-md overflow-hidden flex flex-col h-[360px] sm:h-[480px]">
+              <div className="relative rounded-3xl sm:rounded-[2.5rem] bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-2xl backdrop-blur-md overflow-hidden flex flex-col h-[280px] sm:h-[360px] lg:h-[480px]">
                 {/* Console Header */}
                 <div className="px-6 py-4 border-b border-[var(--glass-border)] flex items-center justify-between bg-slate-500/5 select-none shrink-0">
                   <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default function CygmaPreviewSection() {
                 {/* Console Message Stream Area */}
                 <div 
                   ref={scrollContainerRef}
-                  className="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs scrollbar-thin"
+                  className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4 font-sans text-xs scrollbar-thin"
                 >
                   {messages.map((msg) => (
                     <div

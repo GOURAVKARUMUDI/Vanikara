@@ -79,12 +79,12 @@ export default function InnovationTimeline() {
     <SectionContainer id="innovation-timeline" ref={containerRef} className="overflow-hidden">
       <ContentContainer className="max-w-4xl">
         
-        <div className="text-center mb-20">
+        <div className="text-center mb-12 sm:mb-20">
           <FadeUp>
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)]">
               INNOVATION TIMELINE
             </span>
-            <h2 className="font-display font-black text-3xl sm:text-4xl text-[var(--text-primary)] leading-tight mt-2">
+            <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-[var(--text-primary)] leading-tight mt-2">
               Our Journey of Milestones
             </h2>
             <p className="text-sm text-[var(--text-secondary)] mt-4">
@@ -106,7 +106,7 @@ export default function InnovationTimeline() {
               style={{ scaleY: scrollYProgress }}
             />
 
-            <div className="space-y-12">
+            <div className="space-y-8 sm:space-y-12">
               {MILESTONES.map((item, index) => {
                 const isEven = index % 2 === 0;
                 const isExpanded = expandedIndex === index;

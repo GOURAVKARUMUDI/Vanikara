@@ -74,7 +74,7 @@ export default function SecurityPage() {
               </h2>
               <div className="border-l-2 border-[var(--accent-color)] pl-6 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed space-y-3 font-medium">
                 <p>
-                  Reports should be dispatched to: <a href="mailto:vanikara26@gmail.com" className="text-[var(--accent-color)] font-bold hover:underline">vanikara26@gmail.com</a>.
+                  Reports should be dispatched to: <a href="mailto:gouravkarumudi@vanikara.com" className="text-[var(--accent-color)] font-bold hover:underline">gouravkarumudi@vanikara.com</a>.
                 </p>
                 <p>
                   For sensitive reports, you may request our pgp key or submit reports using encrypted email clients. Our team acknowledges reports within **48 hours** and schedules security patches immediately.

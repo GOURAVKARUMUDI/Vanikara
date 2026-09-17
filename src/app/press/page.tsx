@@ -151,7 +151,7 @@ export default function PressPage() {
               <div className="pt-2 flex flex-col gap-2.5 text-xs text-[var(--text-secondary)] font-semibold">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[var(--accent-color)]" />
-                  <span>Email: <a href="mailto:vanikara26@gmail.com" className="text-[var(--accent-color)] hover:underline">vanikara26@gmail.com</a></span>
+                  <span>Email: <a href="mailto:contact@vanikara.com" className="text-[var(--accent-color)] hover:underline">contact@vanikara.com</a></span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Globe className="w-4 h-4 text-[var(--accent-color)]" />

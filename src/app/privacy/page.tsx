@@ -42,7 +42,7 @@ We may also disclose your information when we believe disclosure is appropriate 
       title: '6. Your Rights',
       content: `Depending on your location, you may have certain rights regarding your personal information, including the right to access, correct, or delete the personal information we hold about you; the right to object to or restrict certain processing; and the right to data portability.
 
-To exercise these rights, please contact us at vanikara26@gmail.com.`,
+To exercise these rights, please contact us at contact@vanikara.com.`,
     },
     {
       title: '7. Changes to This Policy',
@@ -60,7 +60,7 @@ Users can request immediate, permanent deletion of their chat records and upload
     },
     {
       title: '9. Contact Us',
-      content: `For questions, clarifications, or requests regarding this Privacy Policy, please reach out to us at vanikara26@gmail.com.`,
+      content: `For questions, clarifications, or requests regarding this Privacy Policy, please reach out to us at contact@vanikara.com.`,
     },
   ];
 

@@ -42,7 +42,7 @@ export default function Footer() {
               {[
                 { icon: <Linkedin className="w-4.5 h-4.5" />, href: "https://linkedin.com/company/vanikara", label: "LinkedIn" },
                 { icon: <Github className="w-4.5 h-4.5" />, href: "https://github.com/vanikara", label: "GitHub" },
-                { icon: <Mail className="w-4.5 h-4.5" />, href: "mailto:vanikara26@gmail.com", label: "Email" }
+                { icon: <Mail className="w-4.5 h-4.5" />, href: "mailto:support@vanikara.com", label: "Email" }
               ].map(({ icon, href, label }) => (
                 <a
                   key={label}
@@ -115,10 +115,10 @@ export default function Footer() {
                 Official Support
               </span>
               <a
-                href="mailto:vanikara26@gmail.com"
+                href="mailto:support@vanikara.com"
                 className="text-xs font-semibold text-[var(--accent-color)] hover:underline"
               >
-                vanikara26@gmail.com
+                support@vanikara.com
               </a>
             </div>
           </div>

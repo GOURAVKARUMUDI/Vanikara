@@ -13,7 +13,6 @@ const ProjectsManager = dynamic(() => import("@/components/admin/ProjectsManager
 const ProductsManager = dynamic(() => import("@/components/admin/ProductsManager"), { ssr: false });
 const AIManager = dynamic(() => import("@/components/admin/AIManager"), { ssr: false });
 const ContactManager = dynamic(() => import("@/components/admin/ContactManager"), { ssr: false });
-const CareersManager = dynamic(() => import("@/components/admin/CareersManager"), { ssr: false });
 const SettingsManager = dynamic(() => import("@/components/admin/SettingsManager"), { ssr: false });
 const PrivacyManager = dynamic(() => import("@/components/admin/PrivacyManager"), { ssr: false });
 const AdminScene = dynamic(() => import("@/components/admin/AdminScene"), { ssr: false });
@@ -38,7 +37,6 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
     { id: "projects", label: "Projects" },
     { id: "products", label: "Products" },
     { id: "ai", label: "AI Console" },
-    { id: "careers", label: "Careers" },
     { id: "contacts", label: "Contacts" },
     { id: "leads", label: "Leads" },
     { id: "clients", label: "Clients" },
@@ -133,7 +131,6 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
           {activeTab === "projects" && <ProjectsManager />}
           {activeTab === "products" && <ProductsManager />}
           {activeTab === "ai" && <AIManager />}
-          {activeTab === "careers" && <CareersManager />}
           {activeTab === "contacts" && <ContactManager />}
 
 

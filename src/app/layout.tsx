@@ -79,7 +79,7 @@ export default function RootLayout({
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "customer support",
-                "email": "vanikara26@gmail.com",
+                "email": "support@vanikara.com",
                 "areaServed": "IN",
                 "availableLanguage": "en"
               },

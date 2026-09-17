@@ -108,7 +108,7 @@ export async function POST(req: Request) {
 
         await transporter.sendMail({
           from: `"VANIKARA Contact System" <${process.env.SMTP_USER}>`,
-          to: "vanikara26@gmail.com",
+          to: "support@vanikara.com",
           subject: `[INQUIRY] ${sSubject} - ${sName}`,
           text: `New contact submission received:\n\n` +
                 `Sender Name: ${sName}\n` +

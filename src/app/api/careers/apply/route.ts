@@ -174,7 +174,7 @@ export async function POST(req: Request) {
         try {
           await transporter.sendMail({
             from: `"VANIKARA Careers Portal" <${process.env.SMTP_USER}>`,
-            to: "vanikara26@gmail.com",
+            to: "support@vanikara.com",
             subject: `[APPLICANT] ${sPosition} - ${sName}`,
             text: `New job application received:\n\n` +
                   `Candidate Name: ${sName}\n` +

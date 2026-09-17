@@ -54,8 +54,8 @@ export default function ContactInfo() {
               </div>
               <div className="text-xs">
                 <span className="block font-bold text-[var(--text-primary)]">Email Address</span>
-                <a href="mailto:vanikara26@gmail.com" className="text-[var(--accent-color)] hover:underline">
-                  vanikara26@gmail.com
+                <a href="mailto:contact@vanikara.com" className="text-[var(--accent-color)] hover:underline">
+                  contact@vanikara.com
                 </a>
               </div>
             </div>

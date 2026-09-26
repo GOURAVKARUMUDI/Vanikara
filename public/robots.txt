@@ -1,5 +1,9 @@
 # VANIKARA Intelligence robots.txt
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard
 
-Sitemap: https://vanikara.com/sitemap.xml
+Sitemap: https://www.vanikara.com/sitemap.xml

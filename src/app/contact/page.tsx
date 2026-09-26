@@ -1,45 +1,36 @@
 import type { Metadata } from "next";
-import { FadeUp } from "@/components/Animate";
-import PageHero from "@/components/ui/PageHero";
+import SectionHeader from "@/components/ui/SectionHeader";
 import ContactForm from "@/sections/contact/ContactForm";
 import ContactInfo from "@/sections/contact/ContactInfo";
-import ContactScene from "@/components/contact/ContactScene";
-import { PageContainer, SectionContainer, ContentContainer } from "@/components/ui/Containers";
 
-export const metadata: Metadata = { 
+export const metadata: Metadata = {
   title: "Contact",
-  description: "Reach out to VANIKARA INTELLIGENCE PRIVATE LIMITED for inquiries, support, or partnership opportunities."
+  description:
+    "Contact VANIKARA for general enquiries, partnerships, product discussions or support.",
 };
 
 export default function ContactPage() {
   return (
-    <PageContainer className="pb-20">
-      <ContactScene />
-      <PageHero
-        tag="Get in Touch"
-        title={
-          <>
-            Let&apos;s <span className="gradient-text">Connect</span>
-          </>
-        }
-        subtitle="Want to collaborate, support our journey, or explore what we're building? We'd love to hear from you."
-      />
-      
-      <SectionContainer id="contact-body">
-        <ContentContainer>
-          <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 items-start">
-            {/* Left Column: Office details, Map, WhatsApp */}
-            <FadeUp>
-              <ContactInfo />
-            </FadeUp>
-            
-            {/* Right Column: Glass Contact Form */}
-            <FadeUp delay={0.1}>
-              <ContactForm />
-            </FadeUp>
+    <>
+      <section className="container-page pb-12 pt-16 sm:pt-24">
+        <SectionHeader
+          as="h1"
+          eyebrow="Contact"
+          title="Let's talk."
+          lead="For enquiries, partnerships, product discussions or support — write to us and a member of the team will reply."
+        />
+      </section>
+
+      <section aria-label="Contact details and form" className="container-page pb-16 sm:pb-24">
+        <div className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-5">
+            <ContactInfo />
           </div>
-        </ContentContainer>
-      </SectionContainer>
-    </PageContainer>
+          <div className="lg:col-span-7">
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

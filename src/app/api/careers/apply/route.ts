@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
 import nodemailer from "nodemailer";
-import { sanitize, apiResponse, logError } from "@/lib/security";
+import { sanitize, apiResponse, logError, escapeHtml } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
 import { isRateLimited } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -187,35 +187,35 @@ export async function POST(req: Request) {
                   `Submitted At: ${timestamp}\n`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-                <h2 style="color: #1e6bd6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Internship Application</h2>
+                <h2 style="color: #0058D6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Internship Application</h2>
                 <table style="width: 100%; font-size: 14px; color: #334155; margin-bottom: 20px; border-collapse: collapse;">
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold; width: 150px;">Position:</td>
-                    <td style="padding: 8px 0; font-weight: bold; color: #1e6bd6;">${sPosition}</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #0058D6;">${escapeHtml(sPosition)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold;">Candidate Name:</td>
-                    <td style="padding: 8px 0;">${sName}</td>
+                    <td style="padding: 8px 0;">${escapeHtml(sName)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold;">Email:</td>
-                    <td style="padding: 8px 0;"><a href="mailto:${sEmail}" style="color: #1e6bd6; text-decoration: none;">${sEmail}</a></td>
+                    <td style="padding: 8px 0;"><a href="mailto:${escapeHtml(sEmail)}" style="color: #0058D6; text-decoration: none;">${escapeHtml(sEmail)}</a></td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold;">Phone Number:</td>
-                    <td style="padding: 8px 0;">${sPhone}</td>
+                    <td style="padding: 8px 0;">${escapeHtml(sPhone)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold;">Portfolio:</td>
-                    <td style="padding: 8px 0;"><a href="${sPortfolio}" style="color: #1e6bd6; text-decoration: none;">${sPortfolio}</a></td>
+                    <td style="padding: 8px 0;">${escapeHtml(sPortfolio)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; font-weight: bold;">Resume Link:</td>
-                    <td style="padding: 8px 0;"><a href="${resumeUrl}" style="color: #16a34a; font-weight: bold; text-decoration: none;">View Candidate Resume</a></td>
+                    <td style="padding: 8px 0;"><a href="${escapeHtml(resumeUrl)}" style="color: #16a34a; font-weight: bold; text-decoration: none;">View Candidate Resume</a></td>
                   </tr>
                 </table>
                 <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 8px;">Cover Letter:</div>
-                <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${sCover}</div>
+                <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(sCover)}</div>
               </div>
             `
           });
@@ -239,11 +239,11 @@ export async function POST(req: Request) {
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #f8fafc; color: #334155;">
                 <div style="text-align: center; margin-bottom: 20px;">
                   <h1 style="color: #0f172a; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: 1px;">VANIKARA INTELLIGENCE</h1>
-                  <p style="font-size: 9px; font-weight: bold; color: #1e6bd6; text-transform: uppercase; margin: 5px 0 0 0; letter-spacing: 2px;">Recruitment System</p>
+                  <p style="font-size: 9px; font-weight: bold; color: #0058D6; text-transform: uppercase; margin: 5px 0 0 0; letter-spacing: 2px;">Recruitment System</p>
                 </div>
                 <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                  <p style="font-size: 14px; line-height: 1.6; margin-top: 0;">Dear <strong>${sName}</strong>,</p>
-                  <p style="font-size: 14px; line-height: 1.6;">Thank you for submitting your internship application for the <strong>${sPosition}</strong> position at VANIKARA.</p>
+                  <p style="font-size: 14px; line-height: 1.6; margin-top: 0;">Dear <strong>${escapeHtml(sName)}</strong>,</p>
+                  <p style="font-size: 14px; line-height: 1.6;">Thank you for submitting your internship application for the <strong>${escapeHtml(sPosition)}</strong> position at VANIKARA.</p>
                   <p style="font-size: 14px; line-height: 1.6;">Our founders and technical team are auditing applications. If your profile is a match for our current development storyboards, we will reach out to schedule an interview.</p>
                   <p style="font-size: 14px; line-height: 1.6; margin-bottom: 0;">We appreciate your interest in building beautiful technology with us.</p>
                 </div>

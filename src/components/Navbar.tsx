@@ -1,508 +1,382 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Sun, Moon, Sparkles, User as UserIcon, LogOut, Download } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { ArrowUpRight, ChevronDown, Moon, Sun } from "lucide-react";
+import BrandMark from "@/components/brand/BrandMark";
 import Button from "@/components/ui/Button";
+import { useTheme } from "./layout/ThemeContext";
 import { createClient } from "@/utils/supabase/client";
 import { isAdmin } from "@/lib/isAdmin";
-import { useAuthRedirect } from "@/lib/authRedirect";
-import { useTheme, ThemeMode } from "./layout/ThemeContext";
-import { useCygmaWorld, CygmaView } from "@/context/CygmaWorldContext";
-import { usePWA } from "@/hooks/usePWA";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import MobileNavbar from "./mobile/MobileNavbar";
+import { COMPANY_IDENTITY, NAVIGATION } from "@/data/company";
 
-const NAV_LINKS = [
-  { href: "/", label: "Home" },
+type MenuKey = "company" | "products" | null;
+
+const PRIMARY_LINKS = [
+  { href: "/technology", label: "Technology" },
   { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/products", label: "Products" },
-  { href: "/ai", label: "AI" },
-  { href: "/careers", label: "Careers" },
-  { href: "/contact", label: "Contact" },
 ];
 
-export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [user, setUser] = useState<any>(null);
-  const pathname = usePathname();
-  const router = useRouter();
-  const supabase = createClient();
-  const { theme, setTheme } = useTheme();
-  const { navbarVisible, setNavbarVisible, setView, setIsTransitioning } = useCygmaWorld();
-  const { isInstallable, installApp } = usePWA();
-  const isMobile = useMediaQuery("(max-width: 767px)");
-  
-  const [mounted, setMounted] = useState(false);
+function isActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
+export default function Navbar() {
+  const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState<MenuKey>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  const closeTimer = useRef<number | null>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const idBase = useId();
+
+  // Close all menus on navigation
   useEffect(() => {
-    setMounted(true);
+    setOpenMenu(null);
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Glass state after a small scroll. setState bails out when unchanged.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useAuthRedirect();
-
-  const [isHeroVisible, setIsHeroVisible] = useState(true);
-
+  // Admin shortcut (display only; access is enforced server-side)
   useEffect(() => {
-    let frameId: number;
-
-    if (pathname !== "/") {
-      frameId = requestAnimationFrame(() => {
-        setIsHeroVisible(false);
-      });
-      return () => cancelAnimationFrame(frameId);
+    let unsubscribe: (() => void) | undefined;
+    try {
+      const supabase = createClient();
+      const { data } = supabase.auth.onAuthStateChange(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (_event: string, session: any) => setShowAdmin(isAdmin(session?.user))
+      );
+      unsubscribe = () => data.subscription.unsubscribe();
+    } catch {
+      // Auth unavailable in this environment
     }
+    return () => unsubscribe?.();
+  }, []);
 
-    const heroEl = document.getElementById("hero");
-    if (!heroEl) {
-      frameId = requestAnimationFrame(() => {
-        setIsHeroVisible(true);
-      });
-      return () => cancelAnimationFrame(frameId);
-    }
+  // Mobile menu: scroll lock, Escape, focus management
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsHeroVisible(entry.isIntersecting);
-      },
-      { threshold: 0.12, rootMargin: "-80px 0px 0px 0px" }
-    );
+    const firstLink = mobileMenuRef.current?.querySelector<HTMLElement>("a, button");
+    firstLink?.focus({ preventScroll: true });
 
-    observer.observe(heroEl);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [pathname]);
-
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, href: string) => {
-    // Scroll smoothly to top if already on target page
-    if (href === "/" && pathname === "/") {
-      e.preventDefault();
-      document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-    if (pathname === href) {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    let targetView: CygmaView | null = null;
-    if (href === "/") targetView = "hero";
-    else if (href === "/about") targetView = "about";
-    else if (href === "/projects") targetView = "projects";
-    else if (href === "/products") targetView = "products";
-    else if (href === "/ai") targetView = "ai";
-    else if (href === "/careers") targetView = "careers";
-    else if (href === "/contact") targetView = "contact";
-    else if (href === "/dashboard") targetView = "dashboard";
-    else if (href === "/admin") targetView = "admin";
-    else if (href === "/login") targetView = "login";
-
-    if (targetView) {
-      e.preventDefault();
-      setIsTransitioning(true);
-      setView(targetView);
-
-      if (targetView === "login") {
-        setNavbarVisible(false);
-      } else {
-        setNavbarVisible(true);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        menuToggleRef.current?.focus();
+        return;
       }
-
-      const delay = targetView === "login" ? 1100 : 700;
-      setTimeout(() => {
-        router.push(href);
-      }, delay);
-    }
-  };
-
-  useEffect(() => {
-    if (!supabase) return;
-    
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (event.key !== "Tab" || !mobileMenuRef.current) return;
+      const focusables = [
+        menuToggleRef.current,
+        ...Array.from(mobileMenuRef.current.querySelectorAll<HTMLElement>("a, button")),
+      ].filter(Boolean) as HTMLElement[];
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    supabase.auth.getUser().then(({ data: { user } }: any) => setUser(user));
-    
-     
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: { subscription: sub } } = supabase.auth.onAuthStateChange((_: any, session: any) => {
-      setUser(session?.user || null);
-    });
-
+    document.addEventListener("keydown", onKey);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (sub) sub.unsubscribe();
+      root.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKey);
     };
-  }, [supabase]);
+  }, [mobileOpen]);
 
+  // Desktop dropdowns: Escape closes and returns focus
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setMobileMenuOpen(false);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [pathname]);
+    if (!openMenu) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        document.getElementById(`${idBase}-${openMenu}-trigger`)?.focus();
+        setOpenMenu(null);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [openMenu, idBase]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  };
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  }, []);
 
-  const cycleTheme = () => {
-    const modes: ThemeMode[] = ["auto", "light", "dark"];
-    const nextIndex = (modes.indexOf(theme) + 1) % modes.length;
-    setTheme(modes[nextIndex]);
-  };
+  const scheduleClose = useCallback(() => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
+  }, [cancelClose]);
 
-  const renderThemeIcon = () => {
-    if (!mounted) {
-      return <Sparkles className="w-4 h-4 text-blue-500" />;
-    }
-    switch (theme) {
-      case "light":
-        return <Sun className="w-4 h-4 text-amber-500" />;
-      case "dark":
-        return <Moon className="w-4 h-4 text-indigo-400" />;
-      case "auto":
-      default:
-        return <Sparkles className="w-4 h-4 text-blue-500" />;
-    }
-  };
+  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  const themeLabel = `Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`;
 
-  if (isMobile) {
+  const productsActive = NAVIGATION.products.some((p) => isActive(pathname, p.href)) || pathname === "/what-we-build";
+  const companyActive = NAVIGATION.company.some((c) => isActive(pathname, c.href));
+
+  const navItemClass = (active: boolean) =>
+    `link-underline inline-flex items-center gap-1 px-1 py-2 text-[0.9375rem] font-medium transition-colors duration-200 ${
+      active ? "text-fg" : "text-fg-muted hover:text-fg"
+    }`;
+
+  const renderDropdown = (key: Exclude<MenuKey, null>, label: string, active: boolean) => {
+    const open = openMenu === key;
+    const panelId = `${idBase}-${key}-panel`;
     return (
-      <MobileNavbar
-        user={user}
-        handleLinkClick={handleLinkClick}
-        handleLogout={handleLogout}
-        cycleTheme={cycleTheme}
-        renderThemeIcon={renderThemeIcon}
-        theme={theme}
-        mounted={mounted}
-        isAdminUser={user ? isAdmin(user.email) : false}
-        navbarVisible={navbarVisible}
-      />
+      <div
+        className="relative"
+        onMouseEnter={() => {
+          cancelClose();
+          setOpenMenu(key);
+        }}
+        onMouseLeave={scheduleClose}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpenMenu(null);
+        }}
+      >
+        <button
+          id={`${idBase}-${key}-trigger`}
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpenMenu(open ? null : key)}
+          className={navItemClass(active)}
+          aria-current={active ? "page" : undefined}
+        >
+          {label}
+          <ChevronDown
+            aria-hidden="true"
+            className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        <div
+          id={panelId}
+          data-open={open}
+          className="nav-panel absolute left-1/2 top-full -translate-x-1/2 pt-3"
+        >
+          <div className="glass-strong w-[22rem] rounded-feature p-2">
+            {key === "products" ? (
+              <>
+                {NAVIGATION.products.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="group flex items-start gap-3 rounded-compact p-3 transition-colors hover:bg-surface-sunken"
+                    aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                        item.tone === "warm" ? "bg-brand-orange" : "bg-brand-blue"
+                      }`}
+                    />
+                    <span className="flex-1">
+                      <span className="block text-sm font-semibold text-fg">{item.label}</span>
+                      <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{item.desc}</span>
+                    </span>
+                    <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-fg-subtle opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+                  </Link>
+                ))}
+                <div className="rule mx-3 my-1" />
+                <Link
+                  href="/what-we-build"
+                  className="group flex items-center justify-between rounded-compact px-3 py-2.5 text-[0.8125rem] font-semibold text-intel transition-colors hover:bg-surface-sunken"
+                >
+                  Overview of our work
+                  <ArrowUpRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
+                </Link>
+              </>
+            ) : (
+              NAVIGATION.company.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block rounded-compact p-3 transition-colors hover:bg-surface-sunken"
+                  aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                >
+                  <span className="block text-sm font-semibold text-fg">{item.label}</span>
+                  <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{item.desc}</span>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
     );
-  }
+  };
+
+  const mobileLinks = [
+    { href: "/about", label: "About" },
+    { href: "/what-we-build", label: "Products" },
+    { href: "/technology", label: "Technology" },
+    { href: "/leadership", label: "Leadership" },
+    { href: "/careers", label: "Careers" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   return (
-    <div className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-4 fixed-nav-safe-area pointer-events-none">
-      <motion.header
-        role="banner"
-        aria-label="Main Website Navigation"
-        animate={{ 
-          opacity: navbarVisible ? 1 : 0, 
-          y: navbarVisible ? 0 : -20,
-          pointerEvents: navbarVisible ? "auto" : "none" 
-        }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className={`w-full md:w-[72vw] max-w-4xl pointer-events-auto transition-[padding,background-color,transform] duration-500 rounded-full border border-white/10 dark:border-white/5 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] relative overflow-hidden group/navbar ${
-          isScrolled 
-            ? "py-2 px-6 bg-white/70 dark:bg-slate-900/60 scale-95" 
-            : "py-3 px-8 bg-white/40 dark:bg-slate-950/20"
-        }`}
+    <header className="fixed inset-x-0 top-0 z-50">
+      {/* Mobile full-screen menu (sits beneath the bar so the toggle stays reachable) */}
+      <div
+        ref={mobileMenuRef}
+        id={`${idBase}-mobile-menu`}
+        data-open={mobileOpen}
+        className="mobile-menu bg-surface lg:hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        aria-hidden={!mobileOpen}
+        inert={!mobileOpen}
       >
-        {/* Shine highlight line at top (Reflection Layer) */}
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_100%_0%,var(--glow-blue),transparent_70%),radial-gradient(50%_35%_at_0%_100%,var(--glow-orange),transparent_70%)]" />
+        <nav
+          aria-label="Mobile"
+          className="container-page relative flex h-full flex-col overflow-y-auto pb-[max(2rem,env(safe-area-inset-bottom))] pt-24"
+        >
+          <ul className="flex-1 space-y-1">
+            {mobileLinks.map((link, i) => {
+              const active = isActive(pathname, link.href);
+              return (
+                <li key={link.href} data-stagger style={{ ["--i" as string]: i }}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className="group flex items-baseline gap-4 border-b border-line py-4"
+                  >
+                    <span className="w-6 text-xs font-semibold tabular-nums text-fg-subtle">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={`text-[1.75rem] font-bold leading-none tracking-tight transition-colors sm:text-4xl ${
+                        active ? "text-intel" : "text-fg group-active:text-intel"
+                      }`}
+                    >
+                      {link.label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
 
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link 
-            href="/" 
-            className="flex items-center gap-2 group select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:ring-offset-2 rounded-xl"
-            onClick={(e) => handleLinkClick(e, "/")}
-          >
-            <div className="relative overflow-hidden w-8 h-8 rounded-xl flex items-center justify-center bg-white/10 dark:bg-white/5 shadow-sm border border-white/10 dark:border-white/5">
-              <Image 
-                src="/logo.png" 
-                alt="Vanikara Logo" 
-                className="w-6 h-auto group-hover:scale-110 transition-transform duration-300" 
-                width={24}
-                height={24}
-                priority
-              />
+          <div data-stagger style={{ ["--i" as string]: mobileLinks.length }} className="mt-10 space-y-6">
+            <div className="grid grid-cols-2 gap-3">
+              {NAVIGATION.products.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="surface rounded-card p-4"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`mb-3 block h-1.5 w-6 rounded-full ${item.tone === "warm" ? "bg-brand-orange" : "bg-brand-blue"}`}
+                  />
+                  <span className="block text-sm font-semibold text-fg">{item.label}</span>
+                  <span className="mt-1 block text-xs text-fg-muted">{item.desc}</span>
+                </Link>
+              ))}
             </div>
-            <span className="font-display font-black text-xs tracking-widest text-[var(--text-primary)]">
-              VANIKARA
-            </span>
+            <div className="flex flex-col gap-1 text-sm text-fg-muted">
+              <a href={`mailto:${COMPANY_IDENTITY.officialEmail}`} className="w-fit font-medium text-fg">
+                {COMPANY_IDENTITY.officialEmail}
+              </a>
+              <span>{COMPANY_IDENTITY.operationalLocation}</span>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      {/* Bar */}
+      <div className={`container-page relative z-50 transition-[padding] duration-500 ease-brand ${scrolled ? "pt-3" : "pt-0"}`}>
+        <div
+          className={`flex items-center justify-between rounded-feature border transition-[height,background-color,border-color,box-shadow,padding] duration-500 ease-brand ${
+            scrolled
+              ? "glass h-14 px-3 sm:px-4"
+              : "h-[72px] border-transparent bg-transparent px-0 shadow-none"
+          }`}
+        >
+          <Link href="/" className="rounded-compact py-1 pr-2" aria-label="VANIKARA — home">
+            <BrandMark size={26} priority />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav aria-label="Desktop Navigation Links" className="hidden md:flex items-center gap-1.5 bg-slate-500/5 dark:bg-white/5 px-2 py-1 rounded-full border border-white/5">
-            {NAV_LINKS.map((link) => {
-              const isHome = link.href === "/";
-              const active = isHome 
-                ? (pathname === "/" && isHeroVisible)
-                : pathname === link.href;
+          <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
+            {renderDropdown("company", "Company", companyActive)}
+            {renderDropdown("products", "Products", productsActive)}
+            {PRIMARY_LINKS.map((link) => {
+              const active = isActive(pathname, link.href);
               return (
                 <Link
                   key={link.href}
-                  href={link.href === "/" ? "/#hero" : link.href}
-                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-                  onClick={(e) => handleLinkClick(e, link.href)}
+                  href={link.href}
                   aria-current={active ? "page" : undefined}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="activeNavCapsule"
-                      className="absolute inset-0 bg-white/60 dark:bg-white/10 rounded-full border border-white/20 dark:border-white/5 shadow-sm"
-                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                    />
-                  )}
-                  <span className={`relative z-10 ${
-                    active
-                      ? "text-[var(--accent-color)]"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                  }`}>
-                    {link.label}
-                  </span>
-                </Link>
-              );
-            })}
-            
-            {/* Dashboard / Admin links */}
-            {user && (
-              <>
-                <Link 
-                  href="/dashboard" 
-                  className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-                  aria-current={pathname === "/dashboard" ? "page" : undefined}
-                >
-                  {pathname === "/dashboard" && (
-                    <motion.span
-                      layoutId="activeNavCapsule"
-                      className="absolute inset-0 bg-white/60 dark:bg-white/10 rounded-full border border-white/20 dark:border-white/5 shadow-sm"
-                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                    />
-                  )}
-                  <span className={`relative z-10 ${
-                    pathname === "/dashboard"
-                      ? "text-[var(--accent-color)]"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                  }`}>
-                    Portal
-                  </span>
-                </Link>
-                {isAdmin(user.email) && (
-                  <Link 
-                    href="/admin" 
-                    className="relative px-3.5 py-1.5 text-[9px] font-black uppercase tracking-wider transition-colors duration-300 select-none cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-                    aria-current={pathname === "/admin" ? "page" : undefined}
-                  >
-                    {pathname === "/admin" && (
-                      <motion.span
-                        layoutId="activeNavCapsule"
-                        className="absolute inset-0 bg-white/60 dark:bg-white/10 rounded-full border border-white/20 dark:border-white/5 shadow-sm"
-                        transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                      />
-                    )}
-                    <span className={`relative z-10 ${
-                      pathname === "/admin"
-                        ? "text-[var(--accent-color)]"
-                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                    }`}>
-                      Admin
-                    </span>
-                  </Link>
-                )}
-              </>
-            )}
-          </nav>
-
-          {/* User Controls and Theme Switcher */}
-          <div className="hidden md:flex items-center gap-3">
-            {isInstallable && (
-              <button
-                onClick={installApp}
-                className="group p-2 rounded-full hover:bg-slate-500/10 border border-transparent hover:border-white/10 text-[var(--accent-color)] hover:text-[var(--accent-color)]/80 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-                title="Install App"
-                aria-label="Install App"
-              >
-                <Download className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-[2px]" />
-              </button>
-            )}
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={cycleTheme}
-              className="p-2 rounded-full hover:bg-slate-500/10 border border-transparent hover:border-white/10 transition-all duration-300 cursor-pointer active:scale-95 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-              title={mounted ? `Theme: ${theme.toUpperCase()}` : "Theme: AUTO"}
-              aria-label={mounted ? `Cycle color theme, current theme is ${theme}` : "Cycle color theme, current theme is auto"}
-            >
-              {renderThemeIcon()}
-            </button>
-
-            {user ? (
-              <div className="flex items-center gap-1.5">
-                <Link 
-                  href="/dashboard"
-                  className="flex items-center justify-center w-7.5 h-7.5 rounded-full bg-[var(--accent-color)] text-white hover:scale-105 transition-transform border border-white/20 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-                  title="View Portal"
-                  aria-label="Open User Dashboard Portal"
-                >
-                  <UserIcon className="w-3.5 h-3.5" />
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 rounded-full text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-                  title="Logout"
-                  aria-label="Log out session"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ) : (
-              <Button 
-                href="/login" 
-                variant="ghost" 
-                size="sm" 
-                magnetic
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onClick={(e) => handleLinkClick(e as any, "/login")}
-                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)] focus-visible:rounded-full"
-              >
-                Login
-              </Button>
-            )}
-          </div>
-
-          {/* Mobile menu trigger */}
-          <div className="flex items-center gap-2 md:hidden">
-            <button
-              onClick={cycleTheme}
-              className="p-1.5 rounded-full hover:bg-slate-500/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-              aria-label={mounted ? `Cycle color theme, current is ${theme}` : "Cycle color theme, current is auto"}
-            >
-              {renderThemeIcon()}
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-xl text-[var(--text-primary)] hover:bg-slate-500/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-color)]"
-              aria-label="Toggle Mobile Navigation Menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-      </motion.header>
-
-      {/* Mobile Fullscreen Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl flex flex-col justify-between p-8 mobile-menu-safe-area md:hidden pointer-events-auto"
-          >
-            <div className="flex justify-between items-center mt-4">
-              <div className="flex items-center gap-2">
-                <Image src="/logo.png" alt="Vanikara Logo" className="w-7 h-auto" width={28} height={28} />
-                <span className="font-display font-black text-xs tracking-widest text-[var(--text-primary)]">
-                  VANIKARA
-                </span>
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-xl text-[var(--text-primary)] hover:bg-slate-500/10 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <nav className="flex flex-col gap-5 my-auto items-center">
-               {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href === "/" ? "/#hero" : link.href}
-                  className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                  onClick={(e) => {
-                    handleLinkClick(e, link.href);
-                    setMobileMenuOpen(false);
-                  }}
+                  className={navItemClass(active)}
                 >
                   {link.label}
                 </Link>
-              ))}
-              
-              {user && (
-                <>
-                   <Link
-                    href="/dashboard"
-                    className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                  >
-                    Portal
-                  </Link>
-                  {isAdmin(user.email) && (
-                    <Link
-                      href="/admin"
-                      className="text-xl font-display font-black uppercase tracking-wider text-[var(--text-primary)] hover:text-[var(--accent-color)] transition-colors"
-                    >
-                      Admin
-                    </Link>
-                  )}
-                </>
-              )}
-            </nav>
+              );
+            })}
+          </nav>
 
-            <div className="flex flex-col gap-4">
-              {isInstallable && (
-                <Button
-                  onClick={async () => {
-                    setMobileMenuOpen(false);
-                    await installApp();
-                  }}
-                  variant="secondary"
-                  size="lg"
-                  className="w-full flex items-center justify-center gap-2"
-                >
-                  <Download className="w-5 h-5 text-[var(--accent-color)]" />
-                  Install App
-                </Button>
-              )}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {showAdmin && (
+              <Link
+                href="/admin"
+                className="hidden rounded-full px-3 py-1.5 text-xs font-semibold text-ambition transition-colors hover:bg-surface-sunken lg:inline-flex"
+              >
+                Admin
+              </Link>
+            )}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={themeLabel}
+              title={themeLabel}
+              className="grid h-9 w-9 place-items-center rounded-full text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
+            >
+              <Sun aria-hidden="true" className="hidden h-[18px] w-[18px] dark:block" />
+              <Moon aria-hidden="true" className="h-[18px] w-[18px] dark:hidden" />
+            </button>
 
-              {user ? (
-                <div className="flex flex-col gap-3">
-                  <div className="text-center text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider">
-                    Portal Active: {user.email}
-                  </div>
-                  <Button onClick={handleLogout} variant="secondary" size="lg" className="w-full">
-                    Logout
-                  </Button>
-                </div>
-              ) : (
-                <Button 
-                  href="/login" 
-                  variant="primary" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={(e) => {
-                    setMobileMenuOpen(false);
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    handleLinkClick(e as any, "/login");
-                  }}
-                >
-                  Sign In
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            <Button href="/contact" size="sm" arrow className="hidden sm:inline-flex">
+              Contact
+            </Button>
+
+            <button
+              ref={menuToggleRef}
+              type="button"
+              onClick={() => setMobileOpen((open) => !open)}
+              aria-expanded={mobileOpen}
+              aria-controls={`${idBase}-mobile-menu`}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              className="relative grid h-10 w-10 place-items-center rounded-full text-fg transition-colors hover:bg-surface-sunken lg:hidden"
+            >
+              <span aria-hidden="true" className="menu-toggle__line top-1/2" />
+              <span aria-hidden="true" className="menu-toggle__line top-1/2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }

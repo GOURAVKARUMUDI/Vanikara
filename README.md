@@ -1,479 +1,66 @@
-# VANIKARA Intelligence
+# VANIKARA
 
 <p align="center">
-  <img src="./public/logo.png" alt="VANIKARA Intelligence" width="180"/>
+  <img src="./public/brand/vanikara-symbol.png" alt="VANIKARA" width="140"/>
 </p>
 
-<p align="center">
-  <strong>Building the Future of Intelligent Digital Experiences.</strong>
-</p>
+The corporate website of **VANIKARA Intelligence Private Limited** — a student-founded technology company from Guntur, Andhra Pradesh.
 
-<p align="center">
-A production-grade Next.js platform integrating AI, enterprise management, secure authentication, real-time collaboration, and immersive 3D experiences into a unified ecosystem.
-</p>
+The site presents the company and its two initiatives:
 
----
+- **Food Delivery Platform** — in development, targeting launch in Guntur in November 2026.
+- **CYGMA AI** — a proprietary, long-term intelligence initiative (not a public chatbot or consumer product).
 
-# Overview
+It also includes a contact form, a sign-in flow, a user dashboard and an internal admin area.
 
-VANIKARA Intelligence is the flagship digital platform developed by **VANIKARA Intelligence Private Limited**.
+## Stack
 
-The platform combines modern web technologies with intelligent automation to provide:
+- Next.js 16 (App Router), React 19, TypeScript
+- Tailwind CSS 4 with a single token system in `src/app/globals.css`
+- Supabase (Postgres, Auth, Storage)
+- Deployed on Vercel
 
-- AI-powered experiences
-- Student & client management
-- Project and product management
-- Real-time administration
-- Secure authentication
-- Interactive 3D visualization
-- Responsive mobile-first experience
-- Enterprise-grade backend infrastructure
-
----
-
-# Core Features
-
-## Intelligent Landing Experience
-
-- Cinematic Three.js landing page
-- Dynamic Neural Network visualization
-- Premium glassmorphism UI
-- Responsive animations
-- Adaptive graphics engine
-- Intelligent loading system
-- Dynamic camera controller
-
----
-
-## CYGMA AI
-
-Integrated AI workspace featuring:
-
-- Conversational AI
-- Document upload
-- Streaming responses
-- Context-aware interactions
-- AI grounding support
-- Secure API architecture
-
----
-
-## Authentication
-
-- Email & Password Authentication
-- Google OAuth
-- Secure session management
-- Protected routes
-- Role-Based Access Control (RBAC)
-- Server-side authentication
-- JWT session validation
-
----
-
-## Admin Dashboard
-
-Production-ready administration panel featuring:
-
-- User Management
-- Lead Management
-- Client Management
-- Career Applications
-- Project Management
-- Product Management
-- Analytics Dashboard
-- Audit Logs
-- Realtime synchronization
-
----
-
-## Contact & Careers
-
-Integrated systems for:
-
-- Contact Requests
-- Career Applications
-- Resume Upload
-- Google Forms Integration
-- Email Notifications
-- Admin Review Pipeline
-
----
-
-## Mobile Experience
-
-Designed independently from desktop.
-
-Includes:
-
-- Mobile-first layouts
-- Native application feel
-- Optimized spacing
-- Touch-friendly interactions
-- Safe-area support
-- Capacitor Android packaging
-
----
-
-# Technology Stack
-
-## Frontend
-
-- Next.js 16
-- React 19
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-
----
-
-## Graphics
-
-- Three.js
-- React Three Fiber
-- Custom GLSL Shaders
-- Instanced Rendering
-- Dynamic Lighting
-- GPU Optimizations
-
----
-
-## Backend
-
-- Next.js App Router
-- Server Actions
-- Route Handlers
-- REST APIs
-
----
-
-## Database
-
-- Supabase PostgreSQL
-- Row Level Security (RLS)
-- Realtime Database
-- Supabase Storage
-- Database Triggers
-
----
-
-## Authentication
-
-- Supabase Auth
-- Google OAuth
-- JWT Sessions
-- Secure Cookies
-
----
-
-## Infrastructure
-
-- Vercel
-- Upstash Redis
-- Nodemailer
-- Google Forms
-- Capacitor Android
-
----
-
-# Project Structure
-
-```
-src/
-│
-├── app/
-├── components/
-├── contexts/
-├── hooks/
-├── lib/
-├── sections/
-├── three/
-├── utils/
-└── types/
-
-public/
-
-supabase/
-
-android/
-
-scripts/
-```
-
----
-
-# Architecture
-
-```
-                    Client
-                       │
-                Next.js App Router
-                       │
-      ┌────────────────┼────────────────┐
-      │                │                │
- Authentication      APIs          Three.js
-      │                │                │
-      │         Supabase DB       Graphics Engine
-      │                │                │
-      └───────────────┼────────────────┘
-                      │
-                Admin Dashboard
-                      │
-               Realtime Updates
-```
-
----
-
-# Security
-
-The platform follows modern security practices.
-
-## Authentication
-
-- JWT Authentication
-- Secure Sessions
-- Protected Routes
-- Google OAuth
-
----
-
-## Authorization
-
-- Role-Based Access Control
-- Admin-only APIs
-- Route Protection
-- Server-side Validation
-
----
-
-## Database
-
-- Row Level Security
-- Foreign Keys
-- Secure Policies
-- Cascading Relations
-
----
-
-## API Security
-
-- Rate Limiting
-- Zod Validation
-- DOMPurify Sanitization
-- Magic Bytes File Validation
-- Secure Upload Pipeline
-
----
-
-## HTTP Security
-
-- CSP Headers
-- Secure Cookies
-- HTTPS
-- CORS Protection
-
----
-
-# Performance
-
-Optimizations include:
-
-- Dynamic Imports
-- Code Splitting
-- Lazy Loading
-- GPU Resource Disposal
-- Shader Pre-compilation
-- Adaptive Rendering
-- Optimized Bundle Size
-- Image Optimization
-- Responsive Graphics
-
----
-
-# Responsive Design
-
-Optimized independently for:
-
-- Desktop
-- Laptop
-- Tablet
-- Foldables
-- Mobile
-- Dynamic Aspect Ratios
-
-Each platform has its own layout strategy while maintaining the same visual identity.
-
----
-
-# Android Application
-
-The project includes native Android packaging using Capacitor.
-
-Features:
-
-- Native Splash Screen
-- Safe Area Support
-- Keyboard Handling
-- Native Navigation
-- Android App Bundle (AAB)
-
----
-
-# Development
-
-Install dependencies
+## Getting started
 
 ```bash
 npm install
-```
-
-Run development server
-
-```bash
+cp .env.example .env.local   # fill in Supabase keys (required) and optional SMTP / Razorpay
 npm run dev
 ```
 
-Build production
+`next.config.mjs` stops the server if the required Supabase variables are missing.
 
-```bash
-npm run build
-```
+## Scripts
 
-Lint
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run test:e2e` | Playwright tests (Chromium) |
 
-```bash
-npm run lint
-```
-
-Type Check
-
-```bash
-npx tsc --noEmit
-```
-
----
-
-# Environment Variables
-
-Create a `.env.local`
-
-Required variables include:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-
-SUPABASE_SERVICE_ROLE_KEY=
-
-OPENAI_API_KEY=
-
-SMTP_HOST=
-
-SMTP_PORT=
-
-SMTP_USER=
-
-SMTP_PASS=
-
-UPSTASH_REDIS_REST_URL=
-
-UPSTASH_REDIS_REST_TOKEN=
-```
-
----
-
-# Quality Assurance
-
-Before every deployment:
-
-```bash
-npm run lint
-
-npx tsc --noEmit
-
-npm run build
-```
-
-Recommended:
-
-- Lighthouse Desktop
-- Lighthouse Mobile
-- Playwright E2E
-- Manual Mobile Testing
-
----
-
-# Deployment
-
-Production deployment is hosted on:
-
-- Vercel
-- Supabase
-- Upstash Redis
-
-Deployment workflow:
+## Project structure
 
 ```
-GitHub
-
-↓
-
-Vercel
-
-↓
-
-Build
-
-↓
-
-Deploy
-
-↓
-
-Production
+src/
+  app/                 Routes, metadata, API route handlers
+  components/
+    brand/             BrandMark, BrandSymbol, BrandStage (hero symbol)
+    layout/            Theme, background, consent, site-wide enhancements
+    ui/                Button, Card, Eyebrow, SectionHeader
+    people/            Founder cards
+    admin/             Admin dashboard modules
+  sections/            Page sections (home, contact)
+  data/company.ts      Company facts and public copy — single source of truth
+  lib/                 Security, rate limiting, audit logging, brand colours
+supabase/              SQL schema files
+public/brand/          Optimised symbol derived from public/logo.png
 ```
 
----
+## Design system
 
-# Current Status
-
-Current Version:
-
-**Version 1.0**
-
-Status:
-
-**Release Candidate (v1.0 RC1)**
-
----
-
-# Roadmap
-
-Future enhancements include:
-
-- AI Memory Engine
-- AI Agents
-- Workflow Automation
-- Advanced Analytics
-- Team Collaboration
-- Multi-Tenant Organizations
-- AI Document Intelligence
-- Native Desktop Application
-
----
-
-# License
-
-Copyright © 2026
-
-**VANIKARA Intelligence Private Limited**
-
-All Rights Reserved.
-
----
-
-# Developed By
-
-**VANIKARA Intelligence Private Limited**
-
-Building Intelligent Digital Experiences.
+- **Colours:** brand primitives are `--vanikara-*` CSS variables; components use semantic tokens (`text-fg`, `text-intel`, `text-ambition`, `bg-surface`, `border-line` …). Contexts that cannot read CSS variables (charts, emails, generated images) use `src/lib/brandColors.ts`.
+- **Type:** Manrope throughout.
+- **Theme:** light and dark are set before first paint by a small script in `<head>`; Tailwind's `dark:` variant follows the site toggle.
+- **Motion:** CSS only. Scroll reveals use a single `IntersectionObserver`; everything respects `prefers-reduced-motion`.
+- **Logo:** always render the supplied asset through `BrandSymbol` / `BrandMark`. Never redraw, recolour or distort it.

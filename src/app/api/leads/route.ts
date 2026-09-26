@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { sanitize, apiResponse, logError } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
+import { isRateLimited } from "@/lib/rateLimit";
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -34,6 +35,12 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    const rateLimit = await isRateLimited(ip);
+    if (rateLimit.limited) {
+      return NextResponse.json(apiResponse(false, null, "Too many requests. Please try again later."), { status: 429 });
+    }
+
     const body = await req.json();
     const { name, email, message, source } = body;
 
@@ -87,16 +94,18 @@ export async function PATCH(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
-    const { id, ...updates } = await req.json();
+    const { id, status, name, message, source } = await req.json();
     if (!id) return NextResponse.json(apiResponse(false, null, "Missing ID"), { status: 400 });
 
-    // Sanitize certain fields if present
-    if (updates.name) updates.name = sanitize(updates.name).slice(0, 100);
-    if (updates.message) updates.message = sanitize(updates.message).slice(0, 5000);
+    const updates: Record<string, string> = {};
+    if (status !== undefined) updates.status = String(status).slice(0, 50);
+    if (name !== undefined) updates.name = sanitize(String(name)).slice(0, 100);
+    if (message !== undefined) updates.message = sanitize(String(message)).slice(0, 5000);
+    if (source !== undefined) updates.source = sanitize(String(source)).slice(0, 50);
 
     const { data, error } = await supabaseService
       .from("leads")
@@ -133,7 +142,7 @@ export async function DELETE(req: Request) {
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || !isAdmin(user.email)) {
+    if (!user || !isAdmin(user)) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 

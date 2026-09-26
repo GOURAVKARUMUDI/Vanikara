@@ -2,20 +2,15 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
+import { FOUNDERS_AND_LEADERSHIP } from "@/data/company";
+import { BrandSymbol } from "@/components/brand/BrandMark";
 
 const CRMOverview = dynamic(() => import("@/components/admin/CRMOverview"), { ssr: false });
 const LeadsTable = dynamic(() => import("@/components/admin/LeadsTable"), { ssr: false });
-const ClientsTable = dynamic(() => import("@/components/admin/ClientsTable"), { ssr: false });
-const PaymentsTable = dynamic(() => import("@/components/admin/PaymentsTable"), { ssr: false });
-const PackagesManager = dynamic(() => import("@/components/admin/PackagesManager"), { ssr: false });
 const UsersManager = dynamic(() => import("@/components/admin/UsersManager"), { ssr: false });
-const ProjectsManager = dynamic(() => import("@/components/admin/ProjectsManager"), { ssr: false });
-const ProductsManager = dynamic(() => import("@/components/admin/ProductsManager"), { ssr: false });
-const AIManager = dynamic(() => import("@/components/admin/AIManager"), { ssr: false });
 const ContactManager = dynamic(() => import("@/components/admin/ContactManager"), { ssr: false });
 const SettingsManager = dynamic(() => import("@/components/admin/SettingsManager"), { ssr: false });
 const PrivacyManager = dynamic(() => import("@/components/admin/PrivacyManager"), { ssr: false });
-const AdminScene = dynamic(() => import("@/components/admin/AdminScene"), { ssr: false });
 
 interface Props {
   user: {
@@ -31,43 +26,35 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
     setActiveTab(id);
     window.history.pushState(null, '', `?tab=${id}`);
   };
+
   const tabs = [
     { id: "overview", label: "Overview" },
+    { id: "contacts", label: "Contacts & Inquiries" },
     { id: "users", label: "Users" },
-    { id: "projects", label: "Projects" },
-    { id: "products", label: "Products" },
-    { id: "ai", label: "AI Console" },
-    { id: "contacts", label: "Contacts" },
-    { id: "leads", label: "Leads" },
-    { id: "clients", label: "Clients" },
-    { id: "payments", label: "Payments" },
-    { id: "packages", label: "Packages" },
     { id: "settings", label: "Settings" },
     { id: "privacy", label: "Privacy Control" },
   ];
 
   return (
     <div className="min-h-screen bg-transparent pt-12">
-      <AdminScene />
       <div className="max-w-7xl mx-auto py-12 px-6">
         
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4 border-b border-[var(--glass-border)] pb-8">
-          <div>
-            <h1 className="text-3xl font-display font-black tracking-wider text-[var(--text-primary)]">
-              ECOSYSTEM <span className="gradient-text">CONTROL PANEL</span>
-            </h1>
-            <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] mt-1.5">
-              Vanikara Startup Operating System
-            </p>
+          <div className="flex items-center gap-4">
+            <BrandSymbol size={36} alt="" />
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Admin</h1>
+              <p className="mt-1 text-sm text-fg-muted">Internal operations for VANIKARA</p>
+            </div>
           </div>
           <div className="flex items-center gap-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] px-4 py-2.5 rounded-2xl shadow-sm backdrop-blur-md">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase bg-gradient-to-r from-blue-600 to-indigo-600">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase bg-action">
               {user.email?.[0]}
             </div>
             <div className="text-xs">
               <div className="text-[var(--text-primary)] font-bold">{user.email}</div>
-              <div className="text-[var(--text-secondary)] uppercase tracking-widest font-black text-[8px] mt-0.5">Super Admin</div>
+              <div className="text-[var(--text-secondary)] uppercase tracking-widest font-mono text-[8px] mt-0.5">Admin Role Verified</div>
             </div>
           </div>
         </header>
@@ -78,7 +65,7 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
             <button 
               key={t.id}
               onClick={() => handleTabChange(t.id)}
-              className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+              className={`px-5 py-2 rounded-xl text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
                 activeTab === t.id 
                   ? "bg-[var(--accent-color)] text-white shadow-md" 
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5"
@@ -90,55 +77,42 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
         </nav>
 
         {/* Dynamic Content */}
-        <main className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <main className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           {activeTab === "overview" && (
             <div className="space-y-8">
               <CRMOverview />
 
-              {/* Founding Team Overview */}
-              <div className="p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[2rem] shadow-sm backdrop-blur-md">
-                <h2 className="text-lg font-display font-black text-[var(--text-primary)] mb-6 flex items-center gap-2 uppercase tracking-wide">
-                  <span className="w-1.5 h-6 bg-[var(--accent-color)] rounded-full inline-block"></span>
-                  Founding Team Overview
+              {/* Leadership Registry Overview */}
+              <div className="p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl shadow-sm backdrop-blur-md">
+                <h2 className="text-base font-display font-black text-[var(--text-primary)] mb-6 flex items-center gap-2 uppercase tracking-wide">
+                  <span className="w-1.5 h-5 bg-[var(--accent-color)] rounded-full inline-block"></span>
+                  Verified Leadership Registry
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Communication & Marketing</span>
-                    <p className="text-[var(--text-primary)] font-bold text-base">Miryala Giri Charan</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Communication and Marketing Director leading brand positioning and strategic outreach.</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Technical Architecture</span>
-                    <p className="text-[var(--text-primary)] font-bold text-base">Gourav Karumudi</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Technical Director leading system architecture, cloud engineering, and platform security.</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Growth & Client Relations</span>
-                    <p className="text-[var(--text-primary)] font-bold text-base">Chejarla Hari Charan Reddy</p>
-                    <p className="text-[var(--text-secondary)] text-xs">Growth and Client Director driving client success, partnerships, and market expansion.</p>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {FOUNDERS_AND_LEADERSHIP.map((leader) => (
+                    <div key={leader.id} className="p-4 rounded-2xl bg-white/5 border border-[var(--glass-border)] space-y-1.5">
+                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[var(--accent-color)]">
+                        {leader.designation}
+                      </span>
+                      <p className="text-[var(--text-primary)] font-bold text-sm font-display">
+                        {leader.fullName}
+                      </p>
+                      <p className="text-[var(--text-secondary)] text-xs leading-relaxed">
+                        {leader.responsibilities.join(", ")}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 gap-8">
                 <LeadsTable />
-                <ClientsTable />
               </div>
             </div>
           )}
 
-          {activeTab === "users" && <UsersManager />}
-          {activeTab === "projects" && <ProjectsManager />}
-          {activeTab === "products" && <ProductsManager />}
-          {activeTab === "ai" && <AIManager />}
           {activeTab === "contacts" && <ContactManager />}
-
-
-
-          {activeTab === "leads" && <LeadsTable />}
-          {activeTab === "clients" && <ClientsTable />}
-          {activeTab === "payments" && <PaymentsTable />}
-          {activeTab === "packages" && <PackagesManager />}
+          {activeTab === "users" && <UsersManager />}
           {activeTab === "settings" && <SettingsManager />}
           {activeTab === "privacy" && <PrivacyManager />}
         </main>

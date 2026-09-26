@@ -20,7 +20,7 @@ export function useAuthRedirect() {
 
       // Check role and redirect if on a restricted page or root
       const pathname = window.location.pathname;
-      const isUserAdmin = isAdmin(user.email);
+      const isUserAdmin = isAdmin(user);
 
       if (pathname === "/" || pathname === "/login") {
         if (isUserAdmin) {

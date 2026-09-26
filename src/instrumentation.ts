@@ -8,8 +8,8 @@ export async function register() {
        'NEXT_PUBLIC_SUPABASE_URL',
        'NEXT_PUBLIC_SUPABASE_ANON_KEY',
        'SUPABASE_SERVICE_ROLE_KEY',
-       'GMAIL_USER',
-       'GMAIL_PASS'
+       'SMTP_USER',
+       'SMTP_PASS'
      ];
 
      const missing = required.filter(key => !process.env[key]);

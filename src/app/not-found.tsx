@@ -1,34 +1,28 @@
-import Image from 'next/image';
-import Button from '@/components/ui/Button';
+import type { Metadata } from "next";
+import Button from "@/components/ui/Button";
+import { BrandSymbol } from "@/components/brand/BrandMark";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+};
 
 export default function NotFound() {
   return (
-    <div className="min-h-[75vh] flex flex-col items-center justify-center text-center px-6 py-12 bg-transparent relative z-10">
-      <div className="max-w-md w-full p-8 rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl shadow-xl space-y-6">
-        
-        {/* Logo Container */}
-        <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center bg-white/10 border border-[var(--glass-border)] shadow-sm">
-          <Image src="/logo.png" alt="VANIKARA Logo" className="w-10 h-auto" width={40} height={40} />
-        </div>
-        
-        <div className="space-y-2">
-          <h1 className="text-5xl font-display font-black text-[var(--accent-color)] tracking-tight">
-            404
-          </h1>
-          <h2 className="text-lg font-display font-bold text-[var(--text-primary)] uppercase tracking-widest">
-            Page Not Found
-          </h2>
-          <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-sm mx-auto">
-            The page you are looking for does not exist, has been archived, or moved to a different workspace route.
-          </p>
-        </div>
-
-        <div className="pt-2 flex justify-center">
-          <Button href="/" variant="primary" size="md" magnetic>
-            Return to Core
+    <section className="container-page flex min-h-[70vh] items-center justify-center py-20">
+      <div className="rise-in max-w-md text-center">
+        <BrandSymbol size={48} alt="" className="mx-auto opacity-90" />
+        <p className="mt-8 text-sm font-semibold tabular-nums text-fg-subtle">404</p>
+        <h1 className="text-headline mt-3 text-fg">This page doesn&apos;t exist.</h1>
+        <p className="text-lead mt-4">It may have moved, or the link may be incorrect.</p>
+        <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+          <Button href="/" arrow>
+            Back to home
+          </Button>
+          <Button href="/contact" variant="secondary">
+            Contact us
           </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { supabaseService } from "@/utils/supabase/service";
-import { sanitize, apiResponse, logError, isBot } from "@/lib/security";
+import { sanitize, apiResponse, logError, isBot, escapeHtml } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
 import { isRateLimited } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -12,6 +12,7 @@ const contactSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
   email: z.string().email("Invalid email format"),
   phone: z.string().max(30).optional(),
+  organization: z.string().max(100).optional(),
   company: z.string().max(100).optional(),
   subject: z.string().min(1, "Subject is required").max(200),
   message: z.string().min(1, "Message is required").max(5000),
@@ -34,25 +35,26 @@ export async function POST(req: Request) {
       return NextResponse.json(apiResponse(false, null, validation.error.issues[0].message), { status: 400 });
     }
 
-    const { name, email, phone, company, subject, message, bot } = validation.data;
+    const { name, email, phone, organization, company, subject, message, bot } = validation.data;
 
     // 1. Spam protection (Honeypot)
     if (isBot(bot || "")) {
       return NextResponse.json(apiResponse(false, null, "Bot request rejected"), { status: 400 });
     }
 
-    // 3. Clean and Sanitize Inputs
+    // 2. Clean and Sanitize Inputs
     const sName = sanitize(name).slice(0, 100);
     const sEmail = email.trim().toLowerCase();
     const sPhone = phone ? sanitize(phone).slice(0, 30) : "N/A";
-    const sCompany = company ? sanitize(company).slice(0, 100) : "N/A";
+    const orgValue = organization || company || "";
+    const sOrg = orgValue ? sanitize(orgValue).slice(0, 100) : "N/A";
     const sSubject = sanitize(subject).slice(0, 200);
     const sMessage = sanitize(message).slice(0, 5000);
 
-    // Format full description detail for crm database storing
-    const crmStoredMessage = `Subject: ${sSubject}\nCompany: ${sCompany}\nPhone: ${sPhone}\n\nMessage Details:\n${sMessage}`;
+    // Format description detail for leads database storing
+    const crmStoredMessage = `Subject: ${sSubject}\nOrganization: ${sOrg}\nPhone: ${sPhone}\n\nMessage Details:\n${sMessage}`;
 
-    // 4. Persist to leads CRM database table
+    // 3. Persist to leads database table in Supabase
     const { error: dbError } = await supabaseService
       .from("leads")
       .insert([
@@ -67,33 +69,30 @@ export async function POST(req: Request) {
 
     if (dbError) {
       logError("Contact Form DB Persistence", dbError);
-      return NextResponse.json(apiResponse(false, null, "Failed to persist inquiry details"), { status: 500 });
+      return NextResponse.json(apiResponse(false, null, "Failed to persist inquiry details. Please contact support@vanikara.com directly."), { status: 500 });
     }
 
-    // 5. Sync to Google Form (Secondary Operational Flow)
-    const googleFormSuccess = await submitToGoogleForm("contact", {
-      name: sName,
-      email: sEmail,
-      phone: sPhone,
-      company: sCompany,
-      subject: sSubject,
-      message: sMessage,
-      privacyAgreement: "I agree to the Privacy Policy."
-    });
-
-    if (!googleFormSuccess && (process.env.GOOGLE_FORM_CONTACT_URL || process.env.NODE_ENV === "production")) {
-      return NextResponse.json(
-        apiResponse(false, null, "Google Forms operational sync failed. Please try again in a few moments."),
-        { status: 502 }
-      );
+    // 4. Optional Secondary Sync to Google Form (if configured)
+    if (process.env.GOOGLE_FORM_CONTACT_URL) {
+      try {
+        await submitToGoogleForm("contact", {
+          name: sName,
+          email: sEmail,
+          phone: sPhone,
+          company: sOrg,
+          subject: sSubject,
+          message: sMessage,
+          privacyAgreement: "I agree to the Privacy Policy."
+        });
+      } catch (gfErr) {
+        console.warn("Secondary Google Form sync failed:", gfErr);
+      }
     }
 
-    // 6. Send Transactional Notification Email via Nodemailer (Non-blocking/Resilient)
+    // 5. Send Transactional Notification Email via Nodemailer (Resilient)
     const smtpEnabled = !!process.env.SMTP_HOST && !!process.env.SMTP_USER && !!process.env.SMTP_PASS;
 
-    if (!smtpEnabled) {
-      console.warn("SMTP is disabled. Skipping email notification.");
-    } else {
+    if (smtpEnabled) {
       try {
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
@@ -108,63 +107,43 @@ export async function POST(req: Request) {
 
         await transporter.sendMail({
           from: `"VANIKARA Contact System" <${process.env.SMTP_USER}>`,
-          to: "support@vanikara.com",
-          subject: `[INQUIRY] ${sSubject} - ${sName}`,
+          to: "contact@vanikara.com",
+          replyTo: sEmail,
+          subject: `[INQUIRY] ${sSubject} — ${sName}`,
           text: `New contact submission received:\n\n` +
-                `Sender Name: ${sName}\n` +
-                `Sender Email: ${sEmail}\n` +
+                `Name: ${sName}\n` +
+                `Email: ${sEmail}\n` +
                 `Phone: ${sPhone}\n` +
-                `Company: ${sCompany}\n` +
+                `Organization: ${sOrg}\n` +
                 `Subject: ${sSubject}\n` +
                 `Message: ${sMessage}\n` +
                 `Submitted At: ${timestamp}\n`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-              <h2 style="color: #1e6bd6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Inquiry Received</h2>
+              <h2 style="color: #0058D6; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">New Inquiry Received — VANIKARA</h2>
               <table style="width: 100%; font-size: 14px; color: #334155; margin-bottom: 20px; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold; width: 120px;">Name:</td>
-                  <td style="padding: 8px 0;">${sName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Email:</td>
-                  <td style="padding: 8px 0;"><a href="mailto:${sEmail}" style="color: #1e6bd6; text-decoration: none;">${sEmail}</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Phone:</td>
-                  <td style="padding: 8px 0;">${sPhone}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Company:</td>
-                  <td style="padding: 8px 0;">${sCompany}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Subject:</td>
-                  <td style="padding: 8px 0;">${sSubject}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-weight: bold;">Timestamp:</td>
-                  <td style="padding: 8px 0;">${timestamp}</td>
-                </tr>
+                <tr><td style="padding: 8px 0; font-weight: bold; width: 130px;">Name:</td><td style="padding: 8px 0;">${escapeHtml(sName)}</td></tr>
+                <tr><td style="padding: 8px 0; font-weight: bold;">Email:</td><td style="padding: 8px 0;"><a href="mailto:${escapeHtml(sEmail)}">${escapeHtml(sEmail)}</a></td></tr>
+                <tr><td style="padding: 8px 0; font-weight: bold;">Phone:</td><td style="padding: 8px 0;">${escapeHtml(sPhone)}</td></tr>
+                <tr><td style="padding: 8px 0; font-weight: bold;">Organization:</td><td style="padding: 8px 0;">${escapeHtml(sOrg)}</td></tr>
+                <tr><td style="padding: 8px 0; font-weight: bold;">Subject:</td><td style="padding: 8px 0;">${escapeHtml(sSubject)}</td></tr>
+                <tr><td style="padding: 8px 0; font-weight: bold;">Timestamp:</td><td style="padding: 8px 0;">${timestamp}</td></tr>
               </table>
               <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin-bottom: 8px;">Message:</div>
-              <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${sMessage}</div>
+              <div style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 15px; font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(sMessage)}</div>
             </div>
           `
         });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (mailErr: any) {
-        console.error("Mail Dispatch Failed:", mailErr);
-        // We don't throw here to ensure the user gets a success response even if the notification fails
+      } catch (mailErr) {
+        console.warn("Mail Notification Dispatch Failed (Inquiry saved to database):", mailErr);
       }
     }
 
-    return NextResponse.json({ success: true, message: "Inquiry logged and processing started" });
+    return NextResponse.json({ success: true, message: "Your message has been securely submitted. The VANIKARA team will review it shortly." });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     logError("Contact API route", err);
-    return NextResponse.json(apiResponse(false, null, "Internal server error"), { status: 500 });
+    return NextResponse.json(apiResponse(false, null, "Internal server error. Please try again or write directly to contact@vanikara.com."), { status: 500 });
   }
 }
-

@@ -55,7 +55,6 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     services: {
       database: "healthy",
-      openai: "healthy",
       email: "healthy"
     }
   };
@@ -75,16 +74,7 @@ export async function GET() {
     hasError = true;
   }
 
-  // 2. Check OpenAI configuration credentials
-  if (!process.env.OPENAI_API_KEY) {
-    status.services.openai = "unhealthy: OPENAI_API_KEY is not configured";
-    hasError = true;
-  } else if (!process.env.OPENAI_API_KEY.startsWith("sk-")) {
-    status.services.openai = "unhealthy: OPENAI_API_KEY has an invalid key format";
-    hasError = true;
-  }
-
-  // 3. Check Nodemailer SMTP configuration
+  // 2. Check Nodemailer SMTP configuration
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
     status.services.email = "disabled: SMTP authentication environment variables not configured";
   } else {

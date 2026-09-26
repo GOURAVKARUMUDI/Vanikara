@@ -19,7 +19,7 @@ export const logger = {
    */
   info: (message: string, ...args: unknown[]): void => {
     if (DEBUG) {
-      console.log(`%c${getPrefix('INFO')}: ${message}`, 'color: #1E6BD6; font-weight: bold;', ...args);
+      console.log(`%c${getPrefix('INFO')}: ${message}`, 'color: #006EFF; font-weight: bold;', ...args);
     }
   },
 
@@ -28,7 +28,7 @@ export const logger = {
    */
   warn: (message: string, ...args: unknown[]): void => {
     if (DEBUG) {
-      console.warn(`%c${getPrefix('WARN')}: ${message}`, 'color: #FF7A00; font-weight: bold;', ...args);
+      console.warn(`%c${getPrefix('WARN')}: ${message}`, 'color: #F4511E; font-weight: bold;', ...args);
     }
   },
 
@@ -54,7 +54,7 @@ export const logger = {
    * Starts a console group for related logs.
    */
   group: (title: string): void => {
-    if (DEBUG) console.group(`%c${title}`, 'color: #FFC400; font-weight: bold;');
+    if (DEBUG) console.group(`%c${title}`, 'color: #FFB300; font-weight: bold;');
   },
 
   /**

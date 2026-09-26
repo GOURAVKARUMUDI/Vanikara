@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true }, { status: 200 });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    logError("Client error reporting endpoint failed", err);
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }

@@ -59,8 +59,15 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem("cookie_consent_settings");
     const storedVer = localStorage.getItem("cookie_consent_version");
 
-    if (stored) {
-      setConsent(JSON.parse(stored));
+    let parsed: ConsentSettings | null = null;
+    try {
+      parsed = stored ? (JSON.parse(stored) as ConsentSettings) : null;
+    } catch {
+      parsed = null;
+    }
+
+    if (parsed) {
+      setConsent({ ...DEFAULT_CONSENT, ...parsed, essential: true });
       setHasSetConsent(true);
       setShowBanner(false);
     } else {
@@ -79,9 +86,9 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
       window.addEventListener("keydown", triggerBanner, { passive: true });
     }
 
-    // Fetch latest policy version from the admin privacy API in the background
+    // Fetch the public policy configuration in the background
     try {
-      const res = await fetch("/api/admin/privacy");
+      const res = await fetch("/api/privacy/consent");
       if (res.ok) {
         const body = await res.json();
         if (body.success && body.data) {
@@ -106,7 +113,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
     loadConsentData();
   }, []);
 
-  const persistConsent = async (settings: ConsentSettings, action: "accept_all" | "reject_optional" | "custom") => {
+  const persistConsent = async (settings: ConsentSettings, action: "accept_all" | "reject_optional" | "customize") => {
     setConsent(settings);
     setHasSetConsent(true);
     setShowBanner(false);
@@ -171,7 +178,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
       essential: true,
       ...prefs
     };
-    persistConsent(customSettings, "custom");
+    persistConsent(customSettings, "customize");
   };
 
   const openPreferences = () => {

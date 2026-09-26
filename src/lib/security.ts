@@ -10,47 +10,17 @@ export const sanitize = (str: string): string => {
 };
 
 /**
- * Alias for sanitize - used by SecureForm component
+ * HTML-encode a string for safe interpolation into HTML email templates.
+ * Prevents XSS via email clients that render HTML.
  */
-export const sanitizeInput = (str: string): string => {
-  return sanitize(str);
-};
-
-/**
- * Validate payload for security threats (XSS, injection, etc.)
- */
-export const validatePayload = (
-  payload: Record<string, any>
-): { isSafe: boolean; threats: string[] } => {
-  const threats: string[] = [];
-  const xssPatterns = [
-    /<script[^>]*>.*?<\/script>/gi,
-    /javascript:/gi,
-    /on\w+\s*=/gi,
-    /<iframe/gi,
-    /<object/gi,
-    /<embed/gi,
-  ];
-
-  Object.entries(payload).forEach(([key, value]) => {
-    if (typeof value === 'string') {
-      xssPatterns.forEach((pattern) => {
-        if (pattern.test(value)) {
-          threats.push(`Potential XSS in field: ${key}`);
-        }
-      });
-
-      // Check for SQL injection patterns
-      if (/('|(--)|;|\/\*|\*\/|(xp_|sp_))/gi.test(value)) {
-        threats.push(`Potential SQL injection in field: ${key}`);
-      }
-    }
-  });
-
-  return {
-    isSafe: threats.length === 0,
-    threats,
-  };
+export const escapeHtml = (str: string): string => {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 };
 
 /**
@@ -113,12 +83,14 @@ export const logInfo = (
   metadata?: Record<string, any>
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const _entry: Record<string, any> = {
+  const entry: Record<string, any> = {
     timestamp: new Date().toISOString(),
     context,
     message,
     ...metadata,
   };
+
+  console.log(`[CYGMA][${entry.timestamp}][${context}]`, JSON.stringify(entry, null, 2));
 };
 
 /**
@@ -128,43 +100,3 @@ export const isBot = (honeypot: string): boolean => {
   return honeypot.length > 0;
 };
 
-/**
- * Detect threats in a given string and return risk score and classification
- */
-export const detectThreat = (
-  input: string
-): { score: number; classification: string } => {
-  if (typeof input !== 'string') {
-    return { score: 0, classification: 'safe' };
-  }
-
-  let score = 0;
-
-  // XSS patterns
-  if (/<script[^>]*>.*?<\/script>/gi.test(input)) score += 100;
-  if (/javascript:/gi.test(input)) score += 80;
-  if (/on\w+\s*=/gi.test(input)) score += 70;
-  if (/<iframe/gi.test(input)) score += 90;
-  if (/<object|<embed/gi.test(input)) score += 85;
-
-  // SQL injection patterns
-  if (/('|(--)|;|\/\*|\*\/)/gi.test(input)) score += 60;
-  if (/(xp_|sp_)/gi.test(input)) score += 75;
-
-  // Path traversal
-  if (/\.\.\//gi.test(input)) score += 50;
-
-  // Command injection
-  if (/[;&|`$()]/g.test(input)) score += 40;
-
-  // Normalize score to 0-100
-  const normalizedScore = Math.min(100, score);
-
-  let classification = 'safe';
-  if (normalizedScore > 70) classification = 'critical';
-  else if (normalizedScore > 50) classification = 'high';
-  else if (normalizedScore > 30) classification = 'medium';
-  else if (normalizedScore > 0) classification = 'low';
-
-  return { score: normalizedScore, classification };
-};

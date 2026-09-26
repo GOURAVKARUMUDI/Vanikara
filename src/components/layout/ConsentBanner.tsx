@@ -1,91 +1,47 @@
 "use client";
 
-import { useConsent } from "@/context/ConsentContext";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import React from "react";
+import { useConsent } from "@/context/ConsentContext";
 import Button from "@/components/ui/Button";
 
 /**
- * ConsentBanner: Renders a floating, premium frosted glass banner for GDPR/CCPA
- * compliance, matching the company's visual language.
+ * Cookie consent notice. Non-blocking: the page stays usable while it is open.
  */
 export default function ConsentBanner() {
-  const { showBanner, policyText, acceptAll, rejectOptional, openPreferences } = useConsent();
+  const { showBanner, acceptAll, rejectOptional, openPreferences } = useConsent();
 
   return (
-    <AnimatePresence>
-      {showBanner && (
-        <>
-          {/* Subtle background dim overlay - non-blocking to allow page interaction */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950 z-[9990] pointer-events-none"
-          />
-
-          {/* Floating CMP Liquid Glass Card Container */}
-          <motion.div
-            initial={{ y: 80, opacity: 0, scale: 0.96 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 50, opacity: 0, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 220, damping: 24 }}
-            className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:max-w-md w-auto z-[9991] glass-card p-0 rounded-[2rem] overflow-hidden select-none border border-white/10 dark:border-white/5 backdrop-blur-2xl shadow-[0_16px_48px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
-          >
-            {/* Ambient inner glow reflection layer */}
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-
-            <div className="p-6 sm:p-7 space-y-4">
-              <div className="flex items-center gap-2.5">
-                <span className="w-1.5 h-4.5 bg-[var(--accent-color)] rounded-full" />
-                <h4 className="font-display font-black text-xs uppercase tracking-widest text-[var(--text-primary)]">
-                  Your Privacy Matters
-                </h4>
-              </div>
-
-              <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
-                {policyText}{" "}
-                <Link href="/privacy" className="text-[var(--accent-color)] hover:underline font-bold">
-                  Privacy Policy
-                </Link>{" "}
-                and{" "}
-                <Link href="/cookies" className="text-[var(--accent-color)] hover:underline font-bold">
-                  Cookie Policy
-                </Link>.
-              </p>
-
-              <div className="grid grid-cols-2 gap-2.5 pt-2">
-                <Button
-                  onClick={rejectOptional}
-                  variant="secondary"
-                  size="sm"
-                  className="font-bold text-[9px] uppercase tracking-wider py-2.5"
-                >
-                  Reject Optional
-                </Button>
-                <Button
-                  onClick={acceptAll}
-                  variant="primary"
-                  size="sm"
-                  className="font-bold text-[9px] uppercase tracking-wider py-2.5"
-                >
-                  Accept All
-                </Button>
-              </div>
-
-              <div className="text-center pt-1">
-                <button
-                  onClick={openPreferences}
-                  className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--accent-color)] transition-colors cursor-pointer"
-                >
-                  Manage Preferences
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    <div
+      role="region"
+      aria-label="Cookie consent"
+      data-open={showBanner}
+      className="consent-banner glass-strong fixed inset-x-3 bottom-3 z-[45] rounded-feature p-5 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-sm sm:p-6"
+      hidden={!showBanner}
+    >
+      <p className="text-sm font-semibold text-fg">Cookies on this site</p>
+      <p className="mt-2 text-[0.8125rem] leading-relaxed text-fg-muted">
+        We use essential cookies to run the site and, with your permission, optional ones to understand how it is used.
+        Read our{" "}
+        <Link href="/legal/cookies" className="font-semibold text-intel underline-offset-2 hover:underline">
+          Cookie Policy
+        </Link>
+        .
+      </p>
+      <div className="mt-5 grid grid-cols-2 gap-2">
+        <Button onClick={rejectOptional} variant="secondary" size="sm">
+          Essential only
+        </Button>
+        <Button onClick={acceptAll} size="sm">
+          Accept all
+        </Button>
+      </div>
+      <button
+        type="button"
+        onClick={openPreferences}
+        className="mt-3 w-full rounded-compact py-1.5 text-[0.8125rem] font-medium text-fg-muted transition-colors hover:text-fg"
+      >
+        Manage preferences
+      </button>
+    </div>
   );
 }

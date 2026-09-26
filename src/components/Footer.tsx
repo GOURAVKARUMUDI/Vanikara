@@ -1,177 +1,112 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Linkedin, Github } from "lucide-react";
-import { useConsent } from "@/context/ConsentContext";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import MobileFooter from "./mobile/MobileFooter";
+import BrandMark from "@/components/brand/BrandMark";
+import CookieSettingsButton from "@/components/layout/CookieSettingsButton";
+import { COMPANY_IDENTITY, NAVIGATION } from "@/data/company";
+
+const COLUMNS = [
+  {
+    title: "Products",
+    links: [
+      ...NAVIGATION.products.map(({ href, label }) => ({ href, label })),
+      { href: "/what-we-build", label: "Overview" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { href: "/about", label: "About" },
+      { href: "/leadership", label: "Leadership" },
+      { href: "/technology", label: "Technology" },
+      { href: "/careers", label: "Careers" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { href: "/legal/privacy", label: "Privacy" },
+      { href: "/legal/terms", label: "Terms" },
+      { href: "/legal/cookies", label: "Cookies" },
+      { href: "/legal/legal-information", label: "Company information" },
+    ],
+  },
+];
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-  const { openPreferences } = useConsent();
-  const isMobile = useMediaQuery("(max-width: 767px)");
-
-  if (isMobile) {
-    return <MobileFooter year={year} openPreferences={openPreferences} />;
-  }
-
   return (
-    <footer className="pt-20 pb-10 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md transition-all duration-800">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
-        
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-16">
-          
-          {/* Brand Column */}
-          <div className="flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10 border border-white/10 shadow-sm">
-                <Image src="/logo.png" alt="Vanikara Logo" className="w-7 h-auto group-hover:scale-105 transition-transform" width={28} height={28} />
-              </div>
-              <span className="font-display font-black text-sm tracking-widest text-[var(--text-primary)]">
-                VANIKARA
-              </span>
+    <footer className="relative mt-16 overflow-hidden border-t border-line">
+      {/* Atmospheric symbol */}
+      <Image
+        src="/brand/vanikara-symbol.png"
+        alt=""
+        aria-hidden="true"
+        width={876}
+        height={714}
+        sizes="560px"
+        className="pointer-events-none absolute -bottom-40 -right-24 w-[560px] max-w-none select-none opacity-[0.05] blur-[1px] dark:opacity-[0.07]"
+      />
+
+      <div className="container-page relative py-16 sm:py-20">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-12">
+          <div className="col-span-2 md:col-span-5">
+            <Link href="/" aria-label="VANIKARA — home" className="inline-flex rounded-compact">
+              <BrandMark size={28} />
             </Link>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-[280px]">
-              Building Tomorrow Through Intelligence. An Indian technology company crafting scalable platforms, student ecosystems, and smart digital workflows.
+            <p className="mt-6 max-w-sm text-[0.9375rem] leading-relaxed text-fg-muted">
+              {COMPANY_IDENTITY.shortStatement}
             </p>
-            
-            {/* Social Links */}
-            <div className="flex gap-2.5 mt-2">
-              {[
-                { icon: <Linkedin className="w-4.5 h-4.5" />, href: "https://linkedin.com/company/vanikara", label: "LinkedIn" },
-                { icon: <Github className="w-4.5 h-4.5" />, href: "https://github.com/vanikara", label: "GitHub" },
-                { icon: <Mail className="w-4.5 h-4.5" />, href: "mailto:support@vanikara.com", label: "Email" }
-              ].map(({ icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--accent-color)] text-[var(--text-secondary)] hover:text-white transition-all duration-300 active:scale-95 shadow-sm"
-                >
-                  {icon}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Links Column: Company */}
-          <div>
-            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
-              Company
-            </h3>
-            <FooterLinks
-              links={[
-                { href: "/about", label: "About Us" },
-                { href: "/projects", label: "Our Projects" },
-                { href: "/products", label: "Our Products" },
-                { href: "/services", label: "What We Build" },
-                { href: "/careers", label: "Join Careers" },
-                { href: "/press", label: "Press & Media" },
-                { href: "/brand", label: "Brand Identity" },
-                { href: "/investors", label: "Investor Relations" }
-              ]}
-            />
-          </div>
-
-          {/* Links Column: Ecosystem */}
-          <div>
-            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
-              Ecosystem Tools
-            </h3>
-            <FooterLinks
-              links={[
-                { href: "/ai", label: "CYGMA AI Node" },
-                { href: "/upload", label: "Secure Vault Upload" },
-                { href: "/dashboard", label: "Client Portal" },
-                { href: "/admin", label: "Admin Operating OS" }
-              ]}
-            />
-          </div>
-
-          {/* Links Column: Legal / Contact */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <h3 className="font-display font-bold text-xs uppercase tracking-widest text-[var(--text-primary)] mb-5">
-                Legal Controls
-              </h3>
-              <FooterLinks
-                links={[
-                  { href: "/privacy", label: "Privacy Policy" },
-                  { href: "/terms", label: "Terms & Conditions" },
-                  { href: "/cookies", label: "Cookie Policy" },
-                  { href: "/security", label: "Security Page" },
-                  { href: "/legal", label: "Legal Information" },
-                  { href: "/refund", label: "Refund Policy" },
-                  { onClick: openPreferences, label: "Privacy & Cookie Settings" }
-                ]}
-              />
-            </div>
-            <div>
-              <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)] mb-1">
-                Official Support
-              </span>
+            <div className="mt-6 space-y-1.5 text-sm">
               <a
-                href="mailto:support@vanikara.com"
-                className="text-xs font-semibold text-[var(--accent-color)] hover:underline"
+                href={`mailto:${COMPANY_IDENTITY.officialEmail}`}
+                className="link-underline block w-fit font-medium text-fg"
               >
-                support@vanikara.com
+                {COMPANY_IDENTITY.officialEmail}
               </a>
+              <a
+                href={`mailto:${COMPANY_IDENTITY.supportEmail}`}
+                className="link-underline block w-fit text-fg-muted hover:text-fg"
+              >
+                {COMPANY_IDENTITY.supportEmail}
+              </a>
+              <p className="pt-1 text-fg-subtle">{COMPANY_IDENTITY.operationalLocation}</p>
             </div>
           </div>
 
+          {COLUMNS.map((column, index) => (
+            <nav
+              key={column.title}
+              aria-label={column.title}
+              className={`md:col-span-2 ${index === 0 ? "md:col-start-7" : ""}`}
+            >
+              <h2 className="text-[0.8125rem] font-semibold text-fg">{column.title}</h2>
+              <ul className="mt-4 space-y-3 text-[0.9375rem]">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="link-underline text-fg-muted transition-colors hover:text-fg"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+                {column.title === "Legal" && (
+                  <li>
+                    <CookieSettingsButton className="link-underline text-fg-muted transition-colors hover:text-fg" />
+                  </li>
+                )}
+              </ul>
+            </nav>
+          ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pt-8 border-t border-[var(--glass-border)] text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-          <div className="space-y-1.5 max-w-xl">
-            <p className="text-[var(--text-primary)] font-extrabold font-display">VANIKARA Intelligence Private Limited</p>
-            <p>Incorporated under the Companies Act, 2013 • CIN: U47912AP2026PTC125340</p>
-            <p>© 2026 VANIKARA Intelligence Private Limited. All Rights Reserved.</p>
-          </div>
-          <div className="shrink-0 text-right">
-            <p>
-              Crafted with <span className="text-orange-500 animate-pulse">♥</span> for innovation
-            </p>
-          </div>
+        <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-[0.8125rem] text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} {COMPANY_IDENTITY.legalName}
+          </p>
+          <p className="tabular-nums">CIN {COMPANY_IDENTITY.cin}</p>
         </div>
-
       </div>
     </footer>
-  );
-}
-
-interface FooterLinkItem {
-  href?: string;
-  onClick?: () => void;
-  label: string;
-}
-
-function FooterLinks({ links }: { links: FooterLinkItem[] }) {
-  return (
-    <ul className="space-y-3 list-none p-0 m-0">
-      {links.map(({ href, onClick, label }) => (
-        <li key={label}>
-          {onClick ? (
-            <button
-              onClick={onClick}
-              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:translate-x-1 inline-block transition-all duration-300 bg-transparent border-none p-0 text-left outline-none cursor-pointer"
-            >
-              {label}
-            </button>
-          ) : (
-            <Link
-              href={href || "/"}
-              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:translate-x-1 inline-block transition-all duration-300"
-            >
-              {label}
-            </Link>
-          )}
-        </li>
-      ))}
-    </ul>
   );
 }

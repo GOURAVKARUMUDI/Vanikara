@@ -1,136 +1,85 @@
-"use client";
-
 import Link from "next/link";
-import React, { useState, MouseEvent } from "react";
-import { motion } from "framer-motion";
-import Magnetic from "./Magnetic";
+import React from "react";
+import { ArrowRight } from "lucide-react";
 
-const MotionLink = motion.create(Link);
+type Variant = "primary" | "secondary" | "ghost" | "inverse";
+type Size = "sm" | "md" | "lg";
 
-interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  href?: string;
-  variant?: "primary" | "secondary" | "ghost" | "white";
-  size?: "sm" | "md" | "lg";
-  magnetic?: boolean;
+interface BaseProps {
+  variant?: Variant;
+  size?: Size;
+  /** Adds a trailing arrow that nudges forward on hover. */
+  arrow?: boolean;
+  className?: string;
+  children: React.ReactNode;
 }
 
-interface Ripple {
-  x: number;
-  y: number;
-  id: number;
-}
+type LinkButtonProps = BaseProps & {
+  href: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  target?: string;
+  rel?: string;
+  "aria-label"?: string;
+};
 
-export default function Button({
-  href,
-  variant = "primary",
-  size = "md",
-  magnetic = false,
-  className = "",
-  children,
-  onClick,
-  ...props
-}: ButtonProps) {
-  const [ripples, setRipples] = useState<Ripple[]>([]);
-
-  const handleRipple = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const newRipple = { x, y, id: Date.now() };
-    
-    setRipples((prev) => [...prev, newRipple]);
-    
-    // Clear ripple after animation
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-    }, 600);
+type NativeButtonProps = BaseProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & {
+    href?: undefined;
   };
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement & HTMLAnchorElement>) => {
-    handleRipple(e);
-    if (onClick) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onClick(e as any);
-    }
-  };
+export type ButtonProps = LinkButtonProps | NativeButtonProps;
 
-  const baseClasses =
-    "relative inline-flex items-center justify-center rounded-full font-semibold overflow-hidden transition-all duration-300 focus:outline-none disabled:opacity-60 disabled:pointer-events-none select-none";
+const VARIANT: Record<Variant, string> = {
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  ghost: "btn-ghost",
+  /** For use on always-dark panels (e.g. CYGMA). */
+  inverse: "btn-inverse",
+};
 
-  const sizeClasses = {
-    sm: "px-5 py-2 text-xs tracking-wider",
-    md: "px-7 py-3 text-sm tracking-wide",
-    lg: "px-9 py-4 text-base tracking-wide",
-  }[size];
+const SIZE: Record<Size, string> = {
+  sm: "btn-sm",
+  md: "btn-md",
+  lg: "btn-lg",
+};
 
-  const variantClasses = {
-    primary:
-      "text-white bg-blue-600/80 hover:bg-blue-600 border border-blue-400/30 backdrop-blur-md shadow-[0_4px_20px_rgba(30,107,214,0.15)] hover:shadow-[0_8px_32px_rgba(30,107,214,0.3)] hover:scale-105 transition-all",
-    secondary:
-      "bg-white/5 dark:bg-white/5 border border-white/20 dark:border-white/10 text-[var(--text-primary)] hover:bg-white/15 dark:hover:bg-white/10 backdrop-blur-md shadow-[0_4px_12px_rgba(255,255,255,0.02)] hover:shadow-[0_8px_24px_rgba(255,255,255,0.05)] hover:scale-105 transition-all",
-    ghost:
-      "bg-transparent border border-[var(--glass-border)] text-[var(--text-primary)] hover:bg-[var(--glass-bg)] backdrop-blur-sm",
-    white:
-      "bg-white border border-slate-200 text-slate-900 hover:shadow-md hover:bg-slate-55",
-  }[variant];
+/**
+ * Button primitive. Renders a Next.js <Link> for internal hrefs, a plain
+ * anchor for external/mailto links, and a <button> otherwise. Hover and
+ * press states are pure CSS (see .btn in globals.css).
+ */
+export default function Button(props: ButtonProps) {
+  const { variant = "primary", size = "md", arrow = false, className = "", children } = props;
+  const classes = `btn group ${VARIANT[variant]} ${SIZE[size]} ${className}`.trim();
 
-  const buttonContent = (
+  const content = (
     <>
-      <span className="relative z-10 flex items-center justify-center gap-2">
-        {children}
-      </span>
-      {/* Click ripple animations */}
-      {ripples.map((r) => (
-        <span
-          key={r.id}
-          className="absolute rounded-full pointer-events-none bg-white/20 animate-ping"
-          style={{
-            left: r.x - 30,
-            top: r.y - 30,
-            width: 60,
-            height: 60,
-            animationDuration: "0.6s",
-          }}
-        />
-      ))}
+      {children}
+      {arrow && <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4 shrink-0" strokeWidth={2} />}
     </>
   );
 
-  const mergedClasses = `${baseClasses} ${sizeClasses} ${variantClasses} ${className}`;
-
-  // Interactive springs parameters
-  const motionProps = {
-    whileHover: { scale: 1.025 },
-    whileTap: { scale: 0.95 },
-    transition: { type: "spring" as const, stiffness: 450, damping: 17 }
-  };
-
-  const buttonElement = href ? (
-    <MotionLink 
-      href={href} 
-      className={mergedClasses} 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onClick={handleClick as any}
-      {...motionProps}
-    >
-      {buttonContent}
-    </MotionLink>
-  ) : (
-    <motion.button 
-      className={mergedClasses} 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onClick={handleClick as any} 
-      {...motionProps}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {...props as any}
-    >
-      {buttonContent}
-    </motion.button>
-  );
-
-  if (magnetic) {
-    return <Magnetic>{buttonElement}</Magnetic>;
+  if (props.href !== undefined) {
+    const { href, onClick, target, rel } = props;
+    const isInternal = href.startsWith("/") || href.startsWith("#");
+    if (isInternal) {
+      return (
+        <Link href={href} onClick={onClick} className={classes} aria-label={props["aria-label"]}>
+          {content}
+        </Link>
+      );
+    }
+    return (
+      <a href={href} onClick={onClick} target={target} rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)} className={classes} aria-label={props["aria-label"]}>
+        {content}
+      </a>
+    );
   }
 
-  return buttonElement;
+  const { variant: _v, size: _s, arrow: _a, className: _c, children: _ch, type = "button", ...rest } = props;
+  return (
+    <button type={type} className={classes} {...rest}>
+      {content}
+    </button>
+  );
 }

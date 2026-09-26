@@ -140,7 +140,7 @@ export default function PrivacyManager() {
         </div>
         <button 
           onClick={fetchData} 
-          className="px-4 py-2 bg-slate-500/5 hover:bg-slate-500/10 border border-[var(--glass-border)] text-[9px] font-black uppercase rounded-lg transition-all flex items-center gap-1.5 cursor-pointer text-[var(--text-primary)] w-fit"
+          className="px-4 py-2 bg-surface-sunken hover:bg-surface-sunken border border-[var(--glass-border)] text-[9px] font-black uppercase rounded-lg transition-all flex items-center gap-1.5 cursor-pointer text-[var(--text-primary)] w-fit"
         >
           <RefreshCw className="w-3 h-3" /> Refresh Stats
         </button>
@@ -177,14 +177,14 @@ export default function PrivacyManager() {
           <Card>
             <CardBody className="p-5 text-center space-y-1.5">
               <span className="text-[9px] uppercase tracking-widest text-[var(--text-secondary)] font-black">Reject All Rate</span>
-              <p className="text-3xl font-display font-black text-orange-500 tracking-tight">{getRate(data?.stats?.rejectedOptional || 0)}</p>
+              <p className="text-3xl font-display font-black text-ambition tracking-tight">{getRate(data?.stats?.rejectedOptional || 0)}</p>
               <span className="text-[8px] text-[var(--text-secondary)] font-bold">{data?.stats?.rejectedOptional} users opted out</span>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="p-5 text-center space-y-1.5">
               <span className="text-[9px] uppercase tracking-widest text-[var(--text-secondary)] font-black">Custom Rate</span>
-              <p className="text-3xl font-display font-black text-blue-500 tracking-tight">{getRate(data?.stats?.customized || 0)}</p>
+              <p className="text-3xl font-display font-black text-intel tracking-tight">{getRate(data?.stats?.customized || 0)}</p>
               <span className="text-[8px] text-[var(--text-secondary)] font-bold">{data?.stats?.customized} customized setups</span>
             </CardBody>
           </Card>
@@ -197,21 +197,21 @@ export default function PrivacyManager() {
               Granular Category Opt-In Metrics
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs font-semibold">
-              <div className="space-y-1 bg-slate-500/5 p-4 rounded-xl border border-[var(--glass-border)]">
+              <div className="space-y-1 bg-surface-sunken p-4 rounded-xl border border-[var(--glass-border)]">
                 <span className="text-[8px] font-black uppercase text-[var(--text-secondary)] tracking-widest">Preference Cookies</span>
                 <div className="flex justify-between items-end mt-1">
                   <span className="text-xl font-display font-black text-[var(--text-primary)]">{getRate(data?.stats?.preferencesAccepted || 0)}</span>
                   <span className="text-[10px] text-[var(--text-secondary)] font-medium">{data?.stats?.preferencesAccepted} accepts</span>
                 </div>
               </div>
-              <div className="space-y-1 bg-slate-500/5 p-4 rounded-xl border border-[var(--glass-border)]">
+              <div className="space-y-1 bg-surface-sunken p-4 rounded-xl border border-[var(--glass-border)]">
                 <span className="text-[8px] font-black uppercase text-[var(--text-secondary)] tracking-widest">Analytics Cookies</span>
                 <div className="flex justify-between items-end mt-1">
                   <span className="text-xl font-display font-black text-[var(--text-primary)]">{getRate(data?.stats?.analyticsAccepted || 0)}</span>
                   <span className="text-[10px] text-[var(--text-secondary)] font-medium">{data?.stats?.analyticsAccepted} accepts</span>
                 </div>
               </div>
-              <div className="space-y-1 bg-slate-500/5 p-4 rounded-xl border border-[var(--glass-border)]">
+              <div className="space-y-1 bg-surface-sunken p-4 rounded-xl border border-[var(--glass-border)]">
                 <span className="text-[8px] font-black uppercase text-[var(--text-secondary)] tracking-widest">Marketing Cookies</span>
                 <div className="flex justify-between items-end mt-1">
                   <span className="text-xl font-display font-black text-[var(--text-primary)]">{getRate(data?.stats?.marketingAccepted || 0)}</span>
@@ -244,7 +244,7 @@ export default function PrivacyManager() {
                     value={policyText}
                     onChange={(e) => setPolicyText(e.target.value)}
                     required
-                    className="w-full bg-slate-500/5 text-[var(--text-primary)] text-xs rounded-xl p-3 border border-[var(--glass-border)] focus:outline-none focus:border-[var(--accent-color)] transition-all font-medium leading-relaxed resize-none"
+                    className="w-full bg-surface-sunken text-[var(--text-primary)] text-xs rounded-xl p-3 border border-[var(--glass-border)] focus:outline-none focus:border-[var(--accent-color)] transition-all font-medium leading-relaxed resize-none"
                     placeholder="We use essential cookies to operate our website and optional cookies..."
                   />
                   <p className="text-[9px] text-[var(--text-secondary)] leading-relaxed font-medium">
@@ -261,10 +261,10 @@ export default function PrivacyManager() {
                     value={currentVersion}
                     onChange={(e) => setCurrentVersion(e.target.value)}
                     required
-                    className="w-full bg-slate-500/5 text-[var(--text-primary)] text-xs rounded-xl p-3 border border-[var(--glass-border)] focus:outline-none focus:border-[var(--accent-color)] transition-all font-mono font-bold"
+                    className="w-full bg-surface-sunken text-[var(--text-primary)] text-xs rounded-xl p-3 border border-[var(--glass-border)] focus:outline-none focus:border-[var(--accent-color)] transition-all font-mono font-bold"
                     placeholder="1.0.0"
                   />
-                  <div className="p-3.5 rounded-xl border border-blue-500/10 bg-blue-500/5 text-[9px] text-blue-500 leading-normal font-bold">
+                  <div className="p-3.5 rounded-xl border border-brand-blue/10 bg-brand-blue/5 text-[9px] text-intel leading-normal font-bold">
                     ⚠️ IMPORTANT: Incrementing this version number will invalidate all cookie preference caches on current users&apos; browsers, forcing the cookie banner to reappear on their next visit to collect consent updates.
                   </div>
                 </div>
@@ -294,7 +294,7 @@ export default function PrivacyManager() {
                         key={service.key}
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onClick={() => handleToggleService(service.key as any)}
-                        className="w-full flex items-center justify-between p-3 rounded-xl border border-[var(--glass-border)] bg-slate-500/5 hover:bg-slate-500/10 transition-colors text-xs text-[var(--text-primary)] font-bold text-left cursor-pointer"
+                        className="w-full flex items-center justify-between p-3 rounded-xl border border-[var(--glass-border)] bg-surface-sunken hover:bg-surface-sunken transition-colors text-xs text-[var(--text-primary)] font-bold text-left cursor-pointer"
                       >
                         <span>{service.label}</span>
                         {active ? (

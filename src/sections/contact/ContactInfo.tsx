@@ -1,95 +1,56 @@
-"use client";
+import { COMPANY_IDENTITY } from "@/data/company";
+import { BrandSymbol } from "@/components/brand/BrandMark";
 
-import React from "react";
-import Card, { CardBody } from "@/components/ui/Card";
-import { Mail, MapPin, Phone, Clock } from "lucide-react";
-import dynamic from "next/dynamic";
-
-const ContactMap = dynamic(() => import("@/components/contact/ContactMap"), {
-  ssr: false,
-  loading: () => (
-    <Card hover>
-      <CardBody className="p-3">
-        <div className="relative rounded-2xl overflow-hidden aspect-video bg-[#070b16] border border-white/5 flex items-center justify-center animate-pulse text-[10px] font-black uppercase text-slate-400 tracking-widest">
-          Syncing map coordinates...
-        </div>
-      </CardBody>
-    </Card>
-  )
-});
+const CHANNELS = [
+  { label: "General enquiries", email: COMPANY_IDENTITY.officialEmail },
+  { label: "Support", email: COMPANY_IDENTITY.supportEmail },
+];
 
 export default function ContactInfo() {
   return (
-    <div className="space-y-6">
-      
-      {/* Office Details Card */}
-      <Card hover>
-        <CardBody className="space-y-6">
-          <h3 className="font-display font-black text-sm uppercase tracking-widest text-[var(--text-primary)] border-b border-[var(--glass-border)] pb-3">
-            Registered Company Details
-          </h3>
-
-          <div className="space-y-4">
-            {/* Legal Entity Name */}
-            <div className="text-xs">
-              <span className="block font-bold text-[var(--text-primary)] uppercase tracking-wider text-[10px] mb-1">Company Name</span>
-              <span className="text-[var(--text-primary)] font-extrabold text-sm">VANIKARA Intelligence Private Limited</span>
-            </div>
-
-            {/* Headquarters / Office Address */}
-            <div className="flex gap-4 items-start">
-              <div className="w-9 h-9 rounded-lg bg-slate-500/5 text-[var(--accent-color)] flex items-center justify-center shrink-0">
-                <MapPin className="w-4.5 h-4.5" />
-              </div>
-              <div className="text-xs">
-                <span className="block font-bold text-[var(--text-primary)]">Registered Office</span>
-                <span className="text-[var(--text-secondary)]">Andhra Pradesh, India</span>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div className="flex gap-4 items-start">
-              <div className="w-9 h-9 rounded-lg bg-slate-500/5 text-[var(--accent-color)] flex items-center justify-center shrink-0">
-                <Mail className="w-4.5 h-4.5" />
-              </div>
-              <div className="text-xs">
-                <span className="block font-bold text-[var(--text-primary)]">Email Address</span>
-                <a href="mailto:contact@vanikara.com" className="text-[var(--accent-color)] hover:underline">
-                  contact@vanikara.com
-                </a>
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className="flex gap-4 items-start">
-              <div className="w-9 h-9 rounded-lg bg-slate-500/5 text-[var(--accent-color)] flex items-center justify-center shrink-0">
-                <Phone className="w-4.5 h-4.5" />
-              </div>
-              <div className="text-xs">
-                <span className="block font-bold text-[var(--text-primary)]">Phone Contact</span>
-                <a href="tel:+919494326826" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-                  +91 94943 26826
-                </a>
-              </div>
-            </div>
-
-            {/* Business Hours */}
-            <div className="flex gap-4 items-start">
-              <div className="w-9 h-9 rounded-lg bg-slate-500/5 text-[var(--accent-color)] flex items-center justify-center shrink-0">
-                <Clock className="w-4.5 h-4.5" />
-              </div>
-              <div className="text-xs">
-                <span className="block font-bold text-[var(--text-primary)]">Business Hours</span>
-                <span className="text-[var(--text-secondary)]">Mon – Fri: 9:00 AM – 6:00 PM (IST)</span>
-              </div>
-            </div>
+    <div className="rise-in space-y-10" style={{ ["--rise-delay" as string]: "120ms" }}>
+      <div className="space-y-6">
+        {CHANNELS.map((channel) => (
+          <div key={channel.email}>
+            <p className="text-[0.8125rem] text-fg-subtle">{channel.label}</p>
+            <a
+              href={`mailto:${channel.email}`}
+              className="link-underline mt-1 inline-block text-xl font-semibold text-fg [overflow-wrap:anywhere]"
+            >
+              {channel.email}
+            </a>
           </div>
-        </CardBody>
-      </Card>
+        ))}
+      </div>
 
-      {/* Interactive Map */}
-      <ContactMap />
-
+      <div className="surface rounded-feature p-6">
+        <div className="flex items-center gap-3">
+          <BrandSymbol size={22} alt="" />
+          <p className="text-sm font-semibold text-fg">{COMPANY_IDENTITY.legalName}</p>
+        </div>
+        <dl className="mt-6 space-y-5 text-[0.9375rem]">
+          <div>
+            <dt className="text-[0.8125rem] text-fg-subtle">Registered office</dt>
+            <dd className="mt-1 leading-relaxed text-fg">
+              <address className="not-italic">
+                {COMPANY_IDENTITY.registeredOfficeLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </address>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-[0.8125rem] text-fg-subtle">Operations</dt>
+            <dd className="mt-1 text-fg">{COMPANY_IDENTITY.operationalLocation}</dd>
+          </div>
+          <div>
+            <dt className="text-[0.8125rem] text-fg-subtle">CIN</dt>
+            <dd className="mt-1 tabular-nums text-fg">{COMPANY_IDENTITY.cin}</dd>
+          </div>
+        </dl>
+      </div>
     </div>
   );
 }

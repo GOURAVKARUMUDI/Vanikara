@@ -34,14 +34,17 @@ export async function GET(request: Request) {
         }, { onConflict: 'user_id' });
 
         // Admin redirect logic
-        const isUserAdmin = isAdmin(user.email);
+        const isUserAdmin = isAdmin(user);
         
         let path = "/dashboard";
         if (isUserAdmin) {
           path = "/admin";
         } else {
           const next = searchParams.get('next');
-          if (next) path = next;
+          // Prevent open redirect: only allow relative paths starting with /
+          if (next && next.startsWith('/') && !next.startsWith('//')) {
+            path = next;
+          }
         }
 
         return NextResponse.redirect(`${origin}${path}`);

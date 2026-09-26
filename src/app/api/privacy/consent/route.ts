@@ -2,8 +2,20 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { supabaseService } from "@/utils/supabase/service";
+import { isRateLimited } from "@/lib/rateLimit";
+import { z } from "zod";
 
 const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
+
+const consentSchema = z.object({
+  action: z.enum(["accept_all", "reject_optional", "customize"]),
+  preferences: z.object({
+    analytics: z.boolean().optional(),
+    marketing: z.boolean().optional(),
+    preferences: z.boolean().optional(),
+  }).optional(),
+  _version: z.string().optional(),
+});
 
 async function getConfig() {
   try {
@@ -51,9 +63,43 @@ async function getConfig() {
   }
 }
 
+/**
+ * Public, read-only policy configuration for the consent banner.
+ * Statistics are never included here (admins read them via /api/admin/privacy).
+ */
+export async function GET() {
+  try {
+    const config = await getConfig();
+    return NextResponse.json({
+      success: true,
+      data: {
+        currentVersion: config.currentVersion,
+        policyText: config.policyText,
+        optionalServices: config.optionalServices,
+      },
+    });
+  } catch {
+    return NextResponse.json({ success: false, error: "Internal error" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
-    const { action, preferences, _version } = await req.json();
+    // Rate limiting
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
+    const limitCheck = await isRateLimited(ip);
+    if (limitCheck.limited) {
+      return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
+    }
+
+    // Input validation
+    const body = await req.json();
+    const validation = consentSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 });
+    }
+
+    const { action, preferences } = validation.data;
 
     // 1. Read existing config
     const config = await getConfig();
@@ -94,9 +140,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch {
+    return NextResponse.json({ success: false, error: "Internal error" }, { status: 500 });
   }
 }
-

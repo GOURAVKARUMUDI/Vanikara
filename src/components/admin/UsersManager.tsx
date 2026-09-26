@@ -73,23 +73,23 @@ export default function UsersManager() {
             placeholder="Search email address..."
             className="w-full pl-10 pr-4 py-2.5 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)] font-medium"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-fg-subtle absolute left-3.5 top-3" />
         </div>
       </div>
 
       <Card hover>
         <CardBody className="p-0 overflow-x-auto">
           {loading ? (
-            <div className="p-12 text-center text-xs text-slate-500 flex justify-center items-center gap-2">
+            <div className="p-12 text-center text-xs text-fg-subtle flex justify-center items-center gap-2">
               <RefreshCw className="w-4 h-4 animate-spin text-[var(--accent-color)]" /> Fetching registry database...
             </div>
           ) : filteredUsers.length === 0 ? (
-            <div className="p-12 text-center text-xs text-slate-500">
+            <div className="p-12 text-center text-xs text-fg-subtle">
               No matching user profiles found.
             </div>
           ) : (
             <table className="w-full text-left font-sans text-xs">
-              <thead className="bg-slate-500/5 text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-widest border-b border-[var(--glass-border)] select-none">
+              <thead className="bg-surface-sunken text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-widest border-b border-[var(--glass-border)] select-none">
                 <tr>
                   <th className="px-6 py-4">User Details</th>
                   <th className="px-6 py-4">Current Role</th>
@@ -99,18 +99,18 @@ export default function UsersManager() {
               </thead>
               <tbody className="divide-y divide-[var(--glass-border)] text-[var(--text-secondary)]">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-500/5 transition-colors">
+                  <tr key={u.id} className="hover:bg-surface-sunken transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-bold text-[var(--text-primary)]">{u.email?.split("@")[0]}</div>
-                      <div className="text-[10px] font-medium text-slate-400 mt-0.5">{u.email}</div>
+                      <div className="text-[10px] font-medium text-fg-subtle mt-0.5">{u.email}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${
                         u.role === "admin"
                           ? "bg-red-500/10 text-red-500 border-red-500/20"
                           : u.role === "premium" || u.role === "pro"
-                          ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
-                          : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                          ? "bg-brand-blue/10 text-intel border-brand-blue/20"
+                          : "bg-brand-blue/10 text-intel border-brand-blue/20"
                       }`}>
                         {u.role || "user"}
                       </span>
@@ -124,7 +124,7 @@ export default function UsersManager() {
                           <button
                             onClick={() => handleRoleChange(u.id, "admin")}
                             disabled={updatingId === u.id}
-                            className="px-2.5 py-1 bg-slate-500/5 hover:bg-red-500/15 border border-[var(--glass-border)] hover:border-red-500/20 text-[9px] font-black uppercase rounded-lg transition-all text-red-400 cursor-pointer disabled:opacity-50"
+                            className="px-2.5 py-1 bg-surface-sunken hover:bg-red-500/15 border border-[var(--glass-border)] hover:border-red-500/20 text-[9px] font-black uppercase rounded-lg transition-all text-red-400 cursor-pointer disabled:opacity-50"
                           >
                             Make Admin
                           </button>
@@ -132,7 +132,7 @@ export default function UsersManager() {
                           <button
                             onClick={() => handleRoleChange(u.id, "user")}
                             disabled={updatingId === u.id}
-                            className="px-2.5 py-1 bg-slate-500/5 hover:bg-blue-500/15 border border-[var(--glass-border)] hover:border-blue-500/20 text-[9px] font-black uppercase rounded-lg transition-all text-blue-400 cursor-pointer disabled:opacity-50"
+                            className="px-2.5 py-1 bg-surface-sunken hover:bg-brand-blue/15 border border-[var(--glass-border)] hover:border-brand-blue/20 text-[9px] font-black uppercase rounded-lg transition-all text-intel cursor-pointer disabled:opacity-50"
                           >
                             Remove Admin
                           </button>

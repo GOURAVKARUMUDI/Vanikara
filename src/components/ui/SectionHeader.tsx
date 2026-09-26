@@ -1,34 +1,42 @@
-import { ReactNode } from 'react';
+import React from "react";
+import Eyebrow from "./Eyebrow";
 
 interface SectionHeaderProps {
-  /** Optional badge/tag text above the title. */
-  tag?: string;
-  /** Main heading content. */
-  title: ReactNode;
-  /** Optional descriptive text below the title. */
-  subtitle?: string;
-  /** Whether to center all text. Default: true. */
-  centered?: boolean;
+  eyebrow?: string;
+  tone?: "warm" | "cool";
+  title: React.ReactNode;
+  lead?: React.ReactNode;
+  align?: "left" | "center";
+  /** Heading level; pages use h1 once, sections use h2. */
+  as?: "h1" | "h2";
   className?: string;
+  children?: React.ReactNode;
 }
 
-/**
- * SectionHeader: Consistent heading structure for page sections.
- */
 export default function SectionHeader({
-  tag, title, subtitle, centered = true, className = '',
+  eyebrow,
+  tone = "warm",
+  title,
+  lead,
+  align = "left",
+  as: Heading = "h2",
+  className = "",
+  children,
 }: SectionHeaderProps) {
+  const centered = align === "center";
+  // Page headers sit above the fold: animate with CSS so they never wait on JS.
+  const isPageHeader = Heading === "h1";
   return (
-    <div className={`${centered ? 'text-center' : ''} mb-14 ${className}`}>
-      {tag && <p className="text-xs font-bold uppercase tracking-widest text-[var(--accent-color)] mb-3">{tag}</p>}
-      <h2 className="font-display font-black text-2xl sm:text-3xl text-[var(--text-primary)] uppercase tracking-tight">
+    <header
+      className={`${isPageHeader ? "max-w-4xl" : "max-w-3xl"} ${centered ? "mx-auto text-center" : ""} ${isPageHeader ? "rise-in" : ""} ${className}`}
+      data-reveal={isPageHeader ? undefined : true}
+    >
+      {eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
+      <Heading className={`${Heading === "h1" ? "text-display" : "text-headline"} text-fg ${eyebrow ? "mt-4" : ""}`}>
         {title}
-      </h2>
-      {subtitle && (
-        <p className={`mt-4 text-[var(--text-secondary)] text-sm sm:text-base max-w-xl ${centered ? 'mx-auto' : ''} leading-relaxed font-semibold`}>
-          {subtitle}
-        </p>
-      )}
-    </div>
+      </Heading>
+      {lead && <p className={`text-lead mt-5 ${centered ? "mx-auto" : ""} max-w-2xl`}>{lead}</p>}
+      {children}
+    </header>
   );
 }

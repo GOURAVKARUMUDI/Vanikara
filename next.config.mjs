@@ -35,19 +35,13 @@ if (missingRequired.length > 0) {
 
 console.log("✅ Required environment variables validated.");
 
-if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
-  console.log("✅ Razorpay Enabled");
-} else {
-  console.warn("⚠️ Razorpay Disabled");
-}
-
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  console.log("✅ SMTP Enabled");
-} else {
-  console.warn("⚠️ SMTP Disabled");
-}
+// React's development build uses eval() for debugging features; never allowed in production.
+const devScriptSrc = process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
 
 const nextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
   productionBrowserSourceMaps: false,
   images: {
     remotePatterns: [
@@ -69,6 +63,100 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/projects',
+        destination: '/what-we-build',
+        permanent: true,
+      },
+      {
+        source: '/products',
+        destination: '/what-we-build',
+        permanent: true,
+      },
+      {
+        source: '/ai',
+        destination: '/cygma',
+        permanent: true,
+      },
+      {
+        source: '/services',
+        destination: '/what-we-build',
+        permanent: true,
+      },
+      {
+        source: '/portfolio',
+        destination: '/what-we-build',
+        permanent: true,
+      },
+      {
+        source: '/brand',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/investors',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/press',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/faq',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/privacy',
+        destination: '/legal/privacy',
+        permanent: true,
+      },
+      {
+        source: '/terms',
+        destination: '/legal/terms',
+        permanent: true,
+      },
+      {
+        source: '/cookies',
+        destination: '/legal/cookies',
+        permanent: true,
+      },
+      {
+        source: '/refund',
+        destination: '/legal/refund',
+        permanent: true,
+      },
+      {
+        source: '/security',
+        destination: '/legal/security',
+        permanent: true,
+      },
+      {
+        source: '/legal-information',
+        destination: '/legal/legal-information',
+        permanent: true,
+      },
+      {
+        source: '/status',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/changelog',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/upload',
+        destination: '/contact',
+        permanent: true,
+      }
+    ];
+  },
   async headers() {
     return [
       {
@@ -78,7 +166,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://va.vercel-scripts.com https://js.stripe.com;
+              script-src 'self' 'unsafe-inline'${devScriptSrc} https://*.supabase.co https://va.vercel-scripts.com https://js.stripe.com;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
               img-src 'self' data: https:;
               font-src 'self' https://fonts.gstatic.com;

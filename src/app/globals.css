@@ -85,7 +85,20 @@
   --glow-blue: rgba(0, 110, 255, 0.10);
   --glow-orange: rgba(244, 81, 30, 0.07);
   --glow-cyan: rgba(0, 207, 255, 0.08);
-  --grid-line: rgba(7, 26, 61, 0.045);
+
+  /* Light field (site background). Navy/blue/cyan carry the atmosphere;
+     warm tones are a restrained accent. Separate from --glow-* (card light). */
+  --bg-wash: linear-gradient(180deg, rgba(255, 240, 220, 0.30) 0%, rgba(255, 255, 255, 0) 38%, rgba(196, 220, 255, 0.30) 100%);
+  --bg-blue: rgba(0, 110, 255, 0.15);
+  --bg-navy: rgba(8, 43, 115, 0.075);
+  --bg-cyan: rgba(0, 200, 255, 0.13);
+  --bg-cyan-soft: rgba(0, 190, 255, 0.06);
+  --bg-warm: rgba(255, 112, 30, 0.085);
+  --bg-gold: rgba(255, 184, 0, 0.05);
+  --bg-logo-light: rgba(0, 150, 255, 0.15);
+  --bg-sweep: rgba(255, 255, 255, 0.5);
+  --bg-ribbon: 0.27;
+  --glass-sheen: rgba(255, 255, 255, 0.5);
 
   /* Legacy aliases kept for admin/dashboard screens */
   --accent-color: var(--action-bg);
@@ -130,7 +143,18 @@
   --glow-blue: rgba(0, 110, 255, 0.20);
   --glow-orange: rgba(244, 81, 30, 0.10);
   --glow-cyan: rgba(0, 207, 255, 0.10);
-  --grid-line: rgba(255, 255, 255, 0.035);
+
+  --bg-wash: linear-gradient(180deg, rgba(20, 60, 140, 0.20) 0%, rgba(5, 8, 22, 0) 45%, rgba(0, 90, 200, 0.16) 100%);
+  --bg-blue: rgba(0, 110, 255, 0.34);
+  --bg-navy: rgba(24, 76, 200, 0.30);
+  --bg-cyan: rgba(0, 207, 255, 0.17);
+  --bg-cyan-soft: rgba(0, 190, 255, 0.10);
+  --bg-warm: rgba(255, 110, 40, 0.11);
+  --bg-gold: rgba(255, 184, 0, 0.06);
+  --bg-logo-light: rgba(30, 140, 255, 0.26);
+  --bg-sweep: rgba(130, 190, 255, 0.13);
+  --bg-ribbon: 0.42;
+  --glass-sheen: rgba(255, 255, 255, 0.07);
 
   --selection-bg: rgba(0, 207, 255, 0.22);
 }
@@ -180,9 +204,9 @@
 /* Radius scale — hierarchy, not decoration (rounded-compact … rounded-panel) */
 @theme {
   --radius-compact: 12px;
-  --radius-card: 16px;
-  --radius-feature: 20px;
-  --radius-panel: 24px;
+  --radius-card: 18px;
+  --radius-feature: 22px;
+  --radius-panel: 28px;
 }
 
 /* ============================================================
@@ -197,7 +221,10 @@ html {
 
 body {
   font-family: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: var(--surface-base);
+  /* Transparent on purpose: <html> carries the base colour, and the fixed
+     .site-bg light field (z-index -1) must show through. An opaque body
+     paints over it. */
+  background: transparent;
   color: var(--text-primary);
   line-height: 1.6;
   font-weight: 400;
@@ -215,7 +242,9 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-h1 { font-weight: 800; letter-spacing: -0.035em; }
+h1 { font-weight: 800; letter-spacing: -0.04em; }
+h2 { letter-spacing: -0.03em; }
+h3 { font-weight: 650; }
 
 p { text-wrap: pretty; }
 
@@ -347,6 +376,7 @@ p { text-wrap: pretty; }
   backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid var(--border-subtle);
   box-shadow: inset 0 1px 0 var(--glass-edge), var(--shadow-sm);
+  background-image: linear-gradient(180deg, var(--glass-sheen), transparent 55%);
 }
 .glass-strong {
   background: var(--glass-bg-strong);
@@ -354,6 +384,7 @@ p { text-wrap: pretty; }
   backdrop-filter: blur(32px) saturate(170%);
   border: 1px solid var(--border-subtle);
   box-shadow: inset 0 1px 0 var(--glass-edge), var(--shadow-lg);
+  background-image: linear-gradient(150deg, var(--glass-sheen), transparent 42%);
 }
 /* Admin/legacy name */
 .glass-card {
@@ -396,16 +427,35 @@ p { text-wrap: pretty; }
   transition: opacity var(--duration-slow) var(--ease-out);
   pointer-events: none;
 }
+/* Hover hierarchy. Three tiers so movement signals importance:
+   primary (default) — feature surfaces: 3px lift, tone-tinted edge, pointer light
+   secondary         — ordinary cards: 2px lift, quieter edge and light
+   utility           — small informational tiles: no lift, edge response only
+   Set with data-tier on a .card-interactive element. Fine pointers only. */
+.card-interactive[data-tone="warm"] { --card-light: var(--glow-orange); --card-edge: var(--accent-ambition); }
+.card-interactive[data-tone="cool"] { --card-light: var(--glow-blue); --card-edge: var(--accent-intel); }
 @media (hover: hover) and (pointer: fine) {
   .card-interactive:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md), 0 0 56px -10px color-mix(in oklab, var(--card-edge, var(--accent-intel)) 24%, transparent);
+    border-color: color-mix(in oklab, var(--card-edge, var(--accent-intel)) 28%, var(--border-strong));
   }
   .card-interactive:hover::before { opacity: 1; }
+
+  .card-interactive[data-tier="secondary"]:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm), 0 0 36px -12px color-mix(in oklab, var(--card-edge, var(--accent-intel)) 14%, transparent);
+    border-color: color-mix(in oklab, var(--card-edge, var(--accent-intel)) 16%, var(--border-strong));
+  }
+  .card-interactive[data-tier="secondary"]:hover::before { opacity: 0.6; }
+
+  .card-interactive[data-tier="utility"]:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+    border-color: color-mix(in oklab, var(--card-edge, var(--accent-intel)) 14%, var(--border-strong));
+  }
+  .card-interactive[data-tier="utility"]:hover::before { opacity: 0; }
 }
-.card-interactive[data-tone="warm"] { --card-light: var(--glow-orange); }
-.card-interactive[data-tone="cool"] { --card-light: var(--glow-blue); }
 
 /* Long-form legal text */
 .legal-prose {
@@ -550,6 +600,17 @@ p { text-wrap: pretty; }
   opacity: 1;
   transform: none;
 }
+/* Reveal personalities: same easing, different weight.
+   settle — large environments (CYGMA band) ease in with a slight scale
+   quiet  — closing/contact content moves barely at all */
+.js [data-reveal="settle"] {
+  transform: translate3d(0, 22px, 0) scale(0.985);
+  transition-duration: 700ms, 1100ms;
+}
+.js [data-reveal="quiet"] {
+  transform: translate3d(0, 8px, 0);
+  transition-duration: 600ms, 700ms;
+}
 
 /* Page entrance for above-the-fold content (no JS required) */
 @keyframes rise-in {
@@ -579,6 +640,13 @@ p { text-wrap: pretty; }
   animation-delay: var(--symbol-delay, 150ms);
 }
 
+/* First visit only: the intro overlay covers the page for ~650ms, so the hero
+   sequence is held back until it lifts. `intro-first` is added by the boot
+   script and removed after 1.2s, so later navigations are never delayed. */
+.intro-first .rise-in { animation-delay: calc(var(--rise-delay, 0ms) + 500ms); }
+.intro-first .symbol-enter { animation-delay: calc(var(--symbol-delay, 150ms) + 500ms); }
+.intro-first .symbol-sweep { animation-delay: 1650ms; }
+
 /* A light band that travels across the symbol once, clipped to its shape */
 .symbol-sweep {
   position: absolute;
@@ -594,7 +662,10 @@ p { text-wrap: pretty; }
 }
 
 /* ============================================================
-   Site background — CSS only, no canvas, no per-frame JS
+   VANIKARA light field — fixed, CSS-only, compositor-animated.
+   Depth planes, slowest to nearest: fields (58–97s, three different
+   periods so they never sync) · flowing ribbons (84s) · sweep (56s).
+   Nothing here animates layout or paint properties.
    ============================================================ */
 
 .site-bg {
@@ -605,52 +676,177 @@ p { text-wrap: pretty; }
   overflow: hidden;
   background: var(--surface-base);
 }
-.site-bg__field {
-  position: absolute;
-  inset: -20%;
+.site-bg__wash { position: absolute; inset: 0; background: var(--bg-wash); }
+
+.site-bg__field { position: absolute; inset: -20%; }
+/* Primary atmosphere: blue upper-right, deep navy lower-left */
+.site-bg__field--blue {
   background:
-    radial-gradient(38% 34% at 18% 12%, var(--glow-blue), transparent 70%),
-    radial-gradient(30% 28% at 86% 18%, var(--glow-orange), transparent 70%),
-    radial-gradient(40% 36% at 60% 96%, var(--glow-cyan), transparent 72%);
-  animation: field-drift 60s var(--ease-in-out) infinite alternate;
-  will-change: transform;
+    radial-gradient(46% 42% at 78% 22%, var(--bg-blue), transparent 72%),
+    radial-gradient(52% 48% at 22% 76%, var(--bg-navy), transparent 74%);
+  animation: field-a 58s var(--ease-in-out) infinite alternate;
 }
-.site-bg__grid {
+/* Secondary: cyan low-right and a faint cool light high in the page */
+.site-bg__field--cyan {
+  background:
+    radial-gradient(40% 36% at 70% 86%, var(--bg-cyan), transparent 72%),
+    radial-gradient(30% 28% at 44% 20%, var(--bg-cyan-soft), transparent 70%);
+  animation: field-b 79s var(--ease-in-out) infinite alternate;
+}
+/* Accent: the only warm light, small and upper-left */
+.site-bg__field--warm {
+  background:
+    radial-gradient(26% 24% at 22% 22%, var(--bg-warm), transparent 72%),
+    radial-gradient(20% 20% at 34% 82%, var(--bg-gold), transparent 70%);
+  animation: field-c 97s var(--ease-in-out) infinite alternate;
+}
+@keyframes field-a { to { transform: translate3d(3.5%, 2.5%, 0) scale(1.04); } }
+@keyframes field-b { to { transform: translate3d(-3%, -2%, 0) scale(1.03); } }
+@keyframes field-c { to { transform: translate3d(2.5%, 3%, 0); } }
+
+/* Flowing brand light: soft ribbons that converge downward like the
+   symbol's wings (abstract, never a trace of the mark). */
+.site-bg__ribbons {
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 72px 72px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%);
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  animation: ribbons 84s var(--ease-in-out) infinite alternate;
 }
+@keyframes ribbons { to { transform: translate3d(-1.5%, 1%, 0) scale(1.03); } }
+
+/* Occasional soft illumination travelling across the environment, like
+   light off curved glass. Idle for most of its cycle. */
+.site-bg__sweep {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 70%;
+  opacity: 0;
+  transform: translate3d(-80%, 0, 0);
+  background: linear-gradient(104deg, transparent 30%, var(--bg-sweep) 50%, transparent 70%);
+  animation: bg-sweep 56s var(--ease-in-out) 6s infinite;
+}
+@keyframes bg-sweep {
+  0% { opacity: 0; transform: translate3d(-80%, 0, 0); }
+  8% { opacity: 1; }
+  40% { opacity: 0; transform: translate3d(170%, 0, 0); }
+  100% { opacity: 0; transform: translate3d(170%, 0, 0); }
+}
+
 .site-bg__noise {
   position: absolute;
   inset: 0;
-  opacity: 0.035;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-[data-theme="dark"] .site-bg__noise { opacity: 0.05; }
-.site-bg__lines {
+[data-theme="dark"] .site-bg__noise { opacity: 0.028; }
+/* Extremely soft edge falloff — barely perceptible, never a visible ring */
+.site-bg__vignette {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.5;
+  background: radial-gradient(120% 100% at 50% 38%, transparent 55%, rgba(7, 26, 61, 0.05) 100%);
 }
-.site-bg__lines path {
-  stroke-dasharray: 2 14;
-  animation: line-flow 90s linear infinite;
+[data-theme="dark"] .site-bg__vignette {
+  background: radial-gradient(120% 100% at 50% 38%, transparent 50%, rgba(2, 6, 14, 0.35) 100%);
 }
-@keyframes line-flow { to { stroke-dashoffset: -1600; } }
-@keyframes field-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(3%, 2%, 0); }
+
+/* Scroll-linked environment shift (progressive enhancement): warm light
+   recedes and the ribbons settle as the page goes on, so the page ends
+   calmer and cooler than it begins. Unsupported browsers stay static. */
+@supports (animation-timeline: scroll()) {
+  .site-bg__field--warm {
+    animation-name: field-c, env-warm;
+    animation-duration: 97s, auto;
+    animation-timing-function: var(--ease-in-out), linear;
+    animation-iteration-count: infinite, 1;
+    animation-direction: alternate, normal;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, scroll(root block);
+  }
+  .site-bg__ribbons {
+    animation-name: ribbons, env-ribbons;
+    animation-duration: 84s, auto;
+    animation-timing-function: var(--ease-in-out), linear;
+    animation-iteration-count: infinite, 1;
+    animation-direction: alternate, normal;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, scroll(root block);
+  }
+  @keyframes env-warm { to { opacity: 0.25; } }
+  @keyframes env-ribbons { to { opacity: 0.6; translate: 0 -5vh; } }
+}
+
+/* Graduated intensity — simplify rather than merely shrink */
+@media (max-width: 1024px) {
+  .site-bg__field { opacity: 0.85; }
 }
 @media (max-width: 767px) {
-  .site-bg__field { animation: none; }
-  .site-bg__lines { display: none; }
+  .site-bg__field { opacity: 0.7; animation: none; }
+  .site-bg__ribbons { animation: none; opacity: 0.85; }
+  .site-bg__sweep { display: none; }
+}
+
+/* Hero: the richest environment. Warm upper-left, cool upper-right, quiet
+   centre for the headline, and soft dimensional light behind the symbol
+   (no disc, no edge). Fades out at the bottom into the next section. */
+.hero-atmosphere { isolation: isolate; }
+.hero-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 58% at 6% 4%, var(--bg-warm), transparent 68%),
+    radial-gradient(52% 64% at 98% 0%, var(--bg-blue), transparent 66%),
+    radial-gradient(36% 56% at 74% 52%, var(--bg-logo-light), transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+}
+@media (max-width: 1023px) {
+  .hero-atmosphere::before {
+    background:
+      radial-gradient(60% 40% at 6% 2%, var(--bg-warm), transparent 68%),
+      radial-gradient(70% 44% at 98% 0%, var(--bg-blue), transparent 66%),
+      radial-gradient(60% 34% at 50% 20%, var(--bg-logo-light), transparent 72%);
+  }
+}
+@media (max-width: 767px) {
+  .hero-atmosphere::before { opacity: 0.7; }
+}
+
+/* Per-section environments. Each fades in and out vertically so there is
+   never a visible seam. Sections without a tone stay quiet on purpose. */
+.section-atmosphere { position: relative; isolation: isolate; }
+.section-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.85;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 76%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 76%, transparent 100%);
+}
+.section-atmosphere[data-tone="cool"]::before {
+  background:
+    radial-gradient(58% 70% at 90% 30%, var(--bg-blue), transparent 70%),
+    radial-gradient(44% 56% at 6% 80%, var(--bg-cyan), transparent 72%);
+}
+.section-atmosphere[data-tone="mixed"]::before {
+  background:
+    radial-gradient(46% 60% at 8% 40%, var(--bg-warm), transparent 70%),
+    radial-gradient(50% 62% at 94% 60%, var(--bg-blue), transparent 70%);
+}
+.section-atmosphere[data-tone="deep"]::before {
+  background:
+    radial-gradient(72% 80% at 50% 100%, var(--bg-navy), transparent 72%),
+    radial-gradient(40% 50% at 88% 50%, var(--bg-blue), transparent 72%);
+}
+@media (max-width: 767px) {
+  .section-atmosphere::before { opacity: 0.55; }
 }
 
 /* ============================================================
@@ -777,5 +973,6 @@ html:not(.js) .brand-intro { display: none; }
     scroll-behavior: auto !important;
   }
   .js [data-reveal] { opacity: 1; transform: none; }
-  .symbol-sweep, .brand-intro, .site-bg__lines { display: none; }
+  .symbol-sweep, .brand-intro, .site-bg__sweep { display: none; }
+  .site-bg__field, .site-bg__ribbons { animation: none !important; }
 }

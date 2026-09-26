@@ -98,7 +98,7 @@ export default function AdminDashboardClient({ user, tab: initialTab }: Props) {
                         {leader.fullName}
                       </p>
                       <p className="text-[var(--text-secondary)] text-xs leading-relaxed">
-                        {leader.responsibilities.join(", ")}
+                        {leader.responsibilities?.join(", ") || ""}
                       </p>
                     </div>
                   ))}

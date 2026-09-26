@@ -5,17 +5,9 @@ import { SYMBOL_SRC } from "@/components/brand/BrandMark";
 
 export default function ClosingSection() {
   return (
-    <section aria-labelledby="closing-title" className="relative overflow-hidden py-20 sm:py-28">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-square w-[min(900px,140vw)] -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(closest-side at 38% 50%, var(--glow-orange), transparent 100%), radial-gradient(closest-side at 62% 50%, var(--glow-blue), transparent 100%)",
-        }}
-      />
+    <section aria-labelledby="closing-title" className="relative section-atmosphere overflow-hidden py-20 sm:py-28" data-tone="deep">
       <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center" data-reveal>
+        <div className="mx-auto max-w-2xl text-center" data-reveal="quiet">
           <Image
             src={SYMBOL_SRC}
             alt=""

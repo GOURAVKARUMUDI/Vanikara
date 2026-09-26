@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
+  name TEXT,
   role TEXT DEFAULT 'user',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -53,19 +54,31 @@ $$ LANGUAGE plpgsql;
 
 -- Policies for users
 CREATE POLICY "Users can view their own profile" ON public.users FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Users can update their own profile" ON public.users FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Users can insert their own profile" ON public.users FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can update their own profile" ON public.users FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+-- role must start as 'user' (or unset) — never settable to 'admin' at signup.
+CREATE POLICY "Users can insert their own profile" ON public.users FOR INSERT WITH CHECK (auth.uid() = id AND (role IS NULL OR role = 'user'));
 CREATE POLICY "Admins can view all profiles" ON public.users FOR ALL USING (
   public.check_is_admin(auth.uid())
 );
 
+-- Column-level privileges: RLS above governs which ROWS are touched; this
+-- governs which COLUMNS. A user may only ever change their own `name` —
+-- never `role`, never anyone else's row. Role changes go through the
+-- admin API using the service-role client, which bypasses RLS/grants.
+REVOKE UPDATE, INSERT ON public.users FROM authenticated;
+GRANT UPDATE (name) ON public.users TO authenticated;
+GRANT INSERT (id, email) ON public.users TO authenticated;
+
 -- Policies for subscriptions
+-- Regular users may only ever SELECT their own subscription. Entitlements
+-- (plan/status/trial dates) are provisioned and changed exclusively by the
+-- service-role client (see src/app/auth/callback/route.ts and the admin
+-- API) — there is deliberately no user-facing INSERT/UPDATE policy.
 CREATE POLICY "Users can view their own subscriptions" ON public.subscriptions FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can insert their own subscriptions" ON public.subscriptions FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update their own subscriptions" ON public.subscriptions FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "Admins can manage all subscriptions" ON public.subscriptions FOR ALL USING (
   EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
 );
+REVOKE INSERT, UPDATE ON public.subscriptions FROM authenticated;
 
 -- Policies for files
 CREATE POLICY "Users can manage their own files" ON public.files FOR ALL USING (auth.uid() = user_id);
@@ -100,13 +113,19 @@ CREATE POLICY "Admins can manage privacy_config" ON public.privacy_config FOR AL
   public.check_is_admin(auth.uid())
 );
 
--- Sync public.users role changes to auth.users raw_user_meta_data
+-- Sync public.users role changes to auth.users raw_app_meta_data.
+--
+-- IMPORTANT: this writes app_metadata, not user_metadata. user_metadata
+-- (raw_user_meta_data) can be overwritten by the signed-in user themselves
+-- via `supabase.auth.updateUser({ data })` and is never a valid
+-- authorization source. app_metadata can only be written by the service
+-- role, which is exactly why src/lib/isAdmin.ts checks it exclusively.
 CREATE OR REPLACE FUNCTION public.sync_user_role()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE auth.users
-  SET raw_user_meta_data = 
-    coalesce(raw_user_meta_data, '{}'::jsonb) || jsonb_build_object('role', NEW.role)
+  SET raw_app_meta_data =
+    coalesce(raw_app_meta_data, '{}'::jsonb) || jsonb_build_object('role', NEW.role)
   WHERE id = NEW.id;
   RETURN NEW;
 END;

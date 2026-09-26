@@ -114,6 +114,7 @@ export default function FoodDeliveryPage() {
                 <li
                   key={surface.id}
                   data-tone={i % 2 === 0 ? "warm" : "cool"}
+                  data-tier="utility"
                   className="card-interactive surface rounded-feature p-6"
                 >
                   <span className="text-[0.8125rem] font-semibold tabular-nums text-fg-subtle">

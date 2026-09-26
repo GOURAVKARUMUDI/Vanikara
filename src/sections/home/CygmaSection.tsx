@@ -13,7 +13,7 @@ export default function CygmaSection() {
     <section aria-labelledby="cygma-title" className="relative py-12 sm:py-16">
       <div className="container-page">
         <div
-          data-reveal
+          data-reveal="settle"
           className="relative isolate overflow-hidden rounded-panel border border-white/10 bg-navy px-6 py-16 text-white shadow-float sm:px-12 sm:py-20 lg:px-16 lg:py-24 dark:bg-surface-raised"
         >
           {/* Cool light field */}

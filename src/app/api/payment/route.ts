@@ -4,7 +4,7 @@ import { supabaseService } from "@/utils/supabase/service";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
-import { apiResponse, logError } from "@/lib/security";
+import { apiResponse, logError, isTrustedOrigin } from "@/lib/security";
 import { isRateLimited } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -35,6 +35,10 @@ if (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function POST(req: any) {
   try {
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+
     // 1. Authenticate user
     const cookieStore = await cookies();
     const sb = createClient(cookieStore);

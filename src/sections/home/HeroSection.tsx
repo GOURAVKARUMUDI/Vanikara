@@ -6,7 +6,7 @@ export default function HeroSection() {
   const { foodDelivery, cygma } = INITIATIVES;
 
   return (
-    <section aria-labelledby="hero-title" className="relative">
+    <section aria-labelledby="hero-title" className="relative hero-atmosphere">
       <div className="container-page grid items-center gap-10 pb-16 pt-6 sm:pt-10 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-12 lg:gap-6 lg:pb-20 lg:pt-4">
         {/* Symbol — first on mobile, right column on desktop */}
         <div className="order-first mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:order-last lg:col-span-6 lg:max-w-none">

@@ -21,6 +21,7 @@ export default function FounderCard({ person, index, detailed = false }: Founder
     <article
       data-reveal
       data-tone={tone}
+      data-tier="secondary"
       style={{ ["--reveal-delay" as string]: `${index * 90}ms` }}
       className="card-interactive surface flex h-full flex-col overflow-hidden rounded-feature"
     >
@@ -64,7 +65,7 @@ export default function FounderCard({ person, index, detailed = false }: Founder
         </p>
         <p className="mt-4 text-[0.9375rem] leading-relaxed text-fg-muted">{person.bio}</p>
 
-        {detailed && (
+        {detailed && person.responsibilities && person.responsibilities.length > 0 && (
           <p className="mt-4 text-sm text-fg-subtle">{person.responsibilities.join(" · ")}</p>
         )}
 

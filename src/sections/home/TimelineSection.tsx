@@ -3,7 +3,7 @@ import { COMPANY_IDENTITY, COMPANY_TIMELINE } from "@/data/company";
 
 export default function TimelineSection({ showHeader = true }: { showHeader?: boolean }) {
   return (
-    <section aria-labelledby={showHeader ? "timeline-title" : undefined} aria-label={showHeader ? undefined : "Timeline"} className="relative py-20 sm:py-24">
+    <section aria-labelledby={showHeader ? "timeline-title" : undefined} aria-label={showHeader ? undefined : "Timeline"} className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
       <div className="container-page">
         {showHeader && (
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>

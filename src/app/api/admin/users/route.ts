@@ -5,8 +5,14 @@ import { supabaseService } from "@/utils/supabase/service";
 import { isAdmin } from "@/lib/isAdmin";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import { apiResponse, logError } from "@/lib/security";
+import { apiResponse, logError, isTrustedOrigin } from "@/lib/security";
 import { logAdminAction } from "@/lib/auditLogger";
+import { z } from "zod";
+
+const patchSchema = z.object({
+  id: z.string().uuid(),
+  role: z.enum(["user", "admin"]),
+});
 
 export async function GET() {
   try {
@@ -37,6 +43,10 @@ export async function GET() {
 
 export async function PATCH(req: Request) {
   try {
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
@@ -45,10 +55,11 @@ export async function PATCH(req: Request) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
-    const { id, role } = await req.json();
-    if (!id || !role) {
-      return NextResponse.json(apiResponse(false, null, "Missing required parameters"), { status: 400 });
+    const validation = patchSchema.safeParse(await req.json());
+    if (!validation.success) {
+      return NextResponse.json(apiResponse(false, null, "Invalid request parameters"), { status: 400 });
     }
+    const { id, role } = validation.data;
 
     const { data: previousState } = await supabaseService.from("users").select("*").eq("id", id).single();
 

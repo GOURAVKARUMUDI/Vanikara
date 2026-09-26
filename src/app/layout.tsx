@@ -19,7 +19,10 @@ import { COMPANY_IDENTITY } from "@/data/company";
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"],
+  // Variable weight axis (200–800) so intermediate hierarchy weights like
+  // 650/750 render as their exact value instead of snapping to the nearest
+  // static cut.
+  weight: "variable",
   display: "swap",
 });
 

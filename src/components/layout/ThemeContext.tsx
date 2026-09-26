@@ -18,7 +18,7 @@ export const THEME_STORAGE_KEY = "vanikara-theme";
  * immediately (no light/dark flash). Also marks JS as available for
  * progressive-enhancement styles and records the first-visit intro.
  */
-export const THEME_BOOT_SCRIPT = `(function(){var r=document.documentElement;r.classList.add('js');try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||((!t||t==='auto')&&window.matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-theme',d?'dark':'light');if(sessionStorage.getItem('vk-intro')){r.classList.add('intro-seen')}else{sessionStorage.setItem('vk-intro','1')}}catch(e){r.setAttribute('data-theme','light')}})();`;
+export const THEME_BOOT_SCRIPT = `(function(){var r=document.documentElement;r.classList.add('js');try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||((!t||t==='auto')&&window.matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-theme',d?'dark':'light');if(sessionStorage.getItem('vk-intro')){r.classList.add('intro-seen')}else{sessionStorage.setItem('vk-intro','1');r.classList.add('intro-first');setTimeout(function(){r.classList.remove('intro-first')},1200)}}catch(e){r.setAttribute('data-theme','light')}})();`;
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 

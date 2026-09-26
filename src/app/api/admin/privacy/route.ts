@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { isAdmin } from "@/lib/isAdmin";
 import { supabaseService } from "@/utils/supabase/service";
 import { logAdminAction } from "@/lib/auditLogger";
+import { isTrustedOrigin } from "@/lib/security";
 
 const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
 
@@ -89,6 +90,10 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     // Enforce super admin authentication for updates
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);

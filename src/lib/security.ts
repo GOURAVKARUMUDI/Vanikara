@@ -100,3 +100,27 @@ export const isBot = (honeypot: string): boolean => {
   return honeypot.length > 0;
 };
 
+/**
+ * CSRF defense-in-depth for cookie-authenticated, state-changing requests.
+ *
+ * Supabase's session cookies are already SameSite=Lax, which blocks the
+ * cookie from being attached to cross-site POST/PATCH/DELETE requests —
+ * that alone stops the classic CSRF attack. This adds a second, explicit
+ * check (matching the request's Origin against the app's own origin) so
+ * privileged mutations don't rely on cookie attributes alone.
+ */
+export const isTrustedOrigin = (req: Request): boolean => {
+  const origin = req.headers.get('origin');
+  const host = req.headers.get('host');
+  // Same-origin fetch/XHR requests always send an Origin header for
+  // state-changing methods; its absence here is itself suspicious for a
+  // browser-originated request, so treat a missing header as untrusted.
+  if (!origin || !host) return false;
+
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+};
+

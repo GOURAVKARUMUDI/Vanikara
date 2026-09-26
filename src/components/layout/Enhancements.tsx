@@ -25,8 +25,23 @@ export default function Enhancements() {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
+            const el = entry.target as HTMLElement;
+            el.classList.add("is-visible");
+            observer.unobserve(el);
+
+            // Once the reveal has played, hand the element back to its own
+            // styles — otherwise the reveal's transform/transition rules
+            // keep overriding hover states (card lift, border, shadow).
+            const release = () => {
+              el.removeEventListener("transitionend", onEnd);
+              clearTimeout(fallback);
+              el.removeAttribute("data-reveal");
+            };
+            const onEnd = (e: TransitionEvent) => {
+              if (e.target === el && e.propertyName === "transform") release();
+            };
+            el.addEventListener("transitionend", onEnd);
+            const fallback = setTimeout(release, 2500);
           }
         }
       },

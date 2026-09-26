@@ -7,7 +7,7 @@ export default function ProductsSection() {
   const { foodDelivery } = INITIATIVES;
 
   return (
-    <section aria-labelledby="products-title" className="relative pb-8 pt-20 sm:pt-24">
+    <section aria-labelledby="products-title" className="relative section-atmosphere pb-8 pt-20 sm:pt-24" data-tone="cool">
       <div className="container-page">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
           <div className="max-w-2xl">

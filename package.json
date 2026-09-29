@@ -11,9 +11,7 @@
     "test:validate": "node scripts/e2e-validate.js"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.3",
-    "@types/nodemailer": "^7.0.11",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "firebase": "^12.19.0",
@@ -36,6 +34,7 @@
     "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.12",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

@@ -1,29 +1,21 @@
 /** @type {import('next').NextConfig} */
 
 // Validate Environment Variables before Boot
-const envChecks = [
-  // ===== REQUIRED =====
-  { key: "NEXT_PUBLIC_SUPABASE_URL", required: true },
-  { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", required: true },
-  { key: "SUPABASE_SERVICE_ROLE_KEY", required: true },
-  { key: "JWT_SECRET", required: false },
+// Required: the site cannot run without these. Recommended: features that
+// quietly switch off when missing (admin sign-in, Google sign-in, payments, email).
+const REQUIRED = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY"];
+const RECOMMENDED = {
+  "admin sign-in": ["ADMIN_ACCOUNTS", "ADMIN_SESSION_SECRET"],
+  "Google sign-in": ["NEXT_PUBLIC_FIREBASE_API_KEY", "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "NEXT_PUBLIC_FIREBASE_PROJECT_ID", "NEXT_PUBLIC_FIREBASE_APP_ID"],
+  "Razorpay payments": ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"],
+  "email notifications": ["SMTP_HOST", "SMTP_USER", "SMTP_PASS"],
+};
 
-  // ===== OPTIONAL =====
-  { key: "RAZORPAY_KEY_ID", required: false },
-  { key: "RAZORPAY_KEY_SECRET", required: false },
+const missingRequired = REQUIRED.filter((key) => !process.env[key]);
 
-  { key: "SMTP_HOST", required: false },
-  { key: "SMTP_PORT", required: false },
-  { key: "SMTP_USER", required: false },
-  { key: "SMTP_PASS", required: false },
-];
-
-const missingRequired = [];
-
-for (const env of envChecks) {
-  if (env.required && !process.env[env.key]) {
-    missingRequired.push(env.key);
-  }
+for (const [feature, keys] of Object.entries(RECOMMENDED)) {
+  const missing = keys.filter((key) => !process.env[key]);
+  if (missing.length) console.warn(`⚠️  ${feature} disabled — missing: ${missing.join(", ")}`);
 }
 
 if (missingRequired.length > 0) {

@@ -10,6 +10,7 @@ const COLUMNS = [
     links: [
       ...NAVIGATION.products.map(({ href, label }) => ({ href, label })),
       { href: "/what-we-build", label: "Overview" },
+      { href: "/pricing", label: "Pricing" },
     ],
   },
   {
@@ -19,15 +20,18 @@ const COLUMNS = [
       { href: "/leadership", label: "Leadership" },
       { href: "/technology", label: "Technology" },
       { href: "/careers", label: "Careers" },
+      { href: "/contact", label: "Contact" },
       { href: "/login", label: "Sign in" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { href: "/legal/privacy", label: "Privacy" },
-      { href: "/legal/terms", label: "Terms" },
-      { href: "/legal/cookies", label: "Cookies" },
+      { href: "/legal/terms", label: "Terms & Conditions" },
+      { href: "/legal/privacy", label: "Privacy Policy" },
+      { href: "/legal/refund", label: "Refund & Cancellation" },
+      { href: "/legal/shipping", label: "Shipping & Delivery" },
+      { href: "/legal/cookies", label: "Cookie Policy" },
       { href: "/legal/legal-information", label: "Company information" },
     ],
   },

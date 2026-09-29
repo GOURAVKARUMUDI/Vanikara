@@ -1,31 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { createClient } from "@/utils/supabase/client";
 
 export default function LeadsTable() {
-  const { data: leadsRes, mutate: mutateLeads, isLoading: leadsLoading } = useSWR("/api/leads", fetcher);
-  const { data: clientsRes, isLoading: clientsLoading } = useSWR("/api/clients", fetcher);
+  // Polls the authenticated API; admin data never goes through the browser Supabase client.
+  const { data: leadsRes, mutate: mutateLeads, isLoading: leadsLoading } = useSWR("/api/leads", fetcher, {
+    refreshInterval: 20_000,
+    revalidateOnFocus: true,
+  });
+  const { data: clientsRes, isLoading: clientsLoading } = useSWR("/api/clients", fetcher, { refreshInterval: 60_000 });
 
   const leads = leadsRes?.data || [];
   const clients = clientsRes?.data || [];
   const loading = leadsLoading || clientsLoading;
-
-  useEffect(() => {
-    const supabase = createClient();
-    const channel = supabase
-      .channel("realtime:leads")
-      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
-        mutateLeads();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [mutateLeads]);
 
   const updateStatus = async (id: string, status: string) => {
     try {

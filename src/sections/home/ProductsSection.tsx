@@ -28,12 +28,13 @@ export default function ProductsSection() {
           data-tone="warm"
           className="card-interactive surface mt-14 overflow-hidden rounded-panel"
         >
+          <span aria-hidden="true" data-tone="warm" className="beam-border pointer-events-none absolute inset-0 rounded-[inherit]" style={{ ["--beam-speed" as string]: "12s" }} />
           <div className="grid lg:grid-cols-12">
             <div className="p-7 sm:p-10 lg:col-span-7 lg:p-12">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.8125rem]">
                 <span className="font-semibold tabular-nums text-fg-subtle">{foodDelivery.index}</span>
                 <span className="inline-flex items-center gap-2 rounded-full bg-brand-orange/10 px-3 py-1 font-semibold text-ambition">
-                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-orange" />
+                  <span aria-hidden="true" className="live-dot !h-1.5 !w-1.5" style={{ ["--live-color" as string]: "var(--vanikara-bright-orange)" }} />
                   {foodDelivery.status}
                 </span>
                 <span className="text-fg-muted">Target: {foodDelivery.targetLaunch}</span>
@@ -57,8 +58,8 @@ export default function ProductsSection() {
             <div className="relative border-t border-line bg-surface-sunken/60 p-7 sm:p-10 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-12">
               <p className="text-[0.8125rem] font-semibold text-fg">What we are designing for</p>
               <ul className="mt-6 space-y-5">
-                {foodDelivery.principles.map((principle) => (
-                  <li key={principle.title} className="flex gap-4">
+                {foodDelivery.principles.map((principle, i) => (
+                  <li key={principle.title} className="flex gap-4" data-reveal style={{ ["--reveal-delay" as string]: `${200 + i * 90}ms` }}>
                     <span aria-hidden="true" className="mt-2 h-px w-4 shrink-0 bg-brand-orange" />
                     <div>
                       <p className="text-[0.9375rem] font-semibold text-fg">{principle.title}</p>

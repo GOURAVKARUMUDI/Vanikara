@@ -18,12 +18,12 @@ export default function PrinciplesSection() {
               key={principle.title}
               data-reveal
               style={{ ["--reveal-delay" as string]: `${i * 100}ms` }}
-              className="group grid gap-3 border-b border-line py-8 sm:grid-cols-[4rem_1fr_1fr] sm:items-baseline sm:gap-6 sm:py-10"
+              className="row-sweep group grid gap-3 border-b border-line py-8 sm:grid-cols-[4rem_1fr_1fr] sm:items-baseline sm:gap-6 sm:py-10"
             >
               <span className="text-sm font-semibold tabular-nums text-fg-subtle transition-colors duration-300 group-hover:text-ambition">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="text-title text-fg">{principle.title}.</h3>
+              <h3 className="row-sweep__title text-title text-fg">{principle.title}.</h3>
               <p className="text-[1.0625rem] leading-relaxed text-fg-muted">{principle.desc}</p>
             </li>
           ))}

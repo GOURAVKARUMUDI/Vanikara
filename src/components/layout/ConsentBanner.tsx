@@ -15,7 +15,7 @@ export default function ConsentBanner() {
       role="region"
       aria-label="Cookie consent"
       data-open={showBanner}
-      className="consent-banner glass-strong fixed inset-x-3 bottom-3 z-[45] rounded-feature p-5 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-sm sm:p-6"
+      className="consent-banner liquid-glass glass-strong fixed inset-x-3 bottom-3 z-[45] rounded-feature p-5 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-sm sm:p-6"
       hidden={!showBanner}
     >
       <p className="text-sm font-semibold text-fg">Cookies on this site</p>

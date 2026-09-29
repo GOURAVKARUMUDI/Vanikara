@@ -1,0 +1,493 @@
+/* ============================================================
+   VANIKARA — Motion & surface layer
+   Builds on the tokens in globals.css. Everything here is
+   progressive: content is readable without JS, and the global
+   reduced-motion rule in globals.css neutralises all of it.
+   ============================================================ */
+
+/* Animatable custom properties (must live at the top level) */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --halo-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --shimmer-x {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+/* Theme switch: a circular reveal from the toggle (View Transitions API).
+   The .theme-transition class is only present while the switch runs. */
+html.theme-transition::view-transition-old(root),
+html.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-transition::view-transition-new(root) {
+  animation: theme-reveal 720ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes theme-reveal {
+  from { clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 0%)); }
+  to { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0%)); }
+}
+
+@layer components {
+
+/* ------------------------------------------------------------
+   Page entrance (app/template.tsx) — opacity + translate only,
+   and only while running, so fixed descendants are unaffected.
+   ------------------------------------------------------------ */
+@keyframes page-enter {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+}
+.page-enter { animation: page-enter 560ms var(--ease-out) backwards; }
+
+/* ------------------------------------------------------------
+   Scroll progress (value fed by Enhancements as --scroll 0..1)
+   ------------------------------------------------------------ */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+  background: var(--gradient-signature);
+  transform-origin: left;
+  transform: scaleX(var(--scroll, 0));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--vanikara-blue) 55%, transparent);
+  opacity: calc(min(var(--scroll, 0) * 40, 1));
+}
+
+/* ------------------------------------------------------------
+   Word-by-word headline reveal (components/motion/RevealText)
+   ------------------------------------------------------------ */
+.reveal-words .rw { display: inline-block; overflow: clip; overflow-clip-margin: 0.2em; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.reveal-words .rw > span { display: inline-block; will-change: transform; }
+
+/* On load (hero): CSS only, no JS needed */
+@keyframes word-rise {
+  from { transform: translate3d(0, 105%, 0) rotate(4deg); opacity: 0; filter: blur(6px); }
+  to { transform: none; opacity: 1; filter: blur(0); }
+}
+.reveal-words[data-mode="load"] .rw > span {
+  animation: word-rise 1000ms var(--ease-out) both;
+  animation-delay: calc(var(--rise-delay, 0ms) + var(--w, 0) * 70ms);
+}
+.intro-first .reveal-words[data-mode="load"] .rw > span {
+  animation-delay: calc(var(--rise-delay, 0ms) + 500ms + var(--w, 0) * 70ms);
+}
+
+/* On scroll: the container is observed like any [data-reveal] element,
+   but the words move instead of the whole block. */
+.js [data-reveal="words"] { opacity: 1; transform: none; }
+.js .reveal-words[data-mode="scroll"] .rw > span {
+  transform: translate3d(0, 105%, 0);
+  opacity: 0;
+  transition:
+    transform 900ms var(--ease-out) calc(var(--reveal-delay, 0ms) + var(--w, 0) * 55ms),
+    opacity 700ms var(--ease-out) calc(var(--reveal-delay, 0ms) + var(--w, 0) * 55ms);
+}
+.js .reveal-words[data-mode="scroll"].is-visible .rw > span { transform: none; opacity: 1; }
+
+/* Additional reveal personalities */
+.js [data-reveal="blur"] {
+  filter: blur(10px);
+  transform: translate3d(0, 12px, 0) scale(0.98);
+  transition:
+    opacity 800ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 1000ms var(--ease-out) var(--reveal-delay, 0ms),
+    filter 900ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+.js [data-reveal="blur"].is-visible { filter: none; }
+
+.js [data-reveal="draw"] {
+  opacity: 1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1600ms var(--ease-in-out) var(--reveal-delay, 0ms);
+}
+.js [data-reveal="draw"].is-visible { transform: none; }
+
+/* ------------------------------------------------------------
+   Animated gradient text
+   ------------------------------------------------------------ */
+.text-shimmer {
+  background: linear-gradient(100deg,
+    var(--vanikara-gold) 0%, var(--vanikara-orange) 18%, var(--vanikara-blue) 42%,
+    var(--vanikara-cyan) 58%, var(--vanikara-blue) 74%, var(--vanikara-orange) 88%, var(--vanikara-gold) 100%);
+  background-size: 250% 100%;
+  background-position: var(--shimmer-x) 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-pan 9s linear infinite;
+}
+@keyframes shimmer-pan { to { --shimmer-x: 250%; } }
+
+/* ------------------------------------------------------------
+   Status pill with live indicator
+   ------------------------------------------------------------ */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.875rem 0.375rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border: 1px solid var(--border-subtle);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 0 var(--glass-edge), var(--shadow-sm);
+}
+.live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--live-color, #22C55E);
+  flex-shrink: 0;
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: live-ping 2.2s var(--ease-out) infinite;
+}
+@keyframes live-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  80%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* The eyebrow dot breathes once it is on screen */
+.eyebrow-dot { position: relative; }
+.eyebrow-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0;
+  animation: live-ping 3.2s var(--ease-out) 1.2s infinite;
+}
+
+/* ------------------------------------------------------------
+   Card spotlight edge — a 1px light that follows the pointer
+   around the border of every .card-interactive
+   ------------------------------------------------------------ */
+@media (hover: hover) and (pointer: fine) {
+  .card-interactive::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--card-edge, var(--accent-intel)) 85%, transparent), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    transition: opacity var(--duration-slow) var(--ease-out);
+  }
+  .card-interactive:hover::after { opacity: 1; }
+  .card-interactive[data-tier="utility"]:hover::after { opacity: 0.5; }
+
+  /* 3D tilt: --rx/--ry are fed by Enhancements for [data-tilt] */
+  .card-interactive[data-tilt] { transform-style: preserve-3d; }
+  .card-interactive[data-tilt]:hover {
+    transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px);
+    transition:
+      transform 180ms var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+}
+
+/* ------------------------------------------------------------
+   Rotating beam border (conic light travelling round an edge)
+   ------------------------------------------------------------ */
+.beam-border { position: relative; isolation: isolate; }
+.beam-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(from var(--beam-angle),
+    transparent 0deg, transparent 250deg,
+    color-mix(in oklab, var(--beam-a, var(--vanikara-cyan)) 90%, transparent) 300deg,
+    var(--beam-b, var(--vanikara-blue)) 330deg,
+    transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: beam-spin var(--beam-speed, 9s) linear infinite;
+}
+.beam-border[data-tone="warm"] { --beam-a: var(--vanikara-gold); --beam-b: var(--vanikara-orange); }
+@keyframes beam-spin { to { --beam-angle: 360deg; } }
+
+/* ------------------------------------------------------------
+   Buttons — richer primary, magnetic pull, focus glow
+   ------------------------------------------------------------ */
+.btn {
+  translate: var(--tx, 0px) var(--ty, 0px);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    translate 420ms var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out);
+}
+.btn-primary {
+  background-image: linear-gradient(135deg, color-mix(in oklab, var(--vanikara-cyan) 22%, transparent) 0%, transparent 45%),
+    linear-gradient(135deg, var(--action-bg), color-mix(in oklab, var(--action-bg) 70%, var(--vanikara-deep-blue)));
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -2;
+  border-radius: inherit;
+  background: conic-gradient(from var(--beam-angle), var(--vanikara-cyan), var(--vanikara-blue), var(--vanikara-orange), var(--vanikara-gold), var(--vanikara-cyan));
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+  animation: beam-spin 4s linear infinite;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover::before { opacity: 0.55; }
+}
+.btn:focus-visible { box-shadow: 0 0 0 4px color-mix(in oklab, var(--focus-ring) 22%, transparent); }
+
+/* ------------------------------------------------------------
+   Hero stage — perspective grid floor, halo, orbiting light
+   ------------------------------------------------------------ */
+.hero-grid {
+  position: absolute;
+  inset: auto -10% -6% -10%;
+  height: 58%;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--text-primary) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--text-primary) 9%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(700px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: radial-gradient(ellipse 60% 80% at 50% 100%, #000 10%, transparent 72%);
+  mask-image: radial-gradient(ellipse 60% 80% at 50% 100%, #000 10%, transparent 72%);
+  animation: grid-flow 6s linear infinite;
+}
+@keyframes grid-flow { to { background-position: 0 64px, 0 0; } }
+
+.stage-halo {
+  position: absolute;
+  inset: 9%;
+  border-radius: 999px;
+  pointer-events: none;
+  background: conic-gradient(from var(--halo-angle),
+    transparent 0deg, color-mix(in oklab, var(--vanikara-gold) 70%, transparent) 40deg,
+    color-mix(in oklab, var(--vanikara-orange) 60%, transparent) 80deg, transparent 140deg,
+    transparent 180deg, color-mix(in oklab, var(--vanikara-cyan) 70%, transparent) 220deg,
+    color-mix(in oklab, var(--vanikara-blue) 60%, transparent) 260deg, transparent 320deg);
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px), #000 100%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px), #000 100%, transparent 100%);
+  animation: halo-spin 14s linear infinite;
+  opacity: 0.9;
+}
+.stage-halo--blur { filter: blur(12px); opacity: 0.55; }
+@keyframes halo-spin { to { --halo-angle: 360deg; } }
+
+.orbit { transform-box: view-box; transform-origin: 200px 200px; animation: orbit-spin var(--orbit-speed, 24s) linear infinite; }
+.orbit[data-reverse] { animation-direction: reverse; }
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+@keyframes float-y {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+.float-y { animation: float-y 7s var(--ease-in-out) infinite; }
+
+/* Scroll cue */
+.scroll-cue {
+  position: relative;
+  width: 22px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  width: 3px;
+  height: 7px;
+  margin-left: -1.5px;
+  border-radius: 3px;
+  background: var(--text-secondary);
+  animation: scroll-cue 2s var(--ease-in-out) infinite;
+}
+@keyframes scroll-cue {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+
+/* ------------------------------------------------------------
+   Marquee
+   ------------------------------------------------------------ */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee__track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3rem;
+  padding-right: 3rem;
+  min-width: 100%;
+  animation: marquee var(--marquee-speed, 38s) linear infinite;
+}
+.marquee[data-reverse] .marquee__track { animation-direction: reverse; }
+@media (hover: hover) and (pointer: fine) {
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+}
+@keyframes marquee { to { transform: translate3d(-100%, 0, 0); } }
+
+/* ------------------------------------------------------------
+   Principles — a light sweep across the row on hover
+   ------------------------------------------------------------ */
+.row-sweep { position: relative; isolation: isolate; }
+.row-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0 -1rem;
+  z-index: -1;
+  border-radius: var(--radius-card);
+  background: linear-gradient(90deg, color-mix(in oklab, var(--accent-ambition) 9%, transparent), color-mix(in oklab, var(--accent-intel) 7%, transparent) 60%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out);
+}
+.row-sweep .row-sweep__title { transition: transform 500ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .row-sweep:hover::before { transform: scaleX(1); }
+  .row-sweep:hover .row-sweep__title { transform: translateX(6px); }
+}
+
+/* ------------------------------------------------------------
+   CYGMA band — scan line and signal network
+   ------------------------------------------------------------ */
+.scanline {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 40%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--vanikara-cyan) 10%, transparent) 85%, color-mix(in oklab, var(--vanikara-cyan) 35%, transparent) 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 100% at 75% 50%, #000, transparent 80%);
+  mask-image: radial-gradient(ellipse 70% 100% at 75% 50%, #000, transparent 80%);
+  animation: scan 7s var(--ease-in-out) infinite;
+}
+@keyframes scan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(260%); opacity: 0; }
+}
+.signal-node { animation: signal-pulse 3.6s var(--ease-in-out) infinite; animation-delay: var(--d, 0s); transform-box: fill-box; transform-origin: center; }
+@keyframes signal-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.6); }
+}
+.signal-link { stroke-dasharray: 4 6; animation: signal-flow 3s linear infinite; }
+@keyframes signal-flow { to { stroke-dashoffset: -40; } }
+
+/* ------------------------------------------------------------
+   Timeline — pulsing target node
+   ------------------------------------------------------------ */
+.node-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 999px;
+  border: 1px solid var(--vanikara-orange);
+  animation: live-ping 2.6s var(--ease-out) infinite;
+}
+
+/* ------------------------------------------------------------
+   Footer — oversized outlined wordmark that fills on hover
+   ------------------------------------------------------------ */
+.footer-wordmark {
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-size: clamp(4rem, 18.5vw, 17rem);
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--text-primary) 16%, transparent);
+  background: var(--gradient-signature);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 1200ms var(--ease-in-out);
+  user-select: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-wordmark:hover { background-size: 100% 100%; }
+}
+.footer-glow-line {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--vanikara-orange) 25%, var(--vanikara-blue) 60%, var(--vanikara-cyan) 75%, transparent);
+  opacity: 0.6;
+}
+
+/* ------------------------------------------------------------
+   Navbar extras
+   ------------------------------------------------------------ */
+.theme-toggle svg { transition: transform 600ms var(--ease-out), opacity 300ms var(--ease-out); }
+.theme-toggle:hover svg { transform: rotate(-25deg) scale(1.08); }
+
+/* ------------------------------------------------------------
+   Mobile & motion calibration
+   ------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .hero-grid { animation: none; height: 45%; }
+  .stage-halo--blur { display: none; }
+  .scanline { display: none; }
+  .footer-wordmark { -webkit-text-stroke-width: 0.75px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-words .rw > span { transform: none !important; opacity: 1 !important; filter: none !important; }
+  .js [data-reveal="blur"], .js [data-reveal="draw"] { filter: none; transform: none; }
+  .text-shimmer { animation: none; }
+  .scanline, .stage-halo--blur { display: none; }
+}
+
+}

@@ -1,33 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { MessageSquare, Calendar, Mail, Trash2, Check } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
-import { createClient } from "@/utils/supabase/client";
 
 export default function ContactManager() {
-  const { data: messagesRes, mutate: mutateMessages, isLoading: loading } = useSWR("/api/leads", fetcher);
+  // Admin data is served only through the authenticated API, so new
+  // inquiries arrive by polling (and on window focus) rather than realtime.
+  const { data: messagesRes, mutate: mutateMessages, isLoading: loading } = useSWR("/api/leads", fetcher, {
+    refreshInterval: 20_000,
+    revalidateOnFocus: true,
+  });
   const messages = messagesRes?.data || [];
 
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "new" | "converted">("all");
-
-  useEffect(() => {
-    const supabase = createClient();
-    const channel = supabase
-      .channel("realtime:contact_leads")
-      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
-        mutateMessages();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [mutateMessages]);
 
   const handleArchive = async (id: string) => {
     try {

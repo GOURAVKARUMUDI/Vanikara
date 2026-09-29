@@ -1,5 +1,6 @@
 import React from "react";
 import Eyebrow from "./Eyebrow";
+import RevealText from "@/components/motion/RevealText";
 
 interface SectionHeaderProps {
   eyebrow?: string;
@@ -33,7 +34,7 @@ export default function SectionHeader({
     >
       {eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
       <Heading className={`${Heading === "h1" ? "text-display" : "text-headline"} text-fg ${eyebrow ? "mt-4" : ""}`}>
-        {title}
+        {typeof title === "string" ? <RevealText mode={isPageHeader ? "load" : "scroll"} delay={isPageHeader ? 80 : 0}>{title}</RevealText> : title}
       </Heading>
       {lead && <p className={`text-lead mt-5 ${centered ? "mx-auto" : ""} max-w-2xl`}>{lead}</p>}
       {children}

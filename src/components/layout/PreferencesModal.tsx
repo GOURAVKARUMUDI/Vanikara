@@ -97,7 +97,7 @@ export default function PreferencesModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="cookie-dialog-title"
-        className="rise-in glass-strong relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-panel"
+        className="rise-in liquid-glass glass-strong relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-panel"
       >
         <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
           <div>

@@ -11,7 +11,9 @@ const TICKS = Array.from({ length: 72 }, (_, i) => i);
  * - Entrance: opacity/scale/blur settle (CSS), then one light sweep that is
  *   masked to the symbol's own shape.
  * - Hover: a soft light follows the pointer (`data-light`, see Enhancements).
- * - The outer dial turns very slowly; it stops for reduced-motion users.
+ * - The outer dial turns very slowly; a conic halo and two points of light
+ *   orbit the symbol (one per wing). All motion stops for reduced-motion users.
+ * - The symbol floats gently — translated only, never rotated.
  */
 export default function BrandStage({ className = "" }: { className?: string }) {
   return (
@@ -28,6 +30,10 @@ export default function BrandStage({ className = "" }: { className?: string }) {
             "radial-gradient(closest-side at 30% 52%, color-mix(in oklab, var(--vanikara-bright-orange) 30%, transparent), transparent 100%), radial-gradient(closest-side at 70% 46%, color-mix(in oklab, var(--vanikara-blue) 34%, transparent), transparent 100%)",
         }}
       />
+
+      {/* Rotating conic halo — a crisp ring plus a soft bloom behind it */}
+      <div aria-hidden="true" className="stage-halo stage-halo--blur" />
+      <div aria-hidden="true" className="stage-halo" />
 
       {/* Precision dial */}
       <svg
@@ -75,6 +81,19 @@ export default function BrandStage({ className = "" }: { className?: string }) {
           {/* Two short arcs — one per wing */}
           <path d="M 64 262 A 150 150 0 0 1 132 70" stroke="url(#stage-arc-warm)" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
           <path d="M 336 262 A 150 150 0 0 0 268 70" stroke="url(#stage-arc-cool)" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+
+          {/* Orbiting points of light */}
+          <g className="orbit" style={{ ["--orbit-speed" as string]: "22s" }}>
+            <circle cx="200" cy="38" r="3" fill="var(--vanikara-gold)" />
+            <circle cx="200" cy="38" r="9" fill="var(--vanikara-gold)" opacity="0.18" />
+          </g>
+          <g className="orbit" data-reverse style={{ ["--orbit-speed" as string]: "30s" }}>
+            <circle cx="200" cy="76" r="2.5" fill="var(--vanikara-cyan)" />
+            <circle cx="200" cy="76" r="8" fill="var(--vanikara-cyan)" opacity="0.2" />
+          </g>
+          <g className="orbit" style={{ ["--orbit-speed" as string]: "46s" }}>
+            <circle cx="362" cy="200" r="1.75" fill="currentColor" opacity="0.5" />
+          </g>
         </g>
       </svg>
 
@@ -89,7 +108,7 @@ export default function BrandStage({ className = "" }: { className?: string }) {
       />
 
       {/* Symbol + reflection */}
-      <div className="absolute inset-x-[19%] top-[27%]">
+      <div className="float-y absolute inset-x-[19%] top-[27%]">
         <div className="symbol-enter relative" style={{ aspectRatio: `${SYMBOL_WIDTH} / ${SYMBOL_HEIGHT}` }}>
           <Image
             src={SYMBOL_SRC}

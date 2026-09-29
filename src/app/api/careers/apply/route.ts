@@ -3,9 +3,10 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
 import nodemailer from "nodemailer";
-import { sanitize, apiResponse, logError, escapeHtml } from "@/lib/security";
+import { randomUUID } from "node:crypto";
+import { sanitize, apiResponse, logError, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
-import { isRateLimited } from "@/lib/rateLimit";
+import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const careersSchema = z.object({
@@ -15,27 +16,37 @@ const careersSchema = z.object({
   position: z.string().min(1, "Position is required").max(100),
   portfolio: z.string().max(200).optional(),
   coverLetter: z.string().max(5000).optional(),
-  resumeBase64: z.string().min(1, "Resume is required"),
-  resumeFileName: z.string().min(1, "Resume file name is required")
+  resumeBase64: z.string().min(1, "Resume is required").max(7 * 1024 * 1024),
+  resumeFileName: z.string().min(1, "Resume file name is required").max(200)
 });
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    const rateLimit = await isRateLimited(ip);
-    
-    if (rateLimit.limited) {
-      return NextResponse.json(apiResponse(false, null, "Too many requests. Please try again later."), { status: 429 });
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+    // 5 MB file as base64 (~6.7 MB) plus form fields; also the platform body limit
+    if (Number(req.headers.get("content-length") ?? 0) > 7 * 1024 * 1024) {
+      return NextResponse.json(apiResponse(false, null, "Application too large."), { status: 413 });
     }
 
-    const body = await req.json();
+    const rateLimit = await isRateLimited(clientIp(req), "careers");
+    if (rateLimit.limited) {
+      return NextResponse.json(apiResponse(false, null, "Too many applications from this network. Please try again later."), {
+        status: 429,
+        headers: retryAfterHeaders(rateLimit.reset),
+      });
+    }
+
+    const body = await req.json().catch(() => null);
     const validation = careersSchema.safeParse(body);
 
     if (!validation.success) {
       return NextResponse.json(apiResponse(false, null, validation.error.issues[0].message), { status: 400 });
     }
 
-    const { name, email, phone, position, portfolio, coverLetter, resumeBase64, resumeFileName } = validation.data;
+    // resumeFileName is validated but not used for storage (see uniqueFileName below)
+    const { name, email, phone, position, portfolio, coverLetter, resumeBase64 } = validation.data;
     // 1. Validation has been performed by Zod
 
     // Ensure size does not exceed 5MB
@@ -75,7 +86,9 @@ export async function POST(req: Request) {
         return NextResponse.json(apiResponse(false, null, "Invalid file format. Only PDF and DOCX documents are allowed."), { status: 400 });
       }
 
-      const uniqueFileName = `${Date.now()}_${resumeFileName.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+      // Unguessable name: résumés contain personal data, so the stored path
+      // must not be derivable from the time or the applicant's file name.
+      const uniqueFileName = `${randomUUID()}.${isPDF ? "pdf" : "docx"}`;
 
       const { data: _uploadData, error: uploadError } = await supabaseService.storage
         .from("resumes")
@@ -89,11 +102,15 @@ export async function POST(req: Request) {
         return NextResponse.json(apiResponse(false, null, "Failed to upload resume to secure storage"), { status: 500 });
       }
 
-      const { data: urlData } = supabaseService.storage.from("resumes").getPublicUrl(uniqueFileName);
-      if (!urlData || !urlData.publicUrl) {
-        return NextResponse.json(apiResponse(false, null, "Failed to retrieve public link for uploaded resume"), { status: 500 });
+      // The bucket is private (résumés are personal data): the team gets a
+      // time-limited signed link rather than a permanent public URL.
+      const { data: urlData, error: urlError } = await supabaseService.storage
+        .from("resumes")
+        .createSignedUrl(uniqueFileName, 60 * 60 * 24 * 30);
+      if (urlError || !urlData?.signedUrl) {
+        return NextResponse.json(apiResponse(false, null, "Failed to create a secure link for the uploaded resume"), { status: 500 });
       }
-      resumeUrl = urlData.publicUrl;
+      resumeUrl = urlData.signedUrl;
     } catch (fileErr) {
       logError("Resume File Process", fileErr);
       return NextResponse.json(apiResponse(false, null, "Error processing resume document"), { status: 500 });

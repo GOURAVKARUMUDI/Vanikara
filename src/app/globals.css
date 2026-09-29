@@ -36,12 +36,15 @@
   --brand-secondary: var(--vanikara-bright-orange);
   --brand-accent: var(--vanikara-cyan);
   --brand-accent-warm: var(--vanikara-gold);
+  --brand-background: var(--surface-base);
   --brand-bg: var(--surface-base);
   --brand-surface: var(--glass-bg);
   --brand-surface-solid: var(--surface-raised);
   --brand-glow: rgba(0, 110, 255, 0.16);
-  --brand-glow-warm: rgba(255, 106, 0, 0.14);
-  --brand-pattern-opacity: 0.22;
+  --brand-glow-warm: rgba(255, 106, 0, 0.12);
+  --ambient-opacity: 0.75;
+  --ambient-blur: 110px;
+  --brand-pattern-opacity: 0.20;
   --brand-gradient-opacity: 0.55;
 
   /* Brand gradients (used sparingly: highlights, never large fills) */
@@ -133,12 +136,15 @@
   --brand-secondary: var(--vanikara-bright-orange);
   --brand-accent: var(--vanikara-cyan);
   --brand-accent-warm: var(--vanikara-yellow);
+  --brand-background: var(--surface-base);
   --brand-bg: var(--surface-base);
   --brand-surface: var(--glass-bg);
   --brand-surface-solid: var(--surface-raised);
-  --brand-glow: rgba(0, 140, 255, 0.30);
-  --brand-glow-warm: rgba(255, 106, 0, 0.20);
-  --brand-pattern-opacity: 0.35;
+  --brand-glow: rgba(0, 140, 255, 0.28);
+  --brand-glow-warm: rgba(255, 106, 0, 0.18);
+  --ambient-opacity: 0.85;
+  --ambient-blur: 130px;
+  --brand-pattern-opacity: 0.32;
   --brand-gradient-opacity: 0.65;
 
   --text-primary: #F3F6FB;
@@ -695,12 +701,14 @@ p { text-wrap: pretty; }
 }
 
 /* ============================================================
-   VANIKARA light field — fixed, CSS-only, compositor-animated.
-   Derived directly from the New Logo's dual-wing geometry:
-   - Asymmetric ambient fields (cool wing right, warm wing left, apex lower)
-   - Flowing aerodynamic blade ribbons & architectural contour lines
-   - Specular traveling light sweep & fine-pointer interactive aura
-   - Compositor-only transforms & mobile filter-free performance
+   Advanced Multi-Layer Background System (SiteBackground)
+   - Layer 1: Base wash & canvas contrast
+   - Layer 2: Ambient soft radial gradients (dual-wing temperature)
+   - Layer 3: Brand geometry (aerodynamic vector airfoils & orbital arcs)
+   - Layer 4: Depth & optical focus (filmic micro-grain & vignette)
+   - Layer 5: Ambient motion (slow organic drift & traveling sheen)
+   - Layer 6: Interactive pointer light (fine pointer lerp interpolation)
+   - Page-Aware atmosphere states with smooth 700-800ms transitions
    ============================================================ */
 
 .site-bg {
@@ -709,179 +717,287 @@ p { text-wrap: pretty; }
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background: var(--brand-bg, var(--surface-base));
+  background-color: var(--brand-background);
+  transition: background-color 700ms var(--ease-out);
+  contain: strict;
 }
-.site-bg__wash { position: absolute; inset: 0; background: var(--bg-wash); }
 
-/* Technical dot matrix grid (Aerospace CAD / Intelligence field) */
-.site-bg__grid {
+/* Layer 1: Base wash */
+.site-bg__base {
   position: absolute;
   inset: 0;
-  opacity: 0.35;
-  background-image: radial-gradient(circle, var(--border-strong) 1.2px, transparent 1.2px);
-  background-size: 32px 32px;
-  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 38%, #000 20%, transparent 80%);
-  mask-image: radial-gradient(ellipse 75% 65% at 50% 38%, #000 20%, transparent 80%);
+  background: var(--bg-wash);
+  opacity: 0.9;
+  transition: opacity 700ms var(--ease-out);
 }
-[data-theme="dark"] .site-bg__grid {
-  opacity: 0.45;
-}
-
-.site-bg__field { position: absolute; inset: -20%; will-change: transform; }
-
-/* Cool Wing: upper right atmosphere + electric blue horizon */
-.site-bg__field--cool,
-.site-bg__field--blue {
-  background:
-    radial-gradient(48% 44% at 82% 20%, var(--bg-blue), transparent 72%),
-    radial-gradient(42% 38% at 72% 76%, var(--bg-cyan), transparent 74%),
-    radial-gradient(34% 30% at 92% 52%, var(--bg-navy), transparent 70%);
-  animation: field-a 63s var(--ease-in-out) infinite alternate;
-}
-
-/* Warm Wing: upper left atmosphere + sunrise energy */
-.site-bg__field--warm {
-  background:
-    radial-gradient(32% 30% at 18% 18%, var(--bg-warm), transparent 72%),
-    radial-gradient(26% 26% at 26% 68%, var(--bg-gold), transparent 70%);
-  animation: field-c 89s var(--ease-in-out) infinite alternate;
-}
-
-/* Apex convergence point: lower center */
-.site-bg__field--apex,
-.site-bg__field--cyan {
-  background:
-    radial-gradient(44% 40% at 50% 92%, var(--bg-navy), transparent 74%),
-    radial-gradient(28% 28% at 50% 78%, color-mix(in oklab, var(--brand-primary) 14%, transparent), transparent 70%);
-  animation: field-b 107s var(--ease-in-out) infinite alternate;
-}
-
-@keyframes field-a { to { transform: translate3d(3.5%, 2%, 0) scale(1.03); } }
-@keyframes field-b { to { transform: translate3d(-2.5%, -1.5%, 0) scale(1.02); } }
-@keyframes field-c { to { transform: translate3d(2%, 2.5%, 0); } }
-
-/* Brand Geometry: Multi-layered aerodynamic blade ribbons & contour guides */
-.site-bg__geometry,
-.site-bg__ribbons {
-  position: absolute;
-  inset: -4%;
-  width: 108%;
-  height: 108%;
-  will-change: transform;
-  animation: bg-geometry 84s var(--ease-in-out) infinite alternate;
-}
-@keyframes bg-geometry { to { transform: translate3d(-1.2%, 0.8%, 0) scale(1.02); } }
-
-.site-bg__volumetric {
+[data-theme="dark"] .site-bg__base {
   opacity: 0.95;
-}
-.site-bg__contours {
-  opacity: var(--brand-pattern-opacity, 0.22);
+  background: radial-gradient(ellipse 130% 90% at 50% -20%, #08112C 0%, var(--brand-background) 75%);
 }
 
-/* Interactive pointer aura (fine pointer devices only, zero JS re-renders) */
-.site-bg__interactive {
+/* Layer 2: Ambient gradient fields */
+.site-bg__ambient {
   position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 800ms var(--ease-out);
+  inset: -15%;
   pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .site-bg__interactive {
-    opacity: 0.45;
-    background: radial-gradient(
-      560px circle at var(--cursor-x, 50%) var(--cursor-y, 35%),
-      var(--brand-glow),
-      transparent 70%
-    );
-  }
+  transition: opacity 750ms var(--ease-out), transform 850ms var(--ease-out);
 }
 
-/* Specular traveling sheen across the 105deg angle (matching logo ridge facet) */
-.site-bg__sweep {
-  position: absolute;
-  top: -10%;
-  bottom: -10%;
-  left: 0;
-  width: 70%;
-  opacity: 0;
-  transform: translate3d(-80%, 0, 0);
-  background: linear-gradient(105deg, transparent 30%, var(--bg-sweep) 50%, transparent 70%);
-  animation: bg-sweep 56s var(--ease-in-out) 6s infinite;
-}
-@keyframes bg-sweep {
-  0% { opacity: 0; transform: translate3d(-80%, 0, 0); }
-  8% { opacity: 1; }
-  40% { opacity: 0; transform: translate3d(170%, 0, 0); }
-  100% { opacity: 0; transform: translate3d(170%, 0, 0); }
-}
-
-.site-bg__noise {
+.site-bg__glow {
   position: absolute;
   inset: 0;
-  opacity: 0.018;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: transform 800ms var(--ease-out), opacity 700ms var(--ease-out);
+}
+
+/* Cool wing glow (Upper right & intelligence horizon) */
+.site-bg__glow--cool {
+  background:
+    radial-gradient(50% 46% at 84% 22%, var(--brand-glow), transparent 72%),
+    radial-gradient(40% 38% at 74% 72%, color-mix(in oklab, var(--brand-accent) 22%, transparent), transparent 74%),
+    radial-gradient(32% 30% at 92% 50%, color-mix(in oklab, var(--vanikara-deep-blue) 16%, transparent), transparent 70%);
+  animation: bg-drift-cool 78s var(--ease-in-out) infinite alternate;
+}
+
+/* Warm wing glow (Upper left & kinetic sunrise energy) */
+.site-bg__glow--warm {
+  background:
+    radial-gradient(38% 36% at 16% 20%, var(--brand-glow-warm), transparent 72%),
+    radial-gradient(28% 28% at 24% 68%, color-mix(in oklab, var(--brand-accent-warm) 18%, transparent), transparent 70%);
+  animation: bg-drift-warm 92s var(--ease-in-out) infinite alternate;
+}
+
+/* Apex convergence glow (Lower center) */
+.site-bg__glow--apex {
+  background:
+    radial-gradient(46% 40% at 50% 90%, color-mix(in oklab, var(--vanikara-deep-blue) 14%, transparent), transparent 74%),
+    radial-gradient(30% 30% at 50% 76%, color-mix(in oklab, var(--brand-primary) 12%, transparent), transparent 70%);
+  animation: bg-drift-apex 110s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes bg-drift-cool {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-3%, 2%, 0) scale(1.03); }
+  100% { transform: translate3d(2.5%, -1.5%, 0) scale(0.98); }
+}
+
+@keyframes bg-drift-warm {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(2.5%, 2%, 0) scale(1.02); }
+  100% { transform: translate3d(-2%, -2%, 0) scale(0.97); }
+}
+
+@keyframes bg-drift-apex {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -2.5%, 0) scale(1.03); }
+  100% { transform: translate3d(0, 1.5%, 0) scale(0.99); }
+}
+
+/* Layer 3: Brand Geometry (Signature Effect: Geometric Light) */
+.site-bg__geometry {
+  position: absolute;
+  inset: -2%;
+  width: 104%;
+  height: 104%;
+  pointer-events: none;
+  opacity: var(--brand-pattern-opacity, 0.20);
+  transition: opacity 750ms var(--ease-out), transform 850ms var(--ease-out);
+  animation: bg-drift-geometry 96s var(--ease-in-out) infinite alternate;
+  will-change: transform;
+}
+
+.site-bg__vectors {
+  color: var(--text-primary);
+}
+
+@keyframes bg-drift-geometry {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-1%, 0.8%, 0) scale(1.015); }
+}
+
+/* Layer 4: Filmic grain & Soft optical vignette */
+.site-bg__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.016;
+  pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-[data-theme="dark"] .site-bg__noise { opacity: 0.028; }
+[data-theme="dark"] .site-bg__grain {
+  opacity: 0.026;
+}
 
-/* Extremely soft edge falloff — optical focus toward center content */
 .site-bg__vignette {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background: radial-gradient(120% 100% at 50% 38%, transparent 55%, rgba(7, 26, 61, 0.05) 100%);
 }
 [data-theme="dark"] .site-bg__vignette {
   background: radial-gradient(120% 100% at 50% 38%, transparent 50%, rgba(2, 6, 14, 0.35) 100%);
 }
 
-/* Scroll-linked environment shift (progressive enhancement): warm light
-   recedes and the ribbons settle as the page goes on, so the page ends
-   calmer and cooler than it begins. Unsupported browsers stay static. */
-@supports (animation-timeline: scroll()) {
-  .site-bg__field--warm {
-    animation-name: field-c, env-warm;
-    animation-duration: 89s, auto;
-    animation-timing-function: var(--ease-in-out), linear;
-    animation-iteration-count: infinite, 1;
-    animation-direction: alternate, normal;
-    animation-fill-mode: none, both;
-    animation-timeline: auto, scroll(root block);
-  }
-  .site-bg__geometry,
-  .site-bg__ribbons {
-    animation-name: bg-geometry, env-ribbons;
-    animation-duration: 84s, auto;
-    animation-timing-function: var(--ease-in-out), linear;
-    animation-iteration-count: infinite, 1;
-    animation-direction: alternate, normal;
-    animation-fill-mode: none, both;
-    animation-timeline: auto, scroll(root block);
-  }
-  @keyframes env-warm { to { opacity: 0.25; } }
-  @keyframes env-ribbons { to { opacity: 0.6; translate: 0 -5vh; } }
+/* Layer 5: Signature Travelling Sheen (Aerodynamic light glint) */
+.site-bg__sheen {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 70%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-100%, 0, 0);
+  background: linear-gradient(105deg, transparent 35%, var(--bg-sweep) 50%, transparent 65%);
+  animation: bg-sheen-sweep 54s cubic-bezier(0.4, 0, 0.2, 1) 5s infinite;
 }
 
-/* Graduated intensity — simplify rather than merely shrink */
+@keyframes bg-sheen-sweep {
+  0% { opacity: 0; transform: translate3d(-100%, 0, 0); }
+  6% { opacity: 0.85; }
+  35% { opacity: 0; transform: translate3d(180%, 0, 0); }
+  100% { opacity: 0; transform: translate3d(180%, 0, 0); }
+}
+
+/* Layer 6: Interactive Pointer Aura (Desktop fine pointers only, lerp-interpolated) */
+.site-bg__pointer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-bg__pointer {
+    opacity: 0.42;
+    background: radial-gradient(
+      620px circle at var(--pointer-x, 50%) var(--pointer-y, 35%),
+      var(--brand-glow),
+      transparent 70%
+    );
+  }
+  [data-theme="dark"] .site-bg__pointer {
+    opacity: 0.65;
+    background: radial-gradient(
+      680px circle at var(--pointer-x, 50%) var(--pointer-y, 35%),
+      color-mix(in oklab, var(--brand-accent) 18%, transparent),
+      transparent 72%
+    );
+  }
+}
+
+/* ============================================================
+   PAGE-AWARE COMPOSITIONS (Subtle variations per route)
+   ============================================================ */
+
+/* Home: Expressive, balanced dual-wing radiance */
+.site-bg[data-atmosphere="home"] .site-bg__glow--cool {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.site-bg[data-atmosphere="home"] .site-bg__glow--warm {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.site-bg[data-atmosphere="home"] .site-bg__geometry {
+  opacity: var(--brand-pattern-opacity, 0.20);
+}
+
+/* Features / Products: Dynamic, technology-forward */
+.site-bg[data-atmosphere="product"] .site-bg__glow--cool {
+  opacity: 1.25;
+  transform: translate3d(-4%, -2%, 0) scale(1.08);
+}
+.site-bg[data-atmosphere="product"] .site-bg__glow--warm {
+  opacity: 0.68;
+  transform: translate3d(4%, 3%, 0) scale(0.92);
+}
+.site-bg[data-atmosphere="product"] .site-bg__geometry {
+  opacity: calc(var(--brand-pattern-opacity, 0.20) * 1.15);
+  transform: translate3d(-1%, -1%, 0) scale(1.02);
+}
+
+/* About / Leadership / Careers: Calmer, softer gradients, reflective negative space */
+.site-bg[data-atmosphere="about"] .site-bg__glow--cool {
+  opacity: 0.72;
+  transform: translate3d(2%, 3%, 0) scale(0.95);
+}
+.site-bg[data-atmosphere="about"] .site-bg__glow--warm {
+  opacity: 0.95;
+  transform: translate3d(-2%, 2%, 0) scale(1.02);
+}
+.site-bg[data-atmosphere="about"] .site-bg__geometry {
+  opacity: calc(var(--brand-pattern-opacity, 0.20) * 0.7);
+}
+
+/* Contact: Restrained, focal warmth framing contact surfaces */
+.site-bg[data-atmosphere="contact"] .site-bg__glow--cool {
+  opacity: 0.55;
+  transform: translate3d(-8%, 8%, 0) scale(0.88);
+}
+.site-bg[data-atmosphere="contact"] .site-bg__glow--warm {
+  opacity: 0.75;
+  transform: translate3d(8%, -4%, 0) scale(0.92);
+}
+.site-bg[data-atmosphere="contact"] .site-bg__glow--apex {
+  opacity: 1.35;
+  transform: translate3d(0, -10%, 0) scale(1.12);
+}
+.site-bg[data-atmosphere="contact"] .site-bg__geometry {
+  opacity: calc(var(--brand-pattern-opacity, 0.20) * 0.5);
+}
+
+/* Dashboard / Admin / Login: Focused, peripheral light, maximum readability */
+.site-bg[data-atmosphere="dashboard"] .site-bg__glow--cool {
+  opacity: 0.38;
+  transform: translate3d(12%, -12%, 0) scale(0.82);
+}
+.site-bg[data-atmosphere="dashboard"] .site-bg__glow--warm {
+  opacity: 0.28;
+  transform: translate3d(-12%, -12%, 0) scale(0.82);
+}
+.site-bg[data-atmosphere="dashboard"] .site-bg__geometry {
+  opacity: 0.05;
+}
+
+/* Minimal (Legal, 404): Clean, documentary quietude */
+.site-bg[data-atmosphere="minimal"] .site-bg__glow--cool {
+  opacity: 0.32;
+  transform: translate3d(5%, 5%, 0) scale(0.85);
+}
+.site-bg[data-atmosphere="minimal"] .site-bg__glow--warm {
+  opacity: 0.22;
+  transform: translate3d(-5%, -5%, 0) scale(0.85);
+}
+.site-bg[data-atmosphere="minimal"] .site-bg__geometry {
+  opacity: 0.03;
+}
+
+/* Responsive calibrations */
 @media (max-width: 1024px) {
-  .site-bg__field { opacity: 0.85; }
-}
-@media (max-width: 767px) {
-  .site-bg__field { opacity: 0.65; animation: none; }
-  .site-bg__geometry,
-  .site-bg__ribbons { animation: none; opacity: 0.75; }
-  .site-bg__volumetric { filter: none; opacity: 0.45; }
-  .site-bg__sweep { display: none; }
-  .site-bg__interactive { display: none; }
+  .site-bg__ambient { inset: -10%; }
 }
 
+@media (max-width: 767px) {
+  .site-bg__glow { animation: none !important; }
+  .site-bg__geometry { animation: none !important; opacity: calc(var(--brand-pattern-opacity, 0.20) * 0.75); }
+  .site-bg__sheen { display: none; }
+  .site-bg__pointer { display: none; }
+}
+
+/* Accessibility: Reduced motion mode */
 @media (prefers-reduced-motion: reduce) {
-  .site-bg__field,
-  .site-bg__geometry,
-  .site-bg__ribbons,
-  .site-bg__sweep {
+  .site-bg,
+  .site-bg__base,
+  .site-bg__ambient,
+  .site-bg__glow,
+  .site-bg__geometry {
+    transition: none !important;
     animation: none !important;
   }
+  .site-bg__sheen { display: none !important; }
+  .site-bg__pointer { display: none !important; }
 }
 
 /* Hero: the richest environment. Warm upper-left, cool upper-right, quiet
@@ -1074,6 +1190,6 @@ html:not(.js) .brand-intro { display: none; }
     scroll-behavior: auto !important;
   }
   .js [data-reveal] { opacity: 1; transform: none; }
-  .symbol-sweep, .brand-intro, .site-bg__sweep { display: none; }
-  .site-bg__field, .site-bg__ribbons { animation: none !important; }
+  .symbol-sweep, .brand-intro, .site-bg__sheen { display: none !important; }
+  .site-bg__glow, .site-bg__geometry, .site-bg__pointer { animation: none !important; }
 }

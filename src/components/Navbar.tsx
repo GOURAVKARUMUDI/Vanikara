@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, ChevronDown, Moon, Sun } from "lucide-react";
+import { ArrowUpRight, ChevronDown, LayoutDashboard, LogIn } from "lucide-react";
 import BrandMark from "@/components/brand/BrandMark";
 import Button from "@/components/ui/Button";
-import { useTheme } from "./layout/ThemeContext";
-import { createClient } from "@/utils/supabase/client";
-import { isAdmin } from "@/lib/isAdmin";
+import ThemeSwitcher from "./layout/ThemeSwitcher";
+import AccountMenu, { Avatar } from "./auth/AccountMenu";
+import { googleSignOut, useSession } from "./auth/session";
 import { COMPANY_IDENTITY, NAVIGATION } from "@/data/company";
 
 type MenuKey = "company" | "products" | null;
@@ -24,11 +24,9 @@ function isActive(pathname: string, href: string) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { resolvedTheme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<MenuKey>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showAdmin, setShowAdmin] = useState(false);
 
   const closeTimer = useRef<number | null>(null);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
@@ -49,21 +47,10 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Admin shortcut (display only; access is enforced server-side)
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-    try {
-      const supabase = createClient();
-      const { data } = supabase.auth.onAuthStateChange(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (_event: string, session: any) => setShowAdmin(isAdmin(session?.user))
-      );
-      unsubscribe = () => data.subscription.unsubscribe();
-    } catch {
-      // Auth unavailable in this environment
-    }
-    return () => unsubscribe?.();
-  }, []);
+  // Account state for the sign-in control (display only; access is
+  // enforced server-side). Re-read on navigation and on sign-in/out.
+  const session = useSession(pathname);
+  const showAdmin = session.isAdmin;
 
   // Mobile menu: scroll lock, Escape, focus management
   useEffect(() => {
@@ -126,8 +113,6 @@ export default function Navbar() {
     closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
   }, [cancelClose]);
 
-  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
-  const themeLabel = `Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`;
 
   const productsActive = NAVIGATION.products.some((p) => isActive(pathname, p.href)) || pathname === "/what-we-build";
   const companyActive = NAVIGATION.company.some((c) => isActive(pathname, c.href));
@@ -173,7 +158,7 @@ export default function Navbar() {
           data-open={open}
           className="nav-panel absolute left-1/2 top-full -translate-x-1/2 pt-3"
         >
-          <div className="glass-strong w-[22rem] rounded-feature p-2">
+          <div className="liquid-glass glass-strong w-[22rem] rounded-feature p-2">
             {key === "products" ? (
               <>
                 {NAVIGATION.products.map((item) => (
@@ -235,12 +220,13 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
+      <div aria-hidden="true" className="scroll-progress" />
       {/* Mobile full-screen menu (sits beneath the bar so the toggle stays reachable) */}
       <div
         ref={mobileMenuRef}
         id={`${idBase}-mobile-menu`}
         data-open={mobileOpen}
-        className="mobile-menu bg-surface lg:hidden"
+        className="mobile-menu mobile-menu--glass lg:hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Site navigation"
@@ -286,7 +272,7 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="surface rounded-card p-4"
+                  className="liquid-glass glass rounded-card p-4"
                 >
                   <span
                     aria-hidden="true"
@@ -297,11 +283,43 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-            <div className="flex flex-col gap-1 text-sm text-fg-muted">
-              <a href={`mailto:${COMPANY_IDENTITY.officialEmail}`} className="w-fit font-medium text-fg">
-                {COMPANY_IDENTITY.officialEmail}
-              </a>
-              <span>{COMPANY_IDENTITY.operationalLocation}</span>
+            <div className="flex items-end justify-between gap-4">
+              <div className="flex flex-col gap-1 text-sm text-fg-muted">
+                <a href={`mailto:${COMPANY_IDENTITY.officialEmail}`} className="w-fit font-medium text-fg">
+                  {COMPANY_IDENTITY.officialEmail}
+                </a>
+                <span>{COMPANY_IDENTITY.operationalLocation}</span>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-2">
+                {session.user && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      googleSignOut();
+                    }}
+                    className="liquid-glass glass inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-semibold text-fg"
+                    aria-label={`Sign out ${session.user.name}`}
+                  >
+                    <Avatar name={session.user.name} picture={session.user.picture} size={28} />
+                    Sign out
+                  </button>
+                )}
+                {(showAdmin || !session.user) && (
+                  <Link
+                    href={showAdmin ? "/admin" : "/login"}
+                    onClick={() => setMobileOpen(false)}
+                    className="liquid-glass glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-fg"
+                  >
+                    {showAdmin ? (
+                      <LayoutDashboard aria-hidden="true" className="h-4 w-4 text-ambition" />
+                    ) : (
+                      <LogIn aria-hidden="true" className="h-4 w-4 text-intel" />
+                    )}
+                    {showAdmin ? "Admin" : "Sign in"}
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </nav>
@@ -312,7 +330,7 @@ export default function Navbar() {
         <div
           className={`flex items-center justify-between rounded-feature border transition-[height,background-color,border-color,box-shadow,padding] duration-500 ease-brand ${
             scrolled
-              ? "glass h-14 px-3 sm:px-4"
+              ? "glass liquid-glass h-14 px-3 sm:px-4"
               : "h-[72px] border-transparent bg-transparent px-0 shadow-none"
           }`}
         >
@@ -339,24 +357,8 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {showAdmin && (
-              <Link
-                href="/admin"
-                className="hidden rounded-full px-3 py-1.5 text-xs font-semibold text-ambition transition-colors hover:bg-surface-sunken lg:inline-flex"
-              >
-                Admin
-              </Link>
-            )}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={themeLabel}
-              title={themeLabel}
-              className="grid h-9 w-9 place-items-center rounded-full text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
-            >
-              <Sun aria-hidden="true" className="hidden h-[18px] w-[18px] dark:block" />
-              <Moon aria-hidden="true" className="h-[18px] w-[18px] dark:hidden" />
-            </button>
+            <AccountMenu session={session} isActive={isActive(pathname, showAdmin ? "/admin" : "/login")} />
+            <ThemeSwitcher />
 
             <Button href="/contact" size="sm" arrow className="hidden sm:inline-flex">
               Contact

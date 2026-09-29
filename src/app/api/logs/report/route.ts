@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
 import { logError } from "@/lib/security";
-import { isRateLimited } from "@/lib/rateLimit";
+import { clientIp, isRateLimited } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
     // 1. Rate limiting by IP
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
-    const limitCheck = await isRateLimited(ip);
+    const limitCheck = await isRateLimited(clientIp(req), "logs");
     if (limitCheck.limited) {
       return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
     }
 
-    // 2. Payload size checking
+    // 2. Payload size checking (header first, so huge bodies are never read)
+    if (Number(req.headers.get("content-length") ?? 0) > 50 * 1024) {
+      return NextResponse.json({ success: false, error: "Payload too large" }, { status: 413 });
+    }
     const rawText = await req.text();
     if (rawText.length > 50 * 1024) { // 50KB max payload
       return NextResponse.json({ success: false, error: "Payload too large" }, { status: 413 });
@@ -44,7 +46,14 @@ export async function POST(req: Request) {
     }, {
       errorType: "CLIENT_ERROR",
       statusCode: 500,
-      ...context,
+      // Only known, length-capped fields: arbitrary client keys must not
+      // be able to overwrite or forge server log fields.
+      clientUrl: typeof context?.url === "string" ? context.url.substring(0, 300) : undefined,
+      clientSource:
+        typeof context?.filename === "string"
+          ? `${context.filename.substring(0, 200)}:${Number(context.lineno) || 0}:${Number(context.colno) || 0}`
+          : undefined,
+      clientUserAgent: typeof context?.userAgent === "string" ? context.userAgent.substring(0, 300) : undefined,
       clientErrorMessage: error?.message ? String(error.message).substring(0, 1000) : undefined,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);

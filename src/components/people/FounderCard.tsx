@@ -22,6 +22,7 @@ export default function FounderCard({ person, index, detailed = false }: Founder
       data-reveal
       data-tone={tone}
       data-tier="secondary"
+      data-tilt
       style={{ ["--reveal-delay" as string]: `${index * 90}ms` }}
       className="card-interactive surface flex h-full flex-col overflow-hidden rounded-feature"
     >

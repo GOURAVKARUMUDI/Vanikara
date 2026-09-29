@@ -2,40 +2,40 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
-import { isAdmin } from "@/lib/isAdmin";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { getAdminSession } from "@/lib/adminAuth";
 import { apiResponse, logError, isTrustedOrigin } from "@/lib/security";
 import { logAdminAction } from "@/lib/auditLogger";
 import { z } from "zod";
 
+/**
+ * Google-account users (people who signed in on the website).
+ * Admins can see them and block or unblock them. There is deliberately no
+ * way to promote a user to admin: admin access comes only from the fixed
+ * admin accounts configured on the server.
+ */
 const patchSchema = z.object({
   id: z.string().uuid(),
-  role: z.enum(["user", "admin"]),
+  blocked: z.boolean(),
 });
+
+const PUBLIC_FIELDS = "id, email, name, avatar_url, provider, blocked, created_at, last_sign_in_at";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // The req parameter is not present in GET, but we can't get IP easily without it or headers().
-    // We will extract headers from next/headers.
-
-    if (!user || !isAdmin(user)) {
+    const admin = await getAdminSession();
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
     const { data, error } = await supabaseService
       .from("users")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .select(PUBLIC_FIELDS)
+      .order("created_at", { ascending: false })
+      .limit(1000);
 
     if (error) throw error;
     return NextResponse.json(apiResponse(true, data || []));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error) {
     logError("Admin Users GET", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
   }
@@ -47,34 +47,28 @@ export async function PATCH(req: Request) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
     }
 
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user || !isAdmin(user)) {
+    const admin = await getAdminSession();
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
-    const validation = patchSchema.safeParse(await req.json());
+    const validation = patchSchema.safeParse(await req.json().catch(() => null));
     if (!validation.success) {
       return NextResponse.json(apiResponse(false, null, "Invalid request parameters"), { status: 400 });
     }
-    const { id, role } = validation.data;
-
-    const { data: previousState } = await supabaseService.from("users").select("*").eq("id", id).single();
+    const { id, blocked } = validation.data;
 
     const { data, error } = await supabaseService
       .from("users")
-      .update({ role })
+      .update({ blocked })
       .eq("id", id)
-      .select()
+      .select(PUBLIC_FIELDS)
       .single();
 
     if (error) throw error;
-    await logAdminAction(user.email || user.id, "UPDATE_USER_ROLE", id, { previousState, newState: data });
+    await logAdminAction(admin.u, blocked ? "BLOCK_USER" : "UNBLOCK_USER", id, { email: data?.email });
     return NextResponse.json(apiResponse(true, data));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error) {
     logError("Admin Users PATCH", error);
     return NextResponse.json(apiResponse(false, null, "Internal error"), { status: 500 });
   }

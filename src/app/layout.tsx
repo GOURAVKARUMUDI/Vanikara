@@ -4,6 +4,8 @@ import { Manrope } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
+import "./motion.css";
+import "./surfaces.css";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,6 +13,7 @@ import ClientLogger from "@/components/ClientLogger";
 import SiteBackground from "@/components/layout/SiteBackground";
 import Enhancements from "@/components/layout/Enhancements";
 import ConsentBanner from "@/components/layout/ConsentBanner";
+import FirebaseAnalytics from "@/components/auth/FirebaseAnalytics";
 import PreferencesModal from "@/components/layout/PreferencesModal";
 import { ThemeProvider, THEME_BOOT_SCRIPT } from "@/components/layout/ThemeContext";
 import { ConsentProvider } from "@/context/ConsentContext";
@@ -122,6 +125,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         </div>
 
+        {/* Refraction field for liquid glass (used by backdrop-filter on Chromium) */}
+        <svg aria-hidden="true" width="0" height="0" className="pointer-events-none absolute">
+          <filter id="liquid-refract" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.014" numOctaves="2" seed="11" result="noise" />
+            <feGaussianBlur in="noise" stdDeviation="3" result="field" />
+            <feDisplacementMap in="SourceGraphic" in2="field" scale="22" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
+
         <SiteBackground />
 
         <ThemeProvider>
@@ -140,6 +152,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ConsentBanner />
             <PreferencesModal />
             <Enhancements />
+            <FirebaseAnalytics />
             <ClientLogger />
           </ConsentProvider>
         </ThemeProvider>

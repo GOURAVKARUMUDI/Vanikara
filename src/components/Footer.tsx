@@ -19,6 +19,7 @@ const COLUMNS = [
       { href: "/leadership", label: "Leadership" },
       { href: "/technology", label: "Technology" },
       { href: "/careers", label: "Careers" },
+      { href: "/login", label: "Sign in" },
     ],
   },
   {
@@ -35,6 +36,7 @@ const COLUMNS = [
 export default function Footer() {
   return (
     <footer className="relative mt-16 overflow-hidden border-t border-line">
+      <div aria-hidden="true" className="footer-glow-line" />
       {/* Atmospheric symbol */}
       <Image
         src="/brand/vanikara-symbol.png"
@@ -106,6 +108,11 @@ export default function Footer() {
           </p>
           <p className="tabular-nums">CIN {COMPANY_IDENTITY.cin}</p>
         </div>
+      </div>
+
+      {/* Oversized wordmark — outlined, fills with the signature gradient on hover */}
+      <div aria-hidden="true" className="container-page relative -mb-[0.12em] overflow-hidden" data-reveal="blur">
+        <p className="footer-wordmark text-center">VANIKARA</p>
       </div>
     </footer>
   );

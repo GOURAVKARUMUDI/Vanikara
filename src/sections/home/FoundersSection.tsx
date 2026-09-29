@@ -6,7 +6,7 @@ import { FOUNDERS_AND_LEADERSHIP } from "@/data/company";
 
 export default function FoundersSection() {
   return (
-    <section aria-labelledby="founders-title" className="relative py-20 sm:py-24">
+    <section aria-labelledby="founders-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="cool">
       <div className="container-page">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
           <div className="max-w-2xl">

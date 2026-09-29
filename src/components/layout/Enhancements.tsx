@@ -62,6 +62,11 @@ export default function Enhancements() {
     const apply = () => {
       frame = 0;
       if (!lastEvent) return;
+      const xPct = Math.round((lastEvent.clientX / window.innerWidth) * 100);
+      const yPct = Math.round((lastEvent.clientY / window.innerHeight) * 100);
+      document.documentElement.style.setProperty("--cursor-x", `${xPct}%`);
+      document.documentElement.style.setProperty("--cursor-y", `${yPct}%`);
+
       const target = (lastEvent.target as Element | null)?.closest<HTMLElement>(".card-interactive, [data-light]");
       if (!target) return;
       const rect = target.getBoundingClientRect();

@@ -11,12 +11,12 @@
    ============================================================ */
 
 :root {
-  /* Cool side */
+  /* Cool wing (Right: electric cyan -> cobalt -> aerospace deep blue) */
   --vanikara-blue: #006EFF;
   --vanikara-deep-blue: #082B73;
   --vanikara-cyan: #00CFFF;
 
-  /* Warm side */
+  /* Warm wing (Left: solar yellow/gold -> kinetic orange -> crimson red) */
   --vanikara-orange: #F4511E;
   --vanikara-bright-orange: #FF6A00;
   --vanikara-gold: #FFB300;
@@ -30,6 +30,19 @@
   --vanikara-graphite: #111827;
   --vanikara-navy: #071A3D;
   --vanikara-black: #050816;
+
+  /* Brand Tokens (authoritative source: New Logo) */
+  --brand-primary: var(--vanikara-blue);
+  --brand-secondary: var(--vanikara-bright-orange);
+  --brand-accent: var(--vanikara-cyan);
+  --brand-accent-warm: var(--vanikara-gold);
+  --brand-bg: var(--surface-base);
+  --brand-surface: var(--glass-bg);
+  --brand-surface-solid: var(--surface-raised);
+  --brand-glow: rgba(0, 110, 255, 0.16);
+  --brand-glow-warm: rgba(255, 106, 0, 0.14);
+  --brand-pattern-opacity: 0.22;
+  --brand-gradient-opacity: 0.55;
 
   /* Brand gradients (used sparingly: highlights, never large fills) */
   --gradient-warm: linear-gradient(135deg, var(--vanikara-yellow) 0%, var(--vanikara-bright-orange) 45%, var(--vanikara-orange) 100%);
@@ -73,8 +86,8 @@
   --action-fg: #FFFFFF;
   --focus-ring: #0062EB;
 
-  --glass-bg: rgba(255, 255, 255, 0.62);
-  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
   --glass-edge: rgba(255, 255, 255, 0.7);
   --glass-border: var(--border-subtle);
 
@@ -82,22 +95,22 @@
   --shadow-md: 0 2px 6px rgba(7, 26, 61, 0.04), 0 12px 32px rgba(7, 26, 61, 0.07);
   --shadow-lg: 0 4px 12px rgba(7, 26, 61, 0.05), 0 24px 56px rgba(7, 26, 61, 0.10);
 
-  --glow-blue: rgba(0, 110, 255, 0.10);
-  --glow-orange: rgba(244, 81, 30, 0.07);
-  --glow-cyan: rgba(0, 207, 255, 0.08);
+  --glow-blue: rgba(0, 110, 255, 0.16);
+  --glow-orange: rgba(244, 81, 30, 0.12);
+  --glow-cyan: rgba(0, 207, 255, 0.14);
 
   /* Light field (site background). Navy/blue/cyan carry the atmosphere;
      warm tones are a restrained accent. Separate from --glow-* (card light). */
-  --bg-wash: linear-gradient(180deg, rgba(255, 240, 220, 0.30) 0%, rgba(255, 255, 255, 0) 38%, rgba(196, 220, 255, 0.30) 100%);
-  --bg-blue: rgba(0, 110, 255, 0.15);
-  --bg-navy: rgba(8, 43, 115, 0.075);
-  --bg-cyan: rgba(0, 200, 255, 0.13);
-  --bg-cyan-soft: rgba(0, 190, 255, 0.06);
-  --bg-warm: rgba(255, 112, 30, 0.085);
-  --bg-gold: rgba(255, 184, 0, 0.05);
-  --bg-logo-light: rgba(0, 150, 255, 0.15);
-  --bg-sweep: rgba(255, 255, 255, 0.5);
-  --bg-ribbon: 0.27;
+  --bg-wash: linear-gradient(180deg, rgba(255, 235, 205, 0.38) 0%, rgba(247, 249, 252, 0.25) 36%, rgba(205, 228, 255, 0.35) 100%);
+  --bg-blue: rgba(0, 110, 255, 0.28);
+  --bg-navy: rgba(8, 43, 115, 0.15);
+  --bg-cyan: rgba(0, 207, 255, 0.25);
+  --bg-cyan-soft: rgba(0, 190, 255, 0.14);
+  --bg-warm: rgba(255, 106, 0, 0.24);
+  --bg-gold: rgba(255, 184, 0, 0.18);
+  --bg-logo-light: rgba(0, 140, 255, 0.25);
+  --bg-sweep: rgba(255, 255, 255, 0.6);
+  --bg-ribbon: 0.45;
   --glass-sheen: rgba(255, 255, 255, 0.5);
 
   /* Legacy aliases kept for admin/dashboard screens */
@@ -114,6 +127,19 @@
   --surface-raised: #0B1330;
   --surface-sunken: #070D22;
   --surface-inverse: #F3F6FB;
+
+  /* Brand Tokens (Dark) */
+  --brand-primary: #3B82F6;
+  --brand-secondary: var(--vanikara-bright-orange);
+  --brand-accent: var(--vanikara-cyan);
+  --brand-accent-warm: var(--vanikara-yellow);
+  --brand-bg: var(--surface-base);
+  --brand-surface: var(--glass-bg);
+  --brand-surface-solid: var(--surface-raised);
+  --brand-glow: rgba(0, 140, 255, 0.30);
+  --brand-glow-warm: rgba(255, 106, 0, 0.20);
+  --brand-pattern-opacity: 0.35;
+  --brand-gradient-opacity: 0.65;
 
   --text-primary: #F3F6FB;
   --text-secondary: #A7B3C8;
@@ -140,21 +166,21 @@
   --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.35), 0 24px 64px rgba(0, 0, 0, 0.5);
 
-  --glow-blue: rgba(0, 110, 255, 0.20);
-  --glow-orange: rgba(244, 81, 30, 0.10);
-  --glow-cyan: rgba(0, 207, 255, 0.10);
+  --glow-blue: rgba(0, 110, 255, 0.28);
+  --glow-orange: rgba(244, 81, 30, 0.16);
+  --glow-cyan: rgba(0, 207, 255, 0.18);
 
-  --bg-wash: linear-gradient(180deg, rgba(20, 60, 140, 0.20) 0%, rgba(5, 8, 22, 0) 45%, rgba(0, 90, 200, 0.16) 100%);
-  --bg-blue: rgba(0, 110, 255, 0.34);
-  --bg-navy: rgba(24, 76, 200, 0.30);
-  --bg-cyan: rgba(0, 207, 255, 0.17);
-  --bg-cyan-soft: rgba(0, 190, 255, 0.10);
-  --bg-warm: rgba(255, 110, 40, 0.11);
-  --bg-gold: rgba(255, 184, 0, 0.06);
-  --bg-logo-light: rgba(30, 140, 255, 0.26);
-  --bg-sweep: rgba(130, 190, 255, 0.13);
-  --bg-ribbon: 0.42;
-  --glass-sheen: rgba(255, 255, 255, 0.07);
+  --bg-wash: linear-gradient(180deg, rgba(20, 60, 140, 0.32) 0%, rgba(5, 8, 22, 0.45) 45%, rgba(0, 90, 200, 0.28) 100%);
+  --bg-blue: rgba(0, 110, 255, 0.45);
+  --bg-navy: rgba(24, 76, 200, 0.38);
+  --bg-cyan: rgba(0, 207, 255, 0.28);
+  --bg-cyan-soft: rgba(0, 190, 255, 0.18);
+  --bg-warm: rgba(255, 110, 40, 0.26);
+  --bg-gold: rgba(255, 184, 0, 0.18);
+  --bg-logo-light: rgba(30, 140, 255, 0.34);
+  --bg-sweep: rgba(130, 190, 255, 0.20);
+  --bg-ribbon: 0.58;
+  --glass-sheen: rgba(255, 255, 255, 0.08);
 
   --selection-bg: rgba(0, 207, 255, 0.22);
 }
@@ -163,6 +189,13 @@
 @theme inline {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-warm: var(--brand-accent-warm);
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-surface: var(--brand-surface);
 
   --color-brand-blue: var(--vanikara-blue);
   --color-brand-deep: var(--vanikara-deep-blue);
@@ -663,9 +696,11 @@ p { text-wrap: pretty; }
 
 /* ============================================================
    VANIKARA light field — fixed, CSS-only, compositor-animated.
-   Depth planes, slowest to nearest: fields (58–97s, three different
-   periods so they never sync) · flowing ribbons (84s) · sweep (56s).
-   Nothing here animates layout or paint properties.
+   Derived directly from the New Logo's dual-wing geometry:
+   - Asymmetric ambient fields (cool wing right, warm wing left, apex lower)
+   - Flowing aerodynamic blade ribbons & architectural contour lines
+   - Specular traveling light sweep & fine-pointer interactive aura
+   - Compositor-only transforms & mobile filter-free performance
    ============================================================ */
 
 .site-bg {
@@ -674,49 +709,96 @@ p { text-wrap: pretty; }
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background: var(--surface-base);
+  background: var(--brand-bg, var(--surface-base));
 }
 .site-bg__wash { position: absolute; inset: 0; background: var(--bg-wash); }
 
-.site-bg__field { position: absolute; inset: -20%; }
-/* Primary atmosphere: blue upper-right, deep navy lower-left */
+/* Technical dot matrix grid (Aerospace CAD / Intelligence field) */
+.site-bg__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: radial-gradient(circle, var(--border-strong) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 38%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 38%, #000 20%, transparent 80%);
+}
+[data-theme="dark"] .site-bg__grid {
+  opacity: 0.45;
+}
+
+.site-bg__field { position: absolute; inset: -20%; will-change: transform; }
+
+/* Cool Wing: upper right atmosphere + electric blue horizon */
+.site-bg__field--cool,
 .site-bg__field--blue {
   background:
-    radial-gradient(46% 42% at 78% 22%, var(--bg-blue), transparent 72%),
-    radial-gradient(52% 48% at 22% 76%, var(--bg-navy), transparent 74%);
-  animation: field-a 58s var(--ease-in-out) infinite alternate;
+    radial-gradient(48% 44% at 82% 20%, var(--bg-blue), transparent 72%),
+    radial-gradient(42% 38% at 72% 76%, var(--bg-cyan), transparent 74%),
+    radial-gradient(34% 30% at 92% 52%, var(--bg-navy), transparent 70%);
+  animation: field-a 63s var(--ease-in-out) infinite alternate;
 }
-/* Secondary: cyan low-right and a faint cool light high in the page */
-.site-bg__field--cyan {
-  background:
-    radial-gradient(40% 36% at 70% 86%, var(--bg-cyan), transparent 72%),
-    radial-gradient(30% 28% at 44% 20%, var(--bg-cyan-soft), transparent 70%);
-  animation: field-b 79s var(--ease-in-out) infinite alternate;
-}
-/* Accent: the only warm light, small and upper-left */
+
+/* Warm Wing: upper left atmosphere + sunrise energy */
 .site-bg__field--warm {
   background:
-    radial-gradient(26% 24% at 22% 22%, var(--bg-warm), transparent 72%),
-    radial-gradient(20% 20% at 34% 82%, var(--bg-gold), transparent 70%);
-  animation: field-c 97s var(--ease-in-out) infinite alternate;
+    radial-gradient(32% 30% at 18% 18%, var(--bg-warm), transparent 72%),
+    radial-gradient(26% 26% at 26% 68%, var(--bg-gold), transparent 70%);
+  animation: field-c 89s var(--ease-in-out) infinite alternate;
 }
-@keyframes field-a { to { transform: translate3d(3.5%, 2.5%, 0) scale(1.04); } }
-@keyframes field-b { to { transform: translate3d(-3%, -2%, 0) scale(1.03); } }
-@keyframes field-c { to { transform: translate3d(2.5%, 3%, 0); } }
 
-/* Flowing brand light: soft ribbons that converge downward like the
-   symbol's wings (abstract, never a trace of the mark). */
+/* Apex convergence point: lower center */
+.site-bg__field--apex,
+.site-bg__field--cyan {
+  background:
+    radial-gradient(44% 40% at 50% 92%, var(--bg-navy), transparent 74%),
+    radial-gradient(28% 28% at 50% 78%, color-mix(in oklab, var(--brand-primary) 14%, transparent), transparent 70%);
+  animation: field-b 107s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes field-a { to { transform: translate3d(3.5%, 2%, 0) scale(1.03); } }
+@keyframes field-b { to { transform: translate3d(-2.5%, -1.5%, 0) scale(1.02); } }
+@keyframes field-c { to { transform: translate3d(2%, 2.5%, 0); } }
+
+/* Brand Geometry: Multi-layered aerodynamic blade ribbons & contour guides */
+.site-bg__geometry,
 .site-bg__ribbons {
   position: absolute;
   inset: -4%;
   width: 108%;
   height: 108%;
-  animation: ribbons 84s var(--ease-in-out) infinite alternate;
+  will-change: transform;
+  animation: bg-geometry 84s var(--ease-in-out) infinite alternate;
 }
-@keyframes ribbons { to { transform: translate3d(-1.5%, 1%, 0) scale(1.03); } }
+@keyframes bg-geometry { to { transform: translate3d(-1.2%, 0.8%, 0) scale(1.02); } }
 
-/* Occasional soft illumination travelling across the environment, like
-   light off curved glass. Idle for most of its cycle. */
+.site-bg__volumetric {
+  opacity: 0.95;
+}
+.site-bg__contours {
+  opacity: var(--brand-pattern-opacity, 0.22);
+}
+
+/* Interactive pointer aura (fine pointer devices only, zero JS re-renders) */
+.site-bg__interactive {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 800ms var(--ease-out);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-bg__interactive {
+    opacity: 0.45;
+    background: radial-gradient(
+      560px circle at var(--cursor-x, 50%) var(--cursor-y, 35%),
+      var(--brand-glow),
+      transparent 70%
+    );
+  }
+}
+
+/* Specular traveling sheen across the 105deg angle (matching logo ridge facet) */
 .site-bg__sweep {
   position: absolute;
   top: -10%;
@@ -725,7 +807,7 @@ p { text-wrap: pretty; }
   width: 70%;
   opacity: 0;
   transform: translate3d(-80%, 0, 0);
-  background: linear-gradient(104deg, transparent 30%, var(--bg-sweep) 50%, transparent 70%);
+  background: linear-gradient(105deg, transparent 30%, var(--bg-sweep) 50%, transparent 70%);
   animation: bg-sweep 56s var(--ease-in-out) 6s infinite;
 }
 @keyframes bg-sweep {
@@ -742,7 +824,8 @@ p { text-wrap: pretty; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] .site-bg__noise { opacity: 0.028; }
-/* Extremely soft edge falloff — barely perceptible, never a visible ring */
+
+/* Extremely soft edge falloff — optical focus toward center content */
 .site-bg__vignette {
   position: absolute;
   inset: 0;
@@ -758,15 +841,16 @@ p { text-wrap: pretty; }
 @supports (animation-timeline: scroll()) {
   .site-bg__field--warm {
     animation-name: field-c, env-warm;
-    animation-duration: 97s, auto;
+    animation-duration: 89s, auto;
     animation-timing-function: var(--ease-in-out), linear;
     animation-iteration-count: infinite, 1;
     animation-direction: alternate, normal;
     animation-fill-mode: none, both;
     animation-timeline: auto, scroll(root block);
   }
+  .site-bg__geometry,
   .site-bg__ribbons {
-    animation-name: ribbons, env-ribbons;
+    animation-name: bg-geometry, env-ribbons;
     animation-duration: 84s, auto;
     animation-timing-function: var(--ease-in-out), linear;
     animation-iteration-count: infinite, 1;
@@ -783,9 +867,21 @@ p { text-wrap: pretty; }
   .site-bg__field { opacity: 0.85; }
 }
 @media (max-width: 767px) {
-  .site-bg__field { opacity: 0.7; animation: none; }
-  .site-bg__ribbons { animation: none; opacity: 0.85; }
+  .site-bg__field { opacity: 0.65; animation: none; }
+  .site-bg__geometry,
+  .site-bg__ribbons { animation: none; opacity: 0.75; }
+  .site-bg__volumetric { filter: none; opacity: 0.45; }
   .site-bg__sweep { display: none; }
+  .site-bg__interactive { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-bg__field,
+  .site-bg__geometry,
+  .site-bg__ribbons,
+  .site-bg__sweep {
+    animation: none !important;
+  }
 }
 
 /* Hero: the richest environment. Warm upper-left, cool upper-right, quiet
@@ -834,6 +930,11 @@ p { text-wrap: pretty; }
   background:
     radial-gradient(58% 70% at 90% 30%, var(--bg-blue), transparent 70%),
     radial-gradient(44% 56% at 6% 80%, var(--bg-cyan), transparent 72%);
+}
+.section-atmosphere[data-tone="warm"]::before {
+  background:
+    radial-gradient(52% 64% at 12% 35%, var(--bg-warm), transparent 70%),
+    radial-gradient(38% 48% at 85% 75%, var(--bg-gold), transparent 72%);
 }
 .section-atmosphere[data-tone="mixed"]::before {
   background:

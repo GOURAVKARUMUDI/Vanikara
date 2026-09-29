@@ -7,7 +7,7 @@ const STATEMENT_LINES = ["We build what", "we believe", "should exist."];
 
 export default function StorySection() {
   return (
-    <section aria-labelledby="story-title" className="relative py-20 sm:py-24">
+    <section aria-labelledby="story-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="warm">
       <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
           <Eyebrow>The company</Eyebrow>

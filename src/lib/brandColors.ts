@@ -4,6 +4,19 @@
  * Keep in sync with the --vanikara-* tokens in src/app/globals.css.
  */
 export const BRAND = {
+  // Primary brand anchors derived from the New Logo's dual wings
+  primary: "#006EFF",
+  secondary: "#FF6A00",
+  accent: "#00CFFF",
+  accentWarm: "#FFD21F",
+  bg: "#F7F9FC",
+  bgDark: "#050816",
+  surface: "rgba(255, 255, 255, 0.76)",
+  surfaceDark: "rgba(11, 19, 48, 0.68)",
+  glowCool: "rgba(0, 110, 255, 0.12)",
+  glowWarm: "rgba(255, 106, 0, 0.08)",
+
+  // Legacy and specific shade tokens
   blue: "#006EFF",
   blueInk: "#0058D6",
   action: "#0062EB",

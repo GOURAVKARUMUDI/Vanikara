@@ -3,7 +3,7 @@ import { PHILOSOPHY_PRINCIPLES } from "@/data/company";
 
 export default function PrinciplesSection() {
   return (
-    <section aria-labelledby="principles-title" className="relative py-20 sm:py-24">
+    <section aria-labelledby="principles-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
       <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4" data-reveal>
           <Eyebrow tone="cool">How we work</Eyebrow>

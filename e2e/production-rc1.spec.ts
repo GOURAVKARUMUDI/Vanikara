@@ -25,6 +25,15 @@ const PAGES = [
   { path: "/careers", heading: /Build with us/ },
   { path: "/contact", heading: /Let's talk/ },
   { path: "/legal", heading: /Policies/ },
+  { path: "/pricing", heading: /Clear prices/ },
+  { path: "/legal/terms", heading: /Terms & Conditions/ },
+  { path: "/legal/privacy", heading: /Privacy Policy/ },
+  { path: "/legal/refund", heading: /Refund & Cancellation Policy/ },
+  { path: "/legal/shipping", heading: /Shipping & Delivery Policy/ },
+  { path: "/legal/cookies", heading: /Cookie Policy/ },
+  { path: "/legal/security", heading: /Security/ },
+  { path: "/legal/legal-information", heading: /Company Information/ },
+  { path: "/login", heading: /Sign in to VANIKARA/ },
 ];
 
 test.describe("VANIKARA website", () => {
@@ -60,15 +69,30 @@ test.describe("VANIKARA website", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(/doesn't exist/);
   });
 
-  test("theme toggle switches and persists across reloads", async ({ page }) => {
+  test("theme picker switches theme and remembers the choice", async ({ page }) => {
     await prepare(page);
-    await page.emulateMedia({ colorScheme: "light" });
+    await page.addInitScript(() => localStorage.setItem("vanikara-theme", "light"));
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.getByRole("button", { name: "Switch to dark theme" }).click();
+    await page.getByRole("button", { name: /^Theme:/ }).click();
+    await page.getByRole("menuitemradio", { name: /Dark/ }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await page.reload();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    expect(await page.evaluate(() => localStorage.getItem("vanikara-theme"))).toBe("dark");
+  });
+
+  test("footer links every policy Razorpay and Indian law expect", async ({ page }) => {
+    await prepare(page);
+    await page.goto("/");
+    const footer = page.getByRole("contentinfo");
+    for (const name of ["Terms & Conditions", "Privacy Policy", "Refund & Cancellation", "Shipping & Delivery", "Pricing", "Contact"]) {
+      await expect(footer.getByRole("link", { name, exact: false }).first()).toBeVisible();
+    }
+  });
+
+  test("contact page shows the grievance officer", async ({ page }) => {
+    await prepare(page);
+    await page.goto("/contact");
+    await expect(page.getByText("Grievance Officer", { exact: true })).toBeVisible();
   });
 
   test("custom cookie choices are recorded", async ({ page }) => {

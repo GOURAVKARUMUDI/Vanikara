@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { COMPANY_IDENTITY } from "@/data/company";
+import { GRIEVANCE_OFFICER } from "@/data/legal";
 import { BrandSymbol } from "@/components/brand/BrandMark";
 
 const CHANNELS = [
@@ -49,7 +51,36 @@ export default function ContactInfo() {
             <dt className="text-[0.8125rem] text-fg-subtle">CIN</dt>
             <dd className="mt-1 tabular-nums text-fg">{COMPANY_IDENTITY.cin}</dd>
           </div>
+          <div>
+            <dt className="text-[0.8125rem] text-fg-subtle">Support hours</dt>
+            <dd className="mt-1 text-fg">{GRIEVANCE_OFFICER.hours}</dd>
+          </div>
         </dl>
+      </div>
+
+      <div className="surface rounded-feature p-6">
+        <p className="text-sm font-semibold text-fg">Grievance Officer</p>
+        <p className="mt-2 text-[0.9375rem] text-fg">
+          {GRIEVANCE_OFFICER.name}, {GRIEVANCE_OFFICER.designation}
+        </p>
+        <a
+          href={`mailto:${GRIEVANCE_OFFICER.email}?subject=Grievance`}
+          className="link-underline mt-1 inline-block text-[0.9375rem] font-semibold text-intel"
+        >
+          {GRIEVANCE_OFFICER.email}
+        </a>
+        <p className="mt-3 text-[0.8125rem] leading-relaxed text-fg-muted">
+          Complaints are acknowledged within {GRIEVANCE_OFFICER.acknowledgeWithin} and resolved within{" "}
+          {GRIEVANCE_OFFICER.resolveWithin}. See our{" "}
+          <Link href="/legal/refund" className="font-semibold text-intel">
+            refund policy
+          </Link>{" "}
+          and{" "}
+          <Link href="/legal/terms" className="font-semibold text-intel">
+            terms
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

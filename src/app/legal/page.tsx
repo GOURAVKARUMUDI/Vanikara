@@ -3,45 +3,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { COMPANY_IDENTITY } from "@/data/company";
+import { GRIEVANCE_OFFICER, LEGAL_DOCUMENTS, LEGAL_EFFECTIVE_DATE } from "@/data/legal";
 
 export const metadata: Metadata = {
   title: "Legal",
   description:
-    "Statutory corporate details, legal documentation, privacy policies, terms, and compliance disclosures for VANIKARA Intelligence Private Limited.",
+    "Terms, privacy, refund, delivery and cookie policies, pricing and company information for VANIKARA Intelligence Private Limited.",
+  alternates: { canonical: "/legal" },
 };
-
-const LEGAL_DOCUMENTS = [
-  {
-    title: "Privacy Policy",
-    href: "/legal/privacy",
-    desc: "How we collect, safeguard, and process user information across our applications and platforms."
-  },
-  {
-    title: "Terms & Conditions",
-    href: "/legal/terms",
-    desc: "The legal terms, service conditions, and acceptable use guidelines governing all VANIKARA products."
-  },
-  {
-    title: "Cookie Policy",
-    href: "/legal/cookies",
-    desc: "Explanation of session cookies, local storage tokens, and performance telemetry mechanisms."
-  },
-  {
-    title: "Refund Policy",
-    href: "/legal/refund",
-    desc: "Guidelines regarding order cancellations, platform billing, merchant payouts, and dispute resolutions."
-  },
-  {
-    title: "Security & Responsible Disclosure",
-    href: "/legal/security",
-    desc: "Our vulnerability disclosure program, reporting protocols, and platform security standards."
-  },
-  {
-    title: "Statutory & Corporate Registry Information",
-    href: "/legal/legal-information",
-    desc: "Official incorporation registry, CIN, registered office location, and statutory filing details."
-  }
-];
 
 export default function LegalHubPage() {
   return (
@@ -104,7 +73,11 @@ export default function LegalHubPage() {
             </div>
           </dl>
           <p className="mt-8 border-t border-line pt-6 text-sm text-fg-subtle">
-            Policies are published for transparency and are reviewed as the company and its products develop.
+            All policies effective {LEGAL_EFFECTIVE_DATE}. Grievance Officer: {GRIEVANCE_OFFICER.name},{" "}
+            <a href={`mailto:${GRIEVANCE_OFFICER.email}?subject=Grievance`} className="font-semibold text-intel">
+              {GRIEVANCE_OFFICER.email}
+            </a>
+            .
           </p>
         </div>
       </section>

@@ -94,3 +94,4 @@ android/key.properties
 # ─── Native builds ───────────────────────────────────────────
 *.apk
 *.aab
+.env*

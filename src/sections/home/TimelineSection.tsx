@@ -21,7 +21,13 @@ export default function TimelineSection({ showHeader = true }: { showHeader?: bo
 
         <ol className={`relative grid gap-0 md:grid-cols-4 md:gap-6 ${showHeader ? "mt-14" : ""}`}>
           {/* Connecting line (desktop) */}
-          <span aria-hidden="true" className="absolute left-0 right-0 top-[7px] hidden h-px bg-line-strong md:block" />
+          <span aria-hidden="true" data-reveal="draw" className="absolute left-0 right-0 top-[7px] hidden h-px bg-line-strong md:block" />
+          <span
+            aria-hidden="true"
+            data-reveal="draw"
+            className="absolute left-0 right-0 top-[7px] hidden h-px md:block"
+            style={{ background: "var(--gradient-signature)", opacity: 0.7, ["--reveal-delay" as string]: "200ms" }}
+          />
           {COMPANY_TIMELINE.map((item, i) => (
             <li
               key={item.title}
@@ -33,7 +39,7 @@ export default function TimelineSection({ showHeader = true }: { showHeader?: bo
                 aria-hidden="true"
                 className={`absolute -left-[7.5px] top-0 grid h-[15px] w-[15px] place-items-center rounded-full border md:left-0 ${
                   item.isTarget
-                    ? "border-dashed border-brand-orange bg-surface"
+                    ? "node-pulse border-dashed border-brand-orange bg-surface"
                     : "border-brand-blue bg-surface"
                 }`}
               >

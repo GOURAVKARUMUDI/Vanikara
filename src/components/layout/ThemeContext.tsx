@@ -1,24 +1,31 @@
 "use client";
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { DAYPART_BOOT_JS, daypartForTime, msUntilNextBoundary, themeForTime, type Daypart } from "@/lib/daypart";
 
 export type ThemeMode = "light" | "dark" | "auto";
 type ResolvedTheme = "light" | "dark";
 
+/** Screen point the theme-switch reveal grows from. */
+export type RevealOrigin = { x: number; y: number };
+
 interface ThemeContextType {
   theme: ThemeMode;
   resolvedTheme: ResolvedTheme;
-  setTheme: (theme: ThemeMode) => void;
+  daypart: Daypart;
+  /** Pass an origin to switch with a circular reveal from that point. */
+  setTheme: (theme: ThemeMode, origin?: RevealOrigin) => void;
 }
 
 export const THEME_STORAGE_KEY = "vanikara-theme";
 
 /**
  * Runs in <head> before first paint so the correct theme is applied
- * immediately (no light/dark flash). Also marks JS as available for
- * progressive-enhancement styles and records the first-visit intro.
+ * immediately (no light/dark flash). "auto" follows local time (see
+ * lib/daypart). Also marks JS as available, flags Chromium for the
+ * liquid-glass refraction filter, and records the first-visit intro.
  */
-export const THEME_BOOT_SCRIPT = `(function(){var r=document.documentElement;r.classList.add('js');try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||((!t||t==='auto')&&window.matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-theme',d?'dark':'light');if(sessionStorage.getItem('vk-intro')){r.classList.add('intro-seen')}else{sessionStorage.setItem('vk-intro','1');r.classList.add('intro-first');setTimeout(function(){r.classList.remove('intro-first')},1200)}}catch(e){r.setAttribute('data-theme','light')}})();`;
+export const THEME_BOOT_SCRIPT = `(function(){var r=document.documentElement;r.classList.add('js');try{var b=navigator.userAgentData&&navigator.userAgentData.brands;if(b&&b.some(function(x){return x.brand==='Chromium'}))r.classList.add('lg-refract')}catch(e){}try{${DAYPART_BOOT_JS}var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||(t!=='light'&&autoDark);r.setAttribute('data-theme',d?'dark':'light');if(sessionStorage.getItem('vk-intro')){r.classList.add('intro-seen')}else{sessionStorage.setItem('vk-intro','1');r.classList.add('intro-first');setTimeout(function(){r.classList.remove('intro-first')},1200)}}catch(e){r.setAttribute('data-theme','light')}})();`;
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -33,8 +40,35 @@ function readStoredTheme(): ThemeMode {
 }
 
 function resolve(theme: ThemeMode): ResolvedTheme {
-  if (theme !== "auto") return theme;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return theme === "auto" ? themeForTime() : theme;
+}
+
+type StartViewTransition = (cb: () => void) => { finished: Promise<void> };
+
+/**
+ * Applies a DOM change inside a View Transition when the browser supports
+ * it: a circular reveal from `origin`, or a soft cross-fade without one.
+ */
+function withTransition(apply: () => void, origin?: RevealOrigin) {
+  const root = document.documentElement;
+  const start = (document as Document & { startViewTransition?: StartViewTransition }).startViewTransition;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!start || reduced || document.visibilityState !== "visible") {
+    apply();
+    return;
+  }
+  if (origin) {
+    const radius = Math.hypot(Math.max(origin.x, window.innerWidth - origin.x), Math.max(origin.y, window.innerHeight - origin.y));
+    root.style.setProperty("--vt-x", `${origin.x}px`);
+    root.style.setProperty("--vt-y", `${origin.y}px`);
+    root.style.setProperty("--vt-r", `${radius}px`);
+    root.classList.add("theme-transition");
+  } else {
+    root.classList.add("theme-fade");
+  }
+  start
+    .call(document, apply)
+    .finished.finally(() => root.classList.remove("theme-transition", "theme-fade"));
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -43,39 +77,69 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // below never overwrites the boot script's value with a default.
   const [theme, setThemeState] = useState<ThemeMode | null>(null);
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
+  const [daypart, setDaypart] = useState<Daypart>("day");
 
   useEffect(() => {
     setThemeState(readStoredTheme());
   }, []);
 
+  // Keep theme and daypart in step with the clock. Re-checks at the next
+  // boundary, and whenever the tab becomes visible again (timers are
+  // throttled in background tabs, and laptops sleep).
   useEffect(() => {
     if (theme === null) return;
-    const next = resolve(theme);
-    setResolvedTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
+    const root = document.documentElement;
+    let timer = 0;
 
-    if (theme !== "auto") return;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => {
-      const value = media.matches ? "dark" : "light";
-      setResolvedTheme(value);
-      document.documentElement.setAttribute("data-theme", value);
+    const sync = (animate: boolean) => {
+      const nextTheme = resolve(theme);
+      const nextPart = daypartForTime();
+      const update = () => {
+        setResolvedTheme(nextTheme);
+        setDaypart(nextPart);
+      };
+      // Everything visual keys off the <html> attributes, so only those need
+      // to change inside the transition; React state follows normally.
+      const apply = () => {
+        root.setAttribute("data-theme", nextTheme);
+        root.setAttribute("data-daypart", nextPart);
+      };
+      if (animate && root.getAttribute("data-theme") !== nextTheme) withTransition(apply);
+      else apply();
+      update();
+
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => sync(true), msUntilNextBoundary());
     };
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
+
+    sync(false);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") sync(true);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [theme]);
 
-  const setTheme = useCallback((next: ThemeMode) => {
-    setThemeState(next);
+  const setTheme = useCallback((next: ThemeMode, origin?: RevealOrigin) => {
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
       // Non-persistent session is acceptable
     }
+    const nextResolved = resolve(next);
+    const root = document.documentElement;
+    const apply = () => root.setAttribute("data-theme", nextResolved);
+    if (root.getAttribute("data-theme") === nextResolved) apply();
+    else withTransition(apply, origin);
+    setThemeState(next);
+    setResolvedTheme(nextResolved);
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme: theme ?? "auto", resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme: theme ?? "auto", resolvedTheme, daypart, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

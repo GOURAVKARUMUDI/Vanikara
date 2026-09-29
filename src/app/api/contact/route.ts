@@ -3,9 +3,9 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { supabaseService } from "@/utils/supabase/service";
-import { sanitize, apiResponse, logError, isBot, escapeHtml } from "@/lib/security";
+import { sanitize, apiResponse, logError, isBot, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
-import { isRateLimited } from "@/lib/rateLimit";
+import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -21,14 +21,22 @@ const contactSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    const rateLimit = await isRateLimited(ip);
-    
-    if (rateLimit.limited) {
-      return NextResponse.json(apiResponse(false, null, "Too many requests. Please try again later."), { status: 429 });
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+    if (Number(req.headers.get("content-length") ?? 0) > 32 * 1024) {
+      return NextResponse.json(apiResponse(false, null, "Message too large."), { status: 413 });
     }
 
-    const body = await req.json();
+    const rateLimit = await isRateLimited(clientIp(req), "contact");
+    if (rateLimit.limited) {
+      return NextResponse.json(apiResponse(false, null, "Too many messages. Please try again later."), {
+        status: 429,
+        headers: retryAfterHeaders(rateLimit.reset),
+      });
+    }
+
+    const body = await req.json().catch(() => null);
     const validation = contactSchema.safeParse(body);
 
     if (!validation.success) {

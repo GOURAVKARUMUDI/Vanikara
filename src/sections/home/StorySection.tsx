@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Eyebrow from "@/components/ui/Eyebrow";
+import RevealText from "@/components/motion/RevealText";
 import { COMPANY_IDENTITY, COMPANY_STORY } from "@/data/company";
 
-const STATEMENT_LINES = ["We build what", "we believe", "should exist."];
+const STATEMENT = "We build what\nwe believe\nshould exist.";
 
 export default function StorySection() {
   return (
@@ -12,16 +13,7 @@ export default function StorySection() {
         <div className="lg:col-span-7">
           <Eyebrow>The company</Eyebrow>
           <h2 id="story-title" className="text-headline mt-5 text-fg">
-            {STATEMENT_LINES.map((line, i) => (
-              <span
-                key={line}
-                data-reveal
-                className="block"
-                style={{ ["--reveal-delay" as string]: `${i * 110}ms` }}
-              >
-                {line}
-              </span>
-            ))}
+            <RevealText>{STATEMENT}</RevealText>
           </h2>
         </div>
 

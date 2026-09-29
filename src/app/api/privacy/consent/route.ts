@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { supabaseService } from "@/utils/supabase/service";
-import { isRateLimited } from "@/lib/rateLimit";
+import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
+import { isTrustedOrigin } from "@/lib/security";
 import { z } from "zod";
 
 const STATIC_PATH = path.join(process.cwd(), "data/privacy_config.json");
@@ -85,15 +86,18 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     // Rate limiting
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
-    const limitCheck = await isRateLimited(ip);
+    const limitCheck = await isRateLimited(clientIp(req), "consent");
     if (limitCheck.limited) {
-      return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
+      return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429, headers: retryAfterHeaders(limitCheck.reset) });
     }
 
     // Input validation
-    const body = await req.json();
+    const body = await req.json().catch(() => null);
     const validation = consentSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 });

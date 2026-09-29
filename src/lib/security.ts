@@ -59,7 +59,13 @@ export const logError = (
   const entry: Record<string, any> = {
     timestamp: new Date().toISOString(),
     context,
-    message: error instanceof Error ? error.message : String(error),
+    // Supabase/PostgREST errors are plain objects: keep their message and code
+    message:
+      error instanceof Error
+        ? error.message
+        : typeof error === "object" && error !== null
+          ? [error.code, error.message ?? JSON.stringify(error), error.details].filter(Boolean).join(" — ")
+          : String(error),
   };
 
   if (error instanceof Error && error.stack) {

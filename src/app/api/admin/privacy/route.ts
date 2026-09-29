@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import { isAdmin } from "@/lib/isAdmin";
+import { getAdminSession } from "@/lib/adminAuth";
 import { supabaseService } from "@/utils/supabase/service";
 import { logAdminAction } from "@/lib/auditLogger";
 import { isTrustedOrigin } from "@/lib/security";
@@ -62,12 +60,8 @@ export async function GET() {
   try {
     const config = await getConfig();
 
-    // Verify if the caller is an authenticated super admin
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
-
-    const isUserAdmin = user && isAdmin(user);
+    // Verify if the caller is a signed-in admin
+    const isUserAdmin = Boolean(await getAdminSession());
 
     if (isUserAdmin) {
       // Admins get the complete configuration including statistics
@@ -94,12 +88,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
 
-    // Enforce super admin authentication for updates
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    // Enforce admin authentication for updates
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -134,7 +126,7 @@ export async function POST(req: Request) {
       } catch {}
     }
 
-    await logAdminAction(user.email || user.id, "UPDATE_PRIVACY_POLICY", "1", { previousState: config, newState: { currentVersion, policyText, optionalServices } });
+    await logAdminAction(admin.u, "UPDATE_PRIVACY_POLICY", "1", { previousState: config, newState: { currentVersion, policyText, optionalServices } });
 
     return NextResponse.json({ success: true, data: config });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

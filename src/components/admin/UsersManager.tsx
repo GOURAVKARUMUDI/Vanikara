@@ -1,24 +1,45 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Search, RefreshCw } from "lucide-react";
+import { Ban, CheckCircle2, RefreshCw, Search, Users } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 
+interface SiteUser {
+  id: string;
+  email: string;
+  name: string | null;
+  avatar_url: string | null;
+  provider: string;
+  blocked: boolean;
+  created_at: string;
+  last_sign_in_at: string | null;
+}
+
+const formatDate = (value: string | null) =>
+  value ? new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—";
+
+/**
+ * People who signed in on the website with Google. Accounts give visitors
+ * no extra access, so the only admin action is blocking an account (it can
+ * no longer sign in). Admin access is never granted from here.
+ */
 export default function UsersManager() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<SiteUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/admin/users");
+      setError("");
+      const res = await fetch("/api/admin/users", { cache: "no-store" });
       const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.error || "Failed to load users");
       setUsers(json.data || []);
-    } catch (err) {
-      console.error("Failed to fetch users:", err);
+    } catch {
+      setError("Couldn't load users. Check the database connection in Settings.");
       setUsers([]);
     } finally {
       setLoading(false);
@@ -29,115 +50,125 @@ export default function UsersManager() {
     fetchUsers();
   }, []);
 
-  const handleRoleChange = async (id: string, newRole: string) => {
+  const setBlocked = async (user: SiteUser, blocked: boolean) => {
+    if (blocked && !confirm(`Block ${user.email}? They won't be able to sign in until unblocked.`)) return;
     try {
-      setUpdatingId(id);
+      setUpdatingId(user.id);
       const res = await fetch("/api/admin/users", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, role: newRole })
+        body: JSON.stringify({ id: user.id, blocked }),
       });
-      if (res.ok) {
-        fetchUsers();
-      }
-    } catch (err) {
-      console.error("Failed to change user role:", err);
+      if (res.ok) setUsers((list) => list.map((u) => (u.id === user.id ? { ...u, blocked } : u)));
     } finally {
       setUpdatingId(null);
     }
   };
 
-  const filteredUsers = users.filter((u) =>
-    u.email?.toLowerCase().includes(search.toLowerCase())
+  const query = search.trim().toLowerCase();
+  const filtered = users.filter(
+    (u) => !query || u.email?.toLowerCase().includes(query) || u.name?.toLowerCase().includes(query)
   );
+  const activeCount = users.filter((u) => !u.blocked).length;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-xl font-display font-black text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
-            <Users className="w-5 h-5 text-[var(--accent-color)]" />
-            Registered Portal Users
+          <h2 className="flex items-center gap-2 text-xl font-bold text-fg">
+            <Users aria-hidden="true" className="h-5 w-5 text-intel" />
+            Website accounts
           </h2>
-          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase mt-0.5">
-            Audit user profiles, modify roles, and verify registry timestamps.
+          <p className="mt-1 text-sm text-fg-muted">
+            {users.length} signed up with Google · {activeCount} active. Accounts don&apos;t grant any admin access.
           </p>
         </div>
 
-        {/* Search bar */}
-        <div className="relative w-full sm:w-72">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search email address..."
-            className="w-full pl-10 pr-4 py-2.5 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-color)] font-medium"
-          />
-          <Search className="w-4 h-4 text-fg-subtle absolute left-3.5 top-3" />
+        <div className="flex w-full items-center gap-2 sm:w-auto">
+          <div className="relative flex-1 sm:w-72">
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search name or email…"
+              aria-label="Search users"
+              className="h-10 w-full rounded-compact border border-line-strong bg-surface-raised/80 pl-10 pr-4 text-sm text-fg focus:border-intel focus:outline-none focus:ring-4 focus:ring-intel/15"
+            />
+          </div>
+          <button type="button" onClick={fetchUsers} aria-label="Refresh" className="btn btn-secondary btn-md shrink-0 !px-3">
+            <RefreshCw aria-hidden="true" className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          </button>
         </div>
       </div>
 
-      <Card hover>
-        <CardBody className="p-0 overflow-x-auto">
+      <Card hover={false}>
+        <CardBody className="overflow-x-auto !p-0">
           {loading ? (
-            <div className="p-12 text-center text-xs text-fg-subtle flex justify-center items-center gap-2">
-              <RefreshCw className="w-4 h-4 animate-spin text-[var(--accent-color)]" /> Fetching registry database...
+            <div className="flex items-center justify-center gap-2 p-12 text-sm text-fg-subtle">
+              <RefreshCw aria-hidden="true" className="h-4 w-4 animate-spin text-intel" /> Loading accounts…
             </div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="p-12 text-center text-xs text-fg-subtle">
-              No matching user profiles found.
+          ) : error ? (
+            <div className="p-12 text-center text-sm text-fg-muted">{error}</div>
+          ) : filtered.length === 0 ? (
+            <div className="p-12 text-center text-sm text-fg-subtle">
+              {users.length === 0 ? "No one has signed up yet." : "No matching accounts."}
             </div>
           ) : (
-            <table className="w-full text-left font-sans text-xs">
-              <thead className="bg-surface-sunken text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-widest border-b border-[var(--glass-border)] select-none">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="border-b border-line bg-surface-sunken/60 text-xs font-semibold text-fg-muted">
                 <tr>
-                  <th className="px-6 py-4">User Details</th>
-                  <th className="px-6 py-4">Current Role</th>
-                  <th className="px-6 py-4">Registry Date</th>
-                  <th className="px-6 py-4">Actions</th>
+                  <th className="px-5 py-3">Person</th>
+                  <th className="px-5 py-3">Joined</th>
+                  <th className="px-5 py-3">Last sign-in</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--glass-border)] text-[var(--text-secondary)]">
-                {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-surface-sunken transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-[var(--text-primary)]">{u.email?.split("@")[0]}</div>
-                      <div className="text-[10px] font-medium text-fg-subtle mt-0.5">{u.email}</div>
+              <tbody className="divide-y divide-[var(--border-subtle)]">
+                {filtered.map((u) => (
+                  <tr key={u.id} className="transition-colors hover:bg-surface-sunken/50">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-3">
+                        {u.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={u.avatar_url} alt="" referrerPolicy="no-referrer" className="h-8 w-8 rounded-full" />
+                        ) : (
+                          <span className="grid h-8 w-8 place-items-center rounded-full bg-action text-xs font-bold uppercase text-white">
+                            {(u.name || u.email)[0]}
+                          </span>
+                        )}
+                        <div className="min-w-0">
+                          <div className="truncate font-semibold text-fg">{u.name || u.email.split("@")[0]}</div>
+                          <div className="truncate text-xs text-fg-muted">{u.email}</div>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${
-                        u.role === "admin"
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : u.role === "premium" || u.role === "pro"
-                          ? "bg-brand-blue/10 text-intel border-brand-blue/20"
-                          : "bg-brand-blue/10 text-intel border-brand-blue/20"
-                      }`}>
-                        {u.role || "user"}
+                    <td className="px-5 py-3 text-xs text-fg-muted">{formatDate(u.created_at)}</td>
+                    <td className="px-5 py-3 text-xs text-fg-muted">{formatDate(u.last_sign_in_at)}</td>
+                    <td className="px-5 py-3">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                          u.blocked ? "bg-brand-red/10 text-brand-red dark:text-ambition" : "bg-intel/10 text-intel"
+                        }`}
+                      >
+                        {u.blocked ? "Blocked" : "Active"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-semibold text-[10px]">
-                      {new Date(u.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        {u.role !== "admin" ? (
-                          <button
-                            onClick={() => handleRoleChange(u.id, "admin")}
-                            disabled={updatingId === u.id}
-                            className="px-2.5 py-1 bg-surface-sunken hover:bg-red-500/15 border border-[var(--glass-border)] hover:border-red-500/20 text-[9px] font-black uppercase rounded-lg transition-all text-red-400 cursor-pointer disabled:opacity-50"
-                          >
-                            Make Admin
-                          </button>
+                    <td className="px-5 py-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => setBlocked(u, !u.blocked)}
+                        disabled={updatingId === u.id}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg disabled:opacity-50"
+                      >
+                        {u.blocked ? (
+                          <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
                         ) : (
-                          <button
-                            onClick={() => handleRoleChange(u.id, "user")}
-                            disabled={updatingId === u.id}
-                            className="px-2.5 py-1 bg-surface-sunken hover:bg-brand-blue/15 border border-[var(--glass-border)] hover:border-brand-blue/20 text-[9px] font-black uppercase rounded-lg transition-all text-intel cursor-pointer disabled:opacity-50"
-                          >
-                            Remove Admin
-                          </button>
+                          <Ban aria-hidden="true" className="h-3.5 w-3.5" />
                         )}
-                      </div>
+                        {u.blocked ? "Unblock" : "Block"}
+                      </button>
                     </td>
                   </tr>
                 ))}

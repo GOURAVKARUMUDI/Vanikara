@@ -1,4 +1,5 @@
 import HeroSection from "@/sections/home/HeroSection";
+import MarqueeSection from "@/sections/home/MarqueeSection";
 import StorySection from "@/sections/home/StorySection";
 import ProductsSection from "@/sections/home/ProductsSection";
 import CygmaSection from "@/sections/home/CygmaSection";
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <MarqueeSection />
       <StorySection />
       <ProductsSection />
       <CygmaSection />

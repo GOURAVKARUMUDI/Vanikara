@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { INITIATIVES } from "@/data/company";
+import RevealText from "@/components/motion/RevealText";
+
+// Signal network: points of an abstract intelligence graph (viewBox 400×300)
+const NODES: [number, number][] = [
+  [40, 60], [130, 30], [220, 80], [320, 40], [370, 130], [280, 170], [170, 150], [70, 190], [150, 250], [260, 260], [350, 230],
+];
+const LINKS: [number, number][] = [
+  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 2], [2, 6], [6, 7], [7, 0], [6, 8], [8, 9], [9, 5], [9, 10], [10, 4], [6, 5],
+];
 
 /**
  * CYGMA — an atmospheric, always-dark band so the section reads as a
@@ -14,7 +23,7 @@ export default function CygmaSection() {
       <div className="container-page">
         <div
           data-reveal="settle"
-          className="relative isolate overflow-hidden rounded-panel border border-white/10 bg-navy px-6 py-16 text-white shadow-float sm:px-12 sm:py-20 lg:px-16 lg:py-24 dark:bg-surface-raised"
+          className="beam-border relative isolate overflow-hidden rounded-panel border border-white/10 bg-navy px-6 py-16 text-white shadow-float sm:px-12 sm:py-20 lg:px-16 lg:py-24 dark:bg-surface-raised"
         >
           {/* Cool light field */}
           <div
@@ -37,14 +46,50 @@ export default function CygmaSection() {
             }}
           />
 
+          {/* Scan line sweeping the grid */}
+          <div aria-hidden="true" className="scanline -z-10" />
+
+          {/* Signal network */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 400 300"
+            className="pointer-events-none absolute -right-10 -top-6 -z-10 hidden w-[55%] max-w-[640px] opacity-60 lg:block"
+            fill="none"
+          >
+            {LINKS.map(([a, b]) => (
+              <line
+                key={`${a}-${b}`}
+                className="signal-link"
+                x1={NODES[a][0]}
+                y1={NODES[a][1]}
+                x2={NODES[b][0]}
+                y2={NODES[b][1]}
+                stroke="var(--vanikara-cyan)"
+                strokeOpacity="0.28"
+                strokeWidth="0.75"
+              />
+            ))}
+            {NODES.map(([x, y], i) => (
+              <circle
+                key={`${x}-${y}`}
+                className="signal-node"
+                cx={x}
+                cy={y}
+                r={i % 3 === 0 ? 2.6 : 1.8}
+                fill={i % 4 === 0 ? "var(--vanikara-gold)" : "var(--vanikara-cyan)"}
+                style={{ ["--d" as string]: `${(i * 0.37).toFixed(2)}s` }}
+              />
+            ))}
+          </svg>
+
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
             <div className="lg:col-span-6">
               <p className="inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-white/70">
-                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-cyan shadow-[0_0_0_4px_rgba(0,207,255,0.18)]" />
+                <span aria-hidden="true" className="live-dot !h-1.5 !w-1.5" style={{ ["--live-color" as string]: "var(--vanikara-cyan)" }} />
                 {cygma.index} · {cygma.status}
               </p>
               <h2 id="cygma-title" className="text-headline mt-5">
-                {cygma.title}
+                <RevealText>{cygma.title}</RevealText>
               </h2>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">{cygma.summary}</p>
 

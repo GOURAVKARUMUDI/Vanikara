@@ -10,6 +10,8 @@ interface BaseProps {
   size?: Size;
   /** Adds a trailing arrow that nudges forward on hover. */
   arrow?: boolean;
+  /** Pulls gently toward the pointer. Defaults to on for large buttons. */
+  magnetic?: boolean;
   className?: string;
   children: React.ReactNode;
 }
@@ -50,6 +52,7 @@ const SIZE: Record<Size, string> = {
  */
 export default function Button(props: ButtonProps) {
   const { variant = "primary", size = "md", arrow = false, className = "", children } = props;
+  const magnetic = (props.magnetic ?? size === "lg") || undefined;
   const classes = `btn group ${VARIANT[variant]} ${SIZE[size]} ${className}`.trim();
 
   const content = (
@@ -64,21 +67,21 @@ export default function Button(props: ButtonProps) {
     const isInternal = href.startsWith("/") || href.startsWith("#");
     if (isInternal) {
       return (
-        <Link href={href} onClick={onClick} className={classes} aria-label={props["aria-label"]}>
+        <Link href={href} onClick={onClick} className={classes} aria-label={props["aria-label"]} data-magnetic={magnetic}>
           {content}
         </Link>
       );
     }
     return (
-      <a href={href} onClick={onClick} target={target} rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)} className={classes} aria-label={props["aria-label"]}>
+      <a href={href} onClick={onClick} target={target} rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)} className={classes} aria-label={props["aria-label"]} data-magnetic={magnetic}>
         {content}
       </a>
     );
   }
 
-  const { variant: _v, size: _s, arrow: _a, className: _c, children: _ch, type = "button", ...rest } = props;
+  const { variant: _v, size: _s, arrow: _a, magnetic: _m, className: _c, children: _ch, type = "button", ...rest } = props;
   return (
-    <button type={type} className={classes} {...rest}>
+    <button type={type} className={classes} data-magnetic={magnetic} {...rest}>
       {content}
     </button>
   );

@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import { isAdmin } from "@/lib/isAdmin";
+import { getAdminSession } from "@/lib/adminAuth";
 import nodemailer from "nodemailer";
 import { logError } from "@/lib/security";
 
@@ -15,21 +13,11 @@ const CACHE_TTL_MS = 60000; // Cache health status checks for 60 seconds
 
 export async function GET() {
   const now = Date.now();
-  
-  // 1. Resolve User and Admin status
-  let isUserAdmin = false;
-  try {
-    const cookieStore = await cookies();
-    const sb = createClient(cookieStore);
-    const { data: { user } } = await sb.auth.getUser();
-    if (user && isAdmin(user)) {
-      isUserAdmin = true;
-    }
-  } catch (_authErr) {
-    // Fail silent, treat as anonymous
-  }
 
-  // If request is anonymous or regular user, return a simple health status immediately
+  // Anyone gets a simple liveness answer; only a signed-in admin gets
+  // service details (which would otherwise reveal internal configuration).
+  const isUserAdmin = Boolean(await getAdminSession().catch(() => null));
+
   if (!isUserAdmin) {
     return NextResponse.json({
       status: "healthy",
@@ -37,7 +25,7 @@ export async function GET() {
     });
   }
 
-  // 2. Perform detailed checks for Admin
+  // Detailed checks for admins
   if (cachedStatus && now - lastCheckTime < CACHE_TTL_MS) {
     return NextResponse.json(
       {
@@ -107,4 +95,3 @@ export async function GET() {
 
   return NextResponse.json(status, { status: hasError ? 500 : 200 });
 }
-

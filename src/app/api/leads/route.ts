@@ -2,20 +2,16 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
-import { isAdmin } from "@/lib/isAdmin";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { getAdminSession } from "@/lib/adminAuth";
 import { sanitize, apiResponse, logError, isTrustedOrigin } from "@/lib/security";
 import { submitToGoogleForm } from "@/lib/googleForms";
-import { isRateLimited } from "@/lib/rateLimit";
+import { z } from "zod";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -33,23 +29,39 @@ export async function GET() {
   }
 }
 
+const createLeadSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(254),
+  message: z.string().max(5000).optional(),
+  source: z
+    .string()
+    .regex(/^[a-z_]{1,40}$/)
+    .optional(),
+});
+
+/**
+ * Manual lead entry — admins only. Public enquiries arrive through
+ * /api/contact (rate limited, validated, honeypot-protected); this route
+ * used to be open to anyone and was not used by the site.
+ */
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    const rateLimit = await isRateLimited(ip);
-    if (rateLimit.limited) {
-      return NextResponse.json(apiResponse(false, null, "Too many requests. Please try again later."), { status: 429 });
+    if (!isTrustedOrigin(req)) {
+      return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+    const admin = await getAdminSession();
+    if (!admin) {
+      return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
-    const body = await req.json();
-    const { name, email, message, source } = body;
-
-    if (!name || !email) {
-      return NextResponse.json(apiResponse(false, null, "Missing required fields"), { status: 400 });
+    const parsed = createLeadSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(apiResponse(false, null, "Invalid lead details"), { status: 400 });
     }
+    const { name, email, message, source } = parsed.data;
 
     const sName = sanitize(name).slice(0, 100);
-    const sEmail = email.trim().toLowerCase();
+    const sEmail = email.toLowerCase();
     const sMsg = sanitize(message || '').slice(0, 5000);
 
     const { data, error } = await supabaseService
@@ -93,11 +105,9 @@ export async function PATCH(req: Request) {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
     }
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -144,11 +154,9 @@ export async function DELETE(req: Request) {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
     }
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 

@@ -2,19 +2,15 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
-import { isAdmin } from "@/lib/isAdmin";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { getAdminSession } from "@/lib/adminAuth";
 import { sanitize, apiResponse, logError, isTrustedOrigin } from "@/lib/security";
 import { logAdminAction } from "@/lib/auditLogger";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -43,11 +39,9 @@ export async function PATCH(req: Request) {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
     }
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -67,7 +61,7 @@ export async function PATCH(req: Request) {
       .single();
 
     if (error) throw error;
-    await logAdminAction(user.email || user.id, "UPDATE_CLIENT", id, { previousState, newState: data });
+    await logAdminAction(admin.u, "UPDATE_CLIENT", id, { previousState, newState: data });
     return NextResponse.json(apiResponse(true, data));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -81,11 +75,9 @@ export async function DELETE(req: Request) {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
     }
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = await getAdminSession();
 
-    if (!user || !isAdmin(user)) {
+    if (!admin) {
       return NextResponse.json(apiResponse(false, null, "Unauthorized"), { status: 401 });
     }
 
@@ -100,7 +92,7 @@ export async function DELETE(req: Request) {
       .eq("id", id);
 
     if (error) throw error;
-    await logAdminAction(user.email || user.id, "DELETE_CLIENT", id, { previousState });
+    await logAdminAction(admin.u, "DELETE_CLIENT", id, { previousState });
     return NextResponse.json(apiResponse(true, { success: true }));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

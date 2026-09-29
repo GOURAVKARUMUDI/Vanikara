@@ -43,6 +43,8 @@ const nextConfig = {
     root: process.cwd(),
   },
   productionBrowserSourceMaps: false,
+  // Don't advertise the framework in every response
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -166,12 +168,12 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline'${devScriptSrc} https://*.supabase.co https://va.vercel-scripts.com https://js.stripe.com;
+              script-src 'self' 'unsafe-inline'${devScriptSrc} https://*.supabase.co https://va.vercel-scripts.com https://js.stripe.com https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
               img-src 'self' data: https:;
               font-src 'self' https://fonts.gstatic.com;
-              connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.razorpay.com https://vitals.vercel-insights.com https://api.stripe.com;
-              frame-src 'self' https://www.google.com https://js.stripe.com;
+              connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.razorpay.com https://vitals.vercel-insights.com https://api.stripe.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com;
+              frame-src 'self' https://www.google.com https://js.stripe.com https://accounts.google.com https://*.firebaseapp.com;
               object-src 'none';
               base-uri 'self';
               form-action 'self';
@@ -183,8 +185,28 @@ const nextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
-          { key: 'X-XSS-Protection', value: '1; mode=block' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=()' }
+          // The legacy XSS auditor can itself be abused; modern guidance is to disable it and rely on CSP
+          { key: 'X-XSS-Protection', value: '0' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=(), payment=(self), usb=(), interest-cohort=()' },
+          // Isolates the site from windows it opens / that open it (tab-nabbing, XS-leaks)
+          // (allow-popups keeps payment provider pop-ups working)
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+          { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
+        ]
+      },
+      {
+        // Admin surfaces: never cached by browsers or CDNs, never indexed
+        source: '/(admin|login)(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ]
+      },
+      {
+        source: '/api/(admin|auth|leads|clients)(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
         ]
       }
     ];

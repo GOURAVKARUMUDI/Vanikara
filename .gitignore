@@ -95,3 +95,4 @@ android/key.properties
 *.apk
 *.aab
 .env*
+!.env.example

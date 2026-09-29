@@ -1,17 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import Button from "@/components/ui/Button";
-
-const easeOutExpo = [0.16, 1, 0.3, 1] as const;
-const easeOutQuart = [0.25, 1, 0.5, 1] as const;
-
-import HeroScene from "@/components/hero/HeroScene";
-import { HeroContainer } from "@/components/ui/Containers";
-
 
 // Particles mapping coordinates (Converge to circular ring of radius 24px and inner V shape)
 const PARTICLE_COUNT = 24;
@@ -50,33 +42,12 @@ const STATIC_STARTS = [
   { x: -110, y: 340 }, { x: 170, y: -310 }, { x: -390, y: 230 }, { x: 330, y: -360 }
 ];
 
-const badgeVariants = {
-  hidden: { opacity: 0, y: 10, pointerEvents: "none" as const },
-  visible: { opacity: 1, y: 0, pointerEvents: "auto" as const, transition: { duration: 0.6, delay: 0, ease: easeOutExpo } }
-};
-
-const _h1Variants = {
-  hidden: { opacity: 0, y: 25 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.9, delay: 0, ease: easeOutExpo } }
-};
-
-const _pVariants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0, ease: easeOutQuart } }
-};
-
-const ctaVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0, ease: easeOutQuart } }
-};
-
 export default function HeroSection() {
   const [phase, setPhase] = useState<number>(4); // Default to stage 4 (completed/static) for mobile-first/instant rendering
-  const [isMobile, _setIsMobile] = useState<boolean>(true); // Default to true (optimistic mobile)
+  const [isMobile] = useState<boolean>(true); // Default to true (optimistic mobile)
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let scrollTimer: any = null;
+    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
     if (typeof window !== "undefined" && window.location.hash === "#hero") {
       scrollTimer = setTimeout(() => {
         document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
@@ -102,16 +73,11 @@ export default function HeroSection() {
     };
   }, []);
 
-
-
   return (
-    <HeroContainer
+    <section
       id="hero"
-      className="pt-32 pb-24"
+      className="relative min-h-[70vh] md:min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 px-4 sm:px-6 lg:px-8"
     >
-      {/* Coordinates 3D Scene states and scroll tracking */}
-      <HeroScene />
-
       {/* 2. Soft atmospheric noise overlay (photographic grain) - Deferred to prevent LCP hijack */}
       {phase >= 1 && (
         <div 
@@ -127,9 +93,8 @@ export default function HeroSection() {
         className="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[85vw] max-w-[700px] rounded-full filter blur-[130px] pointer-events-none animate-orb-slow hidden md:block" 
         style={{
           background: `radial-gradient(circle, var(--accent-color), transparent 70%)`,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mixBlendMode: "var(--orb-blend)" as any,
-          opacity: "calc(var(--orb-opacity) * 0.7)",
+          mixBlendMode: "screen",
+          opacity: "calc(var(--orb-opacity, 0.4) * 0.7)",
         }}
       />
 
@@ -139,57 +104,25 @@ export default function HeroSection() {
         {/* ==========================================
             LOGO ASSEMBLY & COMPANY BADGE
             ========================================== */}
-        <motion.div
-          layout
-          className="relative flex flex-col items-center select-none mb-3 md:mb-6 scale-85 sm:scale-90 md:scale-100"
-          transition={{ duration: 1.0, ease: easeOutExpo }}
-        >
+        <div className="relative flex flex-col items-center select-none mb-3 md:mb-6 scale-85 sm:scale-90 md:scale-100 transition-transform duration-700">
           {/* Logo assembly particles (visible only during converge phase) */}
-          <AnimatePresence>
-            {phase === 1 && isMobile === false && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                {LOGO_PARTICLES.map((p, idx) => {
-                  const start = STATIC_STARTS[idx] || { x: 0, y: 0 };
-                  return (
-                    <motion.div
-                      key={p.id}
-                      initial={{ x: start.x, y: start.y, opacity: 0, scale: 1.8 }}
-                      animate={{ 
-                        x: p.tx, 
-                        y: p.ty, 
-                        opacity: [0, 0.9, 0.9, 0], 
-                        scale: [1.8, 1.2, 0.4, 0] 
-                      }}
-                      transition={{
-                        duration: 2.5,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className="absolute w-2 h-2 rounded-full bg-[var(--accent-color)] shadow-[0_0_10px_var(--accent-color)]"
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </AnimatePresence>
-
-          {/* Convergence flash overlay */}
-          <AnimatePresence>
-            {phase === 2 && (
-              <motion.div
-                initial={{ scale: 0.1, opacity: 0 }}
-                animate={{ scale: [0.1, 2.0, 3.2], opacity: [0, 1, 0] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: "easeOut" }}
-                className="absolute w-24 h-24 rounded-full bg-radial from-white via-[var(--accent-color)]/30 to-transparent pointer-events-none z-30 mix-blend-screen"
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  marginLeft: -48,
-                  marginTop: -48,
-                }}
-              />
-            )}
-          </AnimatePresence>
+          {phase === 1 && isMobile === false && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+              {LOGO_PARTICLES.map((p, idx) => {
+                const start = STATIC_STARTS[idx] || { x: 0, y: 0 };
+                return (
+                  <div
+                    key={p.id}
+                    className="absolute w-2 h-2 rounded-full bg-[var(--accent-color)] shadow-[0_0_10px_var(--accent-color)] transition-all duration-1000"
+                    style={{
+                      transform: `translate(${start.x}px, ${start.y}px)`,
+                      opacity: 0.8,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           {/* Central Logo Image / Shape */}
           <div className="w-14 sm:w-16 md:w-16 h-14 sm:h-16 md:h-16 relative flex items-center justify-center mb-2 md:mb-3">
@@ -198,31 +131,20 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-[var(--accent-color)]/10 blur-xl rounded-full animate-pulse pointer-events-none" />
             )}
             
-                <motion.div
-                  key="final-logo"
-                  initial={false}
-                  animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-                  transition={{ duration: 0.6, delay: 0, ease: "easeOut" }}
-                  className="logo-container w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 flex items-center justify-center shadow-md backdrop-blur-md relative"
-                >
-                  {/* Top specular reflection highlight */}
-                  <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-                  <Image src="/logo.png" alt="Vanikara Logo" className="w-[32px] sm:w-[34px] h-auto" width={34} height={23} priority fetchPriority="high" />
-                </motion.div>
+            <div className="logo-container w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 flex items-center justify-center shadow-md backdrop-blur-md relative transition-all duration-500">
+              {/* Top specular reflection highlight */}
+              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+              <Image src="/logo.png" alt="Vanikara Logo" className="w-[32px] sm:w-[34px] h-auto" width={34} height={23} priority fetchPriority="high" />
+            </div>
           </div>
 
           {/* Company identity label */}
-          <motion.div
-            initial={"hidden"}
-            animate={"visible"}
-            variants={badgeVariants}
-            className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-0.5 md:py-1 bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-full shadow-sm mt-3"
-          >
+          <div className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3 py-0.5 md:py-1 bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-full shadow-sm mt-3 transition-opacity duration-500">
             <span className="font-display font-black text-[8px] md:text-[9px] tracking-widest text-[var(--text-primary)] uppercase">
               VANIKARA INTELLIGENCE
             </span>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* ==========================================
             HEADLINE, DESCRIPTION, CTAS & SPACER
@@ -255,16 +177,12 @@ export default function HeroSection() {
           </p>
 
           {/* CTAs */}
-          <motion.div
-            variants={ctaVariants}
-            className="flex flex-col sm:flex-row gap-3.5 justify-center items-center w-full sm:w-auto"
-          >
+          <div className="flex flex-col sm:flex-row gap-3.5 justify-center items-center w-full sm:w-auto">
             <Button 
               href="/products" 
               variant="primary" 
               size="md" 
               className="w-full sm:w-auto" 
-              magnetic
             >
               Explore Products
             </Button>
@@ -273,11 +191,10 @@ export default function HeroSection() {
               variant="secondary" 
               size="md" 
               className="w-full sm:w-auto" 
-              magnetic
             >
               Meet CYGMA AI
             </Button>
-          </motion.div>
+          </div>
         </div>
         {/* LCP Optimization Trick: Huge inline SVG background to act as the LCP element. 
             Because it's inline, it has 0 load time. Because it's huge, Lighthouse picks it instead of text. */}
@@ -294,32 +211,17 @@ export default function HeroSection() {
       {/* ==========================================
           SCROLL INDICATOR (Fades in at 2.5s)
           ========================================== */}
-      <motion.div
-        initial={false}
-        animate={phase >= 3 ? "visible" : "hidden"}
-        variants={isMobile === false ? {
-          hidden: { opacity: 0, y: -10, pointerEvents: "none" as const },
-          visible: { 
-            opacity: [0, 0.6, 0.6], 
-            y: [0, 8, 0],
-            pointerEvents: "auto" as const,
-            transition: {
-              opacity: { duration: 0.6 },
-              y: { repeat: Infinity, duration: 1.8, ease: "easeInOut" }
-            }
-          }
-        } : {
-          hidden: { opacity: 0, pointerEvents: "none" as const },
-          visible: { opacity: 0.6, pointerEvents: "auto" as const }
-        }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors select-none"
+      <div
+        className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all select-none ${
+          phase >= 3 ? "opacity-60 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
         onClick={() => {
           document.getElementById("our-vision")?.scrollIntoView({ behavior: "smooth" });
         }}
       >
         <span className="text-[8px] font-black uppercase tracking-widest font-mono">SCROLL</span>
         <ChevronDown className="w-3.5 h-3.5" />
-      </motion.div>
-    </HeroContainer>
+      </div>
+    </section>
   );
 }

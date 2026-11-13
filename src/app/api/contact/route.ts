@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { supabaseService } from "@/utils/supabase/service";
 import { sanitize, apiResponse, logError, isBot, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
+import { getMailer, mailFrom } from "@/lib/mailer";
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -88,23 +88,14 @@ export async function POST(req: Request) {
     if (!savedToDb) logError("Contact form: saved to Google Forms backup only", { email: sEmail });
 
     // 5. Send Transactional Notification Email via Nodemailer (Resilient)
-    const smtpEnabled = !!process.env.SMTP_HOST && !!process.env.SMTP_USER && !!process.env.SMTP_PASS;
-
-    if (smtpEnabled) {
+    const transporter = getMailer();
+    if (transporter) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 587,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
 
         const timestamp = new Date().toLocaleString("en-US", { timeZone: "UTC" }) + " (UTC)";
 
         await transporter.sendMail({
-          from: `"VANIKARA Contact System" <${process.env.SMTP_USER}>`,
+          from: mailFrom("VANIKARA Contact System"),
           to: "contact@vanikara.com",
           replyTo: sEmail,
           subject: `[INQUIRY] ${sSubject} — ${sName}`,

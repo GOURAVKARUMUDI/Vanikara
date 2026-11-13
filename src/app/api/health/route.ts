@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseService } from "@/utils/supabase/service";
 import { getAdminSession } from "@/lib/adminAuth";
-import nodemailer from "nodemailer";
+import { getMailer, isMailConfigured } from "@/lib/mailer";
 import { logError } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
@@ -63,18 +63,11 @@ export async function GET() {
   }
 
   // 2. Check Nodemailer SMTP configuration
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!isMailConfigured()) {
     status.services.email = "disabled: SMTP authentication environment variables not configured";
   } else {
     try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
+      const transporter = getMailer()!;
       // Verifies connection configuration and SMTP credentials
       await transporter.verify();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

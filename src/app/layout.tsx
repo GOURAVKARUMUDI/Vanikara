@@ -110,16 +110,24 @@ function safeJson(value: unknown) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const content = await getSiteContent();
+/** Company structured data, from the live content store. */
+async function OrganizationJsonLd() {
+  const { identity } = await getSiteContent();
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(organizationJsonLd(identity)) }} />;
+}
+
+/** Site navbar with live content. Loaded in its own component so the root layout itself stays synchronous. */
+async function SiteNavbar() {
+  const { identity, navigation } = await getSiteContent();
+  return <Navbar identity={identity} navigation={navigation} />;
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="light" className={manrope.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJson(organizationJsonLd(content.identity)) }}
-        />
+        <OrganizationJsonLd />
       </head>
       <body className="relative flex min-h-screen flex-col font-sans">
         {/* First-visit brand moment: CSS only, never blocks input */}
@@ -153,7 +161,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             >
               Skip to content
             </a>
-            <Navbar identity={content.identity} navigation={content.navigation} />
+            <SiteNavbar />
             <main id="main-content" className="relative flex-1 pt-[var(--header-height)]">
               {children}
             </main>

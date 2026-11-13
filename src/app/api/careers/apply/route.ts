@@ -2,12 +2,12 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import nodemailer from "nodemailer";
 import { z } from "zod";
 import { supabaseService } from "@/utils/supabase/service";
 import { sanitize, apiResponse, logError, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
+import { getMailer, mailFrom } from "@/lib/mailer";
 
 /**
  * Job / internship applications from the Careers page.
@@ -173,15 +173,11 @@ export async function POST(req: Request) {
     if (!savedToDb) logError("Careers application: saved to Google Forms backup only", { email: app.email });
 
     // ---- Email notifications (only when SMTP is configured; never block the response) ----
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      });
+    const transporter = getMailer();
+    if (transporter) {
       await Promise.allSettled([
         transporter.sendMail({
-          from: `"VANIKARA Careers" <${process.env.SMTP_USER}>`,
+          from: mailFrom("VANIKARA Careers"),
           to: "support@vanikara.com",
           replyTo: app.email,
           subject: `[Application] ${app.position} — ${app.name}`,
@@ -189,7 +185,7 @@ export async function POST(req: Request) {
           html: `<p><strong>New application</strong></p><p>Name: ${escapeHtml(app.name)}<br>Email: ${escapeHtml(app.email)}<br>Phone: ${escapeHtml(app.phone)}<br>Role: ${escapeHtml(app.position)} (${escapeHtml(app.type)})<br>Portfolio: ${escapeHtml(app.portfolio || "N/A")}<br>${escapeHtml(resumeNote)}</p><p style="white-space:pre-wrap">${escapeHtml(app.cover)}</p><p>View it in the admin dashboard → Applications.</p>`,
         }),
         transporter.sendMail({
-          from: `"VANIKARA Careers" <${process.env.SMTP_USER}>`,
+          from: mailFrom("VANIKARA Careers"),
           to: app.email,
           subject: `We received your application — ${app.position}`,
           text: `Dear ${app.name},\n\nThank you for applying for ${app.position} at VANIKARA. We have received your application and will contact you if your profile matches what we are looking for.\n\nVANIKARA Intelligence Private Limited`,

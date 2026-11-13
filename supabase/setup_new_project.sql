@@ -181,6 +181,13 @@ alter table public.clients add column if not exists package_id uuid;
 alter table public.clients add column if not exists amount numeric not null default 0;
 alter table public.clients add column if not exists payment_status text not null default 'pending';
 
+-- Careers form: contact details, type and the private résumé file path
+alter table public.careers_applications add column if not exists phone text;
+alter table public.careers_applications add column if not exists application_type text;
+alter table public.careers_applications add column if not exists portfolio_url text;
+alter table public.careers_applications add column if not exists resume_path text;
+create index if not exists careers_applications_created_at_idx on public.careers_applications (created_at desc);
+
 alter table public.payments add column if not exists client_id uuid;
 alter table public.payments add column if not exists razorpay_order_id text;
 alter table public.payments add column if not exists razorpay_payment_id text;

@@ -18,7 +18,7 @@ export default function LeadershipPage() {
           eyebrow="Leadership"
           tone="cool"
           title="The people building VANIKARA."
-          lead="Working directly on the company's operations, finance, people and culture."
+          lead="Leading VANIKARA's administration, technology, operations and finance, alongside its people, culture and marketing."
         />
       </section>
 

@@ -65,7 +65,9 @@ export default function FounderCard({ person, index }: FounderCardProps) {
         />
         <span
           aria-hidden="true"
-          className="absolute bottom-5 left-6 text-[3.25rem] font-extrabold leading-none tracking-tight text-fg/85"
+          className={`absolute bottom-5 left-6 right-6 font-extrabold leading-none tracking-tight text-fg/85 ${
+            person.initials.length > 3 ? "text-[2.25rem] sm:text-[2.5rem]" : "text-[3.25rem]"
+          }`}
         >
           {person.initials}
         </span>

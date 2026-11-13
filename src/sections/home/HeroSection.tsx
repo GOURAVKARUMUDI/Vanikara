@@ -1,4 +1,3 @@
-import { CalendarDays, MapPin } from "lucide-react";
 import Button from "@/components/ui/Button";
 import BrandStage from "@/components/brand/BrandStage";
 import RevealText from "@/components/motion/RevealText";
@@ -17,32 +16,6 @@ export default function HeroSection() {
         >
           <div aria-hidden="true" className="hero-grid" />
           <BrandStage />
-
-          {/* Floating liquid-glass chips (tablet and up) */}
-          <div
-            className="glass-chip liquid-glass glass float-y absolute left-0 top-[16%] hidden sm:inline-flex lg:-left-2"
-            style={{ animationDelay: "-2s" }}
-          >
-            <span aria-hidden="true" className="glass-chip__icon bg-brand-orange/15 text-ambition">
-              <MapPin className="h-4 w-4" />
-            </span>
-            <span>
-              <span className="block text-[0.6875rem] font-medium text-fg-muted">Initial market</span>
-              <span className="block font-semibold">{foodDelivery.initialMarket}</span>
-            </span>
-          </div>
-          <div
-            className="glass-chip liquid-glass glass float-y absolute bottom-[14%] right-0 hidden sm:inline-flex lg:-right-2"
-            style={{ animationDelay: "-5s" }}
-          >
-            <span aria-hidden="true" className="glass-chip__icon bg-brand-blue/15 text-intel">
-              <CalendarDays className="h-4 w-4" />
-            </span>
-            <span>
-              <span className="block text-[0.6875rem] font-medium text-fg-muted">Founded</span>
-              <span className="block font-semibold">{COMPANY_IDENTITY.foundingDate}</span>
-            </span>
-          </div>
         </div>
 
         <div className="lg:col-span-6 lg:pr-6">

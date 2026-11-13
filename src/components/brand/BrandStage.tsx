@@ -77,7 +77,6 @@ export default function BrandStage({ className = "" }: { className?: string }) {
             ))}
           </g>
           <circle cx="200" cy="200" r="162" stroke="currentColor" strokeOpacity="0.08" />
-          <circle cx="200" cy="200" r="124" stroke="currentColor" strokeOpacity="0.06" strokeDasharray="2 6" />
           {/* Two short arcs — one per wing */}
           <path d="M 64 262 A 150 150 0 0 1 132 70" stroke="url(#stage-arc-warm)" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
           <path d="M 336 262 A 150 150 0 0 0 268 70" stroke="url(#stage-arc-cool)" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />

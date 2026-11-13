@@ -19,7 +19,6 @@
   --glass-drop: 0 10px 40px -14px rgba(7, 26, 61, 0.22);
   --surface-glass: color-mix(in oklab, var(--surface-raised) 74%, transparent);
   --ray-color: rgba(255, 255, 255, 0.55);
-  --dot-color: color-mix(in oklab, var(--vanikara-navy) 20%, transparent);
 }
 [data-theme="dark"] {
   --rim-hi: rgba(255, 255, 255, 0.26);
@@ -29,7 +28,6 @@
   --glass-drop: 0 14px 48px -16px rgba(0, 0, 0, 0.6);
   --surface-glass: color-mix(in oklab, var(--surface-raised) 60%, transparent);
   --ray-color: rgba(120, 180, 255, 0.16);
-  --dot-color: rgba(160, 200, 255, 0.22);
 }
 
 /* ============================================================
@@ -128,24 +126,6 @@
   to { transform: rotate(4deg); }
 }
 
-/* Dot matrix revealed around the pointer */
-.site-bg__dots { display: none; }
-@media (hover: hover) and (pointer: fine) {
-  .site-bg__dots {
-    display: block;
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1.6px);
-    background-size: 24px 24px;
-    -webkit-mask-image: radial-gradient(240px circle at var(--pointer-x, 50%) var(--pointer-y, 35%), #000 0%, transparent 72%);
-    mask-image: radial-gradient(240px circle at var(--pointer-x, 50%) var(--pointer-y, 35%), #000 0%, transparent 72%);
-    opacity: 0.8;
-  }
-  .site-bg[data-atmosphere="dashboard"] .site-bg__dots,
-  .site-bg[data-atmosphere="minimal"] .site-bg__dots { opacity: 0.35; }
-}
-
 /* ============================================================
    Liquid glass
    ============================================================ */
@@ -203,30 +183,6 @@ html.lg-refract .liquid-glass {
   backdrop-filter: blur(30px) saturate(170%);
 }
 
-/* Floating glass chips (hero) */
-.glass-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.625rem 0.875rem;
-  border-radius: 16px;
-  font-size: 0.8125rem;
-  line-height: 1.25;
-  color: var(--text-primary);
-  background-color: var(--glass-bg);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--border-subtle);
-}
-.glass-chip__icon {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
 /* Glass shine: a highlight that crosses the surface on hover */
 .glass-shine { overflow: hidden; }
 .glass-shine::after {
@@ -274,10 +230,6 @@ html.lg-refract .liquid-glass {
   [data-theme="dark"] .surface { --surface-glass: color-mix(in oklab, var(--surface-raised) 80%, transparent); }
   html.lg-refract .liquid-glass { backdrop-filter: blur(16px) saturate(170%); }
   .site-bg__rays { animation: none; filter: blur(6px); }
-  .glass-chip {
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
-    backdrop-filter: blur(12px) saturate(160%);
-  }
 }
 
 /* Short landscape viewports (phones on their side): no forced full-height hero */
@@ -291,25 +243,25 @@ html.lg-refract .liquid-glass {
 
 /* Users who ask for less transparency get solid surfaces */
 @media (prefers-reduced-transparency: reduce) {
-  .glass, .glass-strong, .liquid-glass, .surface, .glass-chip, .mobile-menu--glass, .status-pill {
+  .glass, .glass-strong, .liquid-glass, .surface, .mobile-menu--glass, .status-pill {
     background-color: var(--surface-raised) !important;
     background-image: none !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
-  .site-bg__rays, .site-bg__dots { display: none; }
+  .site-bg__rays { display: none; }
 }
 
 /* Higher contrast: solid surfaces, stronger edges, quieter background */
 @media (prefers-contrast: more) {
-  .glass, .glass-strong, .liquid-glass, .surface, .glass-chip, .mobile-menu--glass {
+  .glass, .glass-strong, .liquid-glass, .surface, .mobile-menu--glass {
     background-color: var(--surface-raised) !important;
     background-image: none !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
     border-color: var(--border-strong) !important;
   }
-  .site-bg__canvas, .site-bg__rays, .site-bg__dots, .site-bg__daypart { opacity: 0.35 !important; }
+  .site-bg__canvas, .site-bg__rays, .site-bg__daypart { opacity: 0.35 !important; }
 }
 
 /* Windows High Contrast / forced colours: let the system palette win */

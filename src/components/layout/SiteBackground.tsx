@@ -50,7 +50,7 @@ function resolveAtmosphere(pathname: string): PageAtmosphere {
  * - Liquid silk (WebGL): when available, replaces layers 1–2 with a living,
  *   time-of-day aware fabric of light (see SilkCanvas). Layers 1–2 remain
  *   the fallback.
- * - Daypart tint, light rays and a pointer-revealed dot matrix add depth.
+ * - Daypart tint and light rays add depth.
  */
 export default function SiteBackground() {
   const pathname = usePathname();
@@ -184,13 +184,6 @@ export default function SiteBackground() {
             strokeWidth="1.25"
             strokeLinecap="round"
           />
-          <path
-            d="M 1280 220 C 1080 370, 890 560, 790 730 S 746 880, 748 970"
-            stroke="url(#geom-wing-cool)"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeDasharray="2 6"
-          />
 
           {/* Warm wing contour arcs (Left) */}
           <path
@@ -206,16 +199,8 @@ export default function SiteBackground() {
             strokeWidth="1.25"
             strokeLinecap="round"
           />
-          <path
-            d="M 160 280 C 360 410, 550 580, 650 730 S 694 880, 692 970"
-            stroke="url(#geom-wing-warm)"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeDasharray="2 6"
-          />
 
           {/* Subtle aerospace orbital guide rings */}
-          <circle cx="720" cy="540" r="440" stroke="currentColor" strokeOpacity="0.05" strokeDasharray="3 9" />
           <circle cx="720" cy="540" r="280" stroke="currentColor" strokeOpacity="0.04" />
 
           {/* Central delta aerodynamic trajectory */}
@@ -241,9 +226,6 @@ export default function SiteBackground() {
 
       {/* Interactive Pointer Light Field (Desktop fine-pointers only, lerp-interpolated) */}
       <div className="site-bg__pointer" />
-
-      {/* Precision dot matrix, revealed only around the pointer */}
-      <div className="site-bg__dots" />
     </div>
   );
 }

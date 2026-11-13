@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { GRIEVANCE_OFFICER } from "@/data/legal";
+
 import { BrandSymbol } from "@/components/brand/BrandMark";
+import { getSiteContent } from "@/lib/content";
 
-const CHANNELS = [
-  { label: "General enquiries", email: COMPANY_IDENTITY.officialEmail },
-  { label: "Support", email: COMPANY_IDENTITY.supportEmail },
-];
-
-export default function ContactInfo() {
+export default async function ContactInfo() {
+  const { identity: COMPANY_IDENTITY, legal: { grievanceOfficer: GRIEVANCE_OFFICER } } = await getSiteContent();
+  const CHANNELS = [
+    { label: "General enquiries", email: COMPANY_IDENTITY.officialEmail },
+    { label: "Support", email: COMPANY_IDENTITY.supportEmail },
+  ];
   return (
     <div className="rise-in space-y-10" style={{ ["--rise-delay" as string]: "120ms" }}>
       <div className="space-y-6">
@@ -32,24 +32,20 @@ export default function ContactInfo() {
         </div>
         <dl className="mt-6 space-y-5 text-[0.9375rem]">
           <div>
-            <dt className="text-[0.8125rem] text-fg-subtle">Registered office</dt>
-            <dd className="mt-1 leading-relaxed text-fg">
-              <address className="not-italic">
-                {COMPANY_IDENTITY.registeredOfficeLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </address>
-            </dd>
-          </div>
-          <div>
             <dt className="text-[0.8125rem] text-fg-subtle">Operations</dt>
             <dd className="mt-1 text-fg">{COMPANY_IDENTITY.operationalLocation}</dd>
           </div>
           <div>
             <dt className="text-[0.8125rem] text-fg-subtle">CIN</dt>
             <dd className="mt-1 tabular-nums text-fg">{COMPANY_IDENTITY.cin}</dd>
+          </div>
+          <div>
+            <dt className="text-[0.8125rem] text-fg-subtle">Company details</dt>
+            <dd className="mt-1">
+              <Link href="/legal/legal-information" className="font-semibold text-intel">
+                Company information
+              </Link>
+            </dd>
           </div>
           <div>
             <dt className="text-[0.8125rem] text-fg-subtle">Support hours</dt>

@@ -47,6 +47,14 @@ Run `supabase/setup_new_project.sql` once in the Supabase SQL Editor. It is idem
 
 In Firebase: enable the Google provider and add every domain the site runs on (`localhost`, `www.vanikara.com`, the Vercel domain) under Authentication → Settings → Authorized domains.
 
+## Editing website content
+
+Admins edit the site at **/admin → Website content**. Every content group (company details, home page sections, story, principles, people, timeline, products, pricing packages, legal facts, navigation labels) has an edit box per field. **Save & publish** updates the live site immediately; **Restore original** returns a group to its built-in text.
+
+- Saved edits live in the `site_content` table (created by `supabase/setup_new_project.sql`); only the server can read or write it.
+- Defaults come from `src/content/defaults.ts` (which reads `src/data/*`). Anything not edited falls back to them, and the site shows them if the database is unreachable.
+- Every save is validated against the default's shape (`src/content/validate.ts`): field types, length limits, https-only links, valid emails, fixed menu links.
+
 ## Legal pages
 
 All policy facts (effective date, grievance officer, payment and refund terms, packages and prices) come from `src/data/legal.ts`. Update them there, then have the pages reviewed by a legal professional before publishing.

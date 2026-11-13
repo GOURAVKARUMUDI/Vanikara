@@ -1,21 +1,40 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { Founder } from "@/data/company";
+
 import { SYMBOL_SRC } from "@/components/brand/BrandMark";
+import { getSiteContent } from "@/lib/content";
 
 interface FounderCardProps {
   person: Founder;
   index: number;
-  /** Show responsibilities as a quiet list (used on the leadership page). */
-  detailed?: boolean;
+}
+
+/** "KARUMUDI GOURAV" → "Karumudi Gourav" */
+function titleCase(name: string) {
+  return name.toLowerCase().replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+}
+
+/** True when the registered name is just the public name in a different order or case. */
+function sameName(a: string, b: string) {
+  const words = (s: string) => s.toLowerCase().split(/\s+/).filter(Boolean).sort().join(" ");
+  return words(a) === words(b);
 }
 
 /**
- * Founder / leadership card. Initials stand in for photographs until real
- * portraits are available — no stock or generated faces.
+ * Founder / leadership card with everything the company records about the
+ * person: public and registered name, title, founder and director status,
+ * areas of responsibility, a short bio and LinkedIn. Initials stand in for
+ * photographs until real portraits are available — no stock or generated faces.
  */
-export default function FounderCard({ person, index, detailed = false }: FounderCardProps) {
+export default async function FounderCard({ person, index }: FounderCardProps) {
+  const { legal: { grievanceOfficer: GRIEVANCE_OFFICER } } = await getSiteContent();
   const tone = index % 2 === 0 ? "warm" : "cool";
+  const isGrievanceOfficer = sameName(person.publicName, GRIEVANCE_OFFICER.name);
+  const focus = [...person.responsibilities, ...(isGrievanceOfficer ? ["Grievance Officer"] : [])];
+  const showRegisteredName = !sameName(person.fullName, person.publicName);
+
+  const badges = [person.isFounder && "Founder", person.isDirector && "Director"].filter(Boolean) as string[];
 
   return (
     <article
@@ -26,7 +45,7 @@ export default function FounderCard({ person, index, detailed = false }: Founder
       style={{ ["--reveal-delay" as string]: `${index * 90}ms` }}
       className="card-interactive surface flex h-full flex-col overflow-hidden rounded-feature"
     >
-      <div className="relative aspect-[16/9] overflow-hidden sm:aspect-[5/4] border-b border-line bg-surface-sunken">
+      <div className="relative aspect-[16/9] overflow-hidden border-b border-line bg-surface-sunken sm:aspect-[5/4]">
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -48,14 +67,23 @@ export default function FounderCard({ person, index, detailed = false }: Founder
         />
         <span
           aria-hidden="true"
-          className="absolute bottom-5 left-6 text-[3.25rem] font-extrabold leading-none tracking-tight text-fg/85"
+          className={`absolute bottom-5 left-6 right-6 font-extrabold leading-none tracking-tight text-fg/85 ${
+            person.initials.length > 3 ? "text-[2.25rem] sm:text-[2.5rem]" : "text-[3.25rem]"
+          }`}
         >
           {person.initials}
         </span>
-        {person.isFounder && (
-          <span className="absolute right-5 top-5 rounded-full border border-line bg-surface-raised/70 px-2.5 py-1 text-[0.6875rem] font-semibold text-fg-muted backdrop-blur">
-            Founder
-          </span>
+        {badges.length > 0 && (
+          <div className="absolute right-5 top-5 flex gap-1.5">
+            {badges.map((badge) => (
+              <span
+                key={badge}
+                className="rounded-full border border-line bg-surface-raised/70 px-2.5 py-1 text-[0.6875rem] font-semibold text-fg-muted backdrop-blur"
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
         )}
       </div>
 
@@ -64,10 +92,28 @@ export default function FounderCard({ person, index, detailed = false }: Founder
         <p className={`mt-1 text-sm font-semibold ${tone === "warm" ? "text-ambition" : "text-intel"}`}>
           {person.designation}
         </p>
+        {showRegisteredName && (
+          <p className="mt-1 text-xs text-fg-subtle">
+            Registered name: <span className="font-medium text-fg-muted">{titleCase(person.fullName)}</span>
+          </p>
+        )}
+
         <p className="mt-4 text-[0.9375rem] leading-relaxed text-fg-muted">{person.bio}</p>
 
-        {detailed && person.responsibilities && person.responsibilities.length > 0 && (
-          <p className="mt-4 text-sm text-fg-subtle">{person.responsibilities.join(" · ")}</p>
+        {focus.length > 0 && (
+          <div className="mt-5">
+            <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-fg-subtle">Responsible for</p>
+            <ul className="mt-2 flex flex-wrap gap-1.5" aria-label={`${person.publicName}'s responsibilities`}>
+              {focus.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-full border border-line bg-surface-sunken/60 px-2.5 py-1 text-xs font-medium text-fg"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {person.linkedin && (

@@ -1,14 +1,16 @@
 import Eyebrow from "@/components/ui/Eyebrow";
-import { PHILOSOPHY_PRINCIPLES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
+import Lines from "@/components/ui/Lines";
 
-export default function PrinciplesSection() {
+export default async function PrinciplesSection() {
+  const { principles: PHILOSOPHY_PRINCIPLES, home: { principles: copy } } = await getSiteContent();
   return (
     <section aria-labelledby="principles-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
       <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4" data-reveal>
-          <Eyebrow tone="cool">How we work</Eyebrow>
+          <Eyebrow tone="cool">{copy.eyebrow}</Eyebrow>
           <h2 id="principles-title" className="text-headline mt-5 text-fg">
-            Principles, not slogans.
+            <Lines text={copy.title} />
           </h2>
         </div>
 

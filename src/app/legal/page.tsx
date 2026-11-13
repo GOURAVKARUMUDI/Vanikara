@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { GRIEVANCE_OFFICER, LEGAL_DOCUMENTS, LEGAL_EFFECTIVE_DATE } from "@/data/legal";
+
+import { LEGAL_DOCUMENTS } from "@/data/legal";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Legal",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/legal" },
 };
 
-export default function LegalHubPage() {
+export default async function LegalHubPage() {
+  const { identity: COMPANY_IDENTITY, legal: { grievanceOfficer: GRIEVANCE_OFFICER, effectiveDate: LEGAL_EFFECTIVE_DATE } } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-12 pt-16 sm:pt-24">
@@ -66,10 +68,6 @@ export default function LegalHubPage() {
             <div>
               <dt className="text-[0.8125rem] text-fg-subtle">Operations</dt>
               <dd className="mt-1.5 text-[0.9375rem] font-semibold text-fg">{COMPANY_IDENTITY.operationalLocation}</dd>
-            </div>
-            <div className="sm:col-span-2 lg:col-span-4">
-              <dt className="text-[0.8125rem] text-fg-subtle">Registered office</dt>
-              <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-fg">{COMPANY_IDENTITY.registeredOffice}</dd>
             </div>
           </dl>
           <p className="mt-8 border-t border-line pt-6 text-sm text-fg-subtle">

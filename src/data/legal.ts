@@ -18,9 +18,8 @@ export const LEGAL_VERSION = "2.0";
  */
 export const GRIEVANCE_OFFICER = {
   name: "Gourav Karumudi",
-  designation: "Chief Operating Officer & Director",
+  designation: "Chief Executive Officer & Director",
   email: COMPANY_IDENTITY.supportEmail,
-  address: COMPANY_IDENTITY.registeredOffice,
   hours: "Monday to Saturday, 10:00–18:00 IST (excluding public holidays)",
   /** Consumer Protection (E-Commerce) Rules 2020, Rule 4(5) */
   acknowledgeWithin: "48 hours",

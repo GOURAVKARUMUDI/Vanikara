@@ -3,8 +3,10 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Inbox, LayoutDashboard, LogOut, Settings, ShieldCheck, Users } from "lucide-react";
-import { FOUNDERS_AND_LEADERSHIP } from "@/data/company";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import { AlertTriangle, Briefcase, FilePenLine, Inbox, LayoutDashboard, LogOut, Settings, ShieldCheck, Users } from "lucide-react";
+import type { Founder } from "@/data/company";
 import { BrandSymbol } from "@/components/brand/BrandMark";
 
 const CRMOverview = dynamic(() => import("@/components/admin/CRMOverview"), { ssr: false });
@@ -13,9 +15,13 @@ const UsersManager = dynamic(() => import("@/components/admin/UsersManager"), { 
 const ContactManager = dynamic(() => import("@/components/admin/ContactManager"), { ssr: false });
 const SettingsManager = dynamic(() => import("@/components/admin/SettingsManager"), { ssr: false });
 const PrivacyManager = dynamic(() => import("@/components/admin/PrivacyManager"), { ssr: false });
+const ContentEditor = dynamic(() => import("@/components/admin/ContentEditor"), { ssr: false });
+const ApplicationsManager = dynamic(() => import("@/components/admin/ApplicationsManager"), { ssr: false });
 
 interface Props {
   username: string;
+  /** Leadership from the live site content. */
+  people: Founder[];
   /** Session expiry, seconds since epoch. */
   expiresAt: number;
   tab: string;
@@ -23,13 +29,15 @@ interface Props {
 
 const TABS = [
   { id: "overview", label: "Overview", Icon: LayoutDashboard },
+  { id: "content", label: "Website content", Icon: FilePenLine },
   { id: "contacts", label: "Contacts & Inquiries", Icon: Inbox },
+  { id: "applications", label: "Applications", Icon: Briefcase },
   { id: "users", label: "Users", Icon: Users },
   { id: "settings", label: "Settings", Icon: Settings },
   { id: "privacy", label: "Privacy Control", Icon: ShieldCheck },
 ];
 
-export default function AdminDashboardClient({ username, expiresAt, tab: initialTab }: Props) {
+export default function AdminDashboardClient({ username, people, expiresAt, tab: initialTab }: Props) {
   const router = useRouter();
   const [activeTab, setActiveTab] = React.useState(
     TABS.some((t) => t.id === initialTab) ? initialTab : "overview"
@@ -72,6 +80,14 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
   // Database health: every admin panel reads from Supabase, so say clearly
   // when it cannot be reached instead of leaving empty or broken panels.
   const [dbDown, setDbDown] = React.useState(false);
+
+  // Live "new" counters on the tabs — new submissions show up within 30 seconds
+  const { data: leadsRes } = useSWR("/api/leads", fetcher, { refreshInterval: 30_000 });
+  const { data: appsRes } = useSWR("/api/admin/applications", fetcher, { refreshInterval: 30_000 });
+  const newCounts: Record<string, number> = {
+    contacts: ((leadsRes?.data ?? []) as { status?: string }[]).filter((l) => l.status === "new").length,
+    applications: ((appsRes?.data ?? []) as { status?: string }[]).filter((a) => a.status === "new").length,
+  };
   React.useEffect(() => {
     fetch("/api/admin/settings", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -147,6 +163,16 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
               >
                 <Icon aria-hidden="true" className="h-4 w-4" />
                 {label}
+                {newCounts[id] > 0 && (
+                  <span
+                    className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[0.6875rem] font-bold tabular-nums ${
+                      activeTab === id ? "bg-white text-action" : "bg-brand-orange text-white"
+                    }`}
+                    aria-label={`${newCounts[id]} new`}
+                  >
+                    {newCounts[id]}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -165,7 +191,7 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
                   Leadership registry
                 </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {FOUNDERS_AND_LEADERSHIP.map((leader) => (
+                  {people.map((leader) => (
                     <div key={leader.id} className="space-y-1.5 rounded-card border border-line bg-surface-sunken/50 p-4">
                       <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-intel">
                         {leader.designation}
@@ -185,7 +211,9 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
             </div>
           )}
 
+          {activeTab === "content" && <ContentEditor />}
           {activeTab === "contacts" && <ContactManager />}
+          {activeTab === "applications" && <ApplicationsManager />}
           {activeTab === "users" && <UsersManager />}
           {activeTab === "settings" && <SettingsManager />}
           {activeTab === "privacy" && <PrivacyManager />}

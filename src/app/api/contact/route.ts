@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { supabaseService } from "@/utils/supabase/service";
 import { sanitize, apiResponse, logError, isBot, escapeHtml, isTrustedOrigin } from "@/lib/security";
-import { submitToGoogleForm } from "@/lib/googleForms";
+import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
+import { getMailer, mailFrom } from "@/lib/mailer";
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -62,59 +62,40 @@ export async function POST(req: Request) {
     // Format description detail for leads database storing
     const crmStoredMessage = `Subject: ${sSubject}\nOrganization: ${sOrg}\nPhone: ${sPhone}\n\nMessage Details:\n${sMessage}`;
 
-    // 3. Persist to leads database table in Supabase
-    const { error: dbError } = await supabaseService
-      .from("leads")
-      .insert([
-        { 
-          name: sName, 
-          email: sEmail, 
-          message: crmStoredMessage,
-          source: "form",
-          status: "new"
-        }
-      ]);
+    // 3. Capture the enquiry on two independent paths at once: the database
+    //    (shown in the admin dashboard, retried on failure) and a backup copy
+    //    to the company's Google Form. Either one is enough to count as received.
+    const [savedToDb, savedToBackup] = await Promise.all([
+      writeWithRetry("Contact form", () =>
+        supabaseService.from("leads").insert([{ name: sName, email: sEmail, message: crmStoredMessage, source: "form", status: "new" }])
+      ),
+      backupToGoogleForm({
+        kind: "Contact",
+        name: sName,
+        email: sEmail,
+        phone: sPhone,
+        summary: sSubject,
+        details: `Organization: ${sOrg} | ${sMessage}`,
+      }),
+    ]);
 
-    if (dbError) {
-      logError("Contact Form DB Persistence", dbError);
-      return NextResponse.json(apiResponse(false, null, "Failed to persist inquiry details. Please contact support@vanikara.com directly."), { status: 500 });
+    if (!savedToDb && !savedToBackup) {
+      return NextResponse.json(
+        apiResponse(false, null, "We couldn't save your message right now. Please try again in a minute, or email contact@vanikara.com."),
+        { status: 503 }
+      );
     }
-
-    // 4. Optional Secondary Sync to Google Form (if configured)
-    if (process.env.GOOGLE_FORM_CONTACT_URL) {
-      try {
-        await submitToGoogleForm("contact", {
-          name: sName,
-          email: sEmail,
-          phone: sPhone,
-          company: sOrg,
-          subject: sSubject,
-          message: sMessage,
-          privacyAgreement: "I agree to the Privacy Policy."
-        });
-      } catch (gfErr) {
-        console.warn("Secondary Google Form sync failed:", gfErr);
-      }
-    }
+    if (!savedToDb) logError("Contact form: saved to Google Forms backup only", { email: sEmail });
 
     // 5. Send Transactional Notification Email via Nodemailer (Resilient)
-    const smtpEnabled = !!process.env.SMTP_HOST && !!process.env.SMTP_USER && !!process.env.SMTP_PASS;
-
-    if (smtpEnabled) {
+    const transporter = getMailer();
+    if (transporter) {
       try {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 587,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
 
         const timestamp = new Date().toLocaleString("en-US", { timeZone: "UTC" }) + " (UTC)";
 
         await transporter.sendMail({
-          from: `"VANIKARA Contact System" <${process.env.SMTP_USER}>`,
+          from: mailFrom("VANIKARA Contact System"),
           to: "contact@vanikara.com",
           replyTo: sEmail,
           subject: `[INQUIRY] ${sSubject} — ${sName}`,

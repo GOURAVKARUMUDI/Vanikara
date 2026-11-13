@@ -6,7 +6,7 @@ import Eyebrow from "@/components/ui/Eyebrow";
 import PrinciplesSection from "@/sections/home/PrinciplesSection";
 import TimelineSection from "@/sections/home/TimelineSection";
 import FoundersSection from "@/sections/home/FoundersSection";
-import { COMPANY_IDENTITY, COMPANY_STORY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -14,15 +14,15 @@ export const metadata: Metadata = {
     "VANIKARA began as a conversation between students about real-world problems. Learn about the company, its principles and the people building it.",
 };
 
-const FACTS = [
-  { label: "Legal name", value: COMPANY_IDENTITY.legalName },
-  { label: "CIN", value: COMPANY_IDENTITY.cin },
-  { label: "Founded", value: COMPANY_IDENTITY.foundingDate },
-  { label: "Incorporated", value: COMPANY_IDENTITY.incorporationDate },
-  { label: "Based in", value: COMPANY_IDENTITY.operationalLocation },
-];
-
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { identity: COMPANY_IDENTITY, story: COMPANY_STORY } = await getSiteContent();
+  const FACTS = [
+    { label: "Legal name", value: COMPANY_IDENTITY.legalName },
+    { label: "CIN", value: COMPANY_IDENTITY.cin },
+    { label: "Founded", value: COMPANY_IDENTITY.foundingDate },
+    { label: "Incorporated", value: COMPANY_IDENTITY.incorporationDate },
+    { label: "Based in", value: COMPANY_IDENTITY.operationalLocation },
+  ];
   return (
     <>
       <section className="container-page pb-16 pt-16 sm:pt-24">

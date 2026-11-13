@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { INITIATIVES } from "@/data/company";
+
 import RevealText from "@/components/motion/RevealText";
+import { getSiteContent } from "@/lib/content";
 
 // Signal network: points of an abstract intelligence graph (viewBox 400×300)
 const NODES: [number, number][] = [
@@ -15,7 +16,8 @@ const LINKS: [number, number][] = [
  * CYGMA — an atmospheric, always-dark band so the section reads as a
  * distinct chapter in both themes.
  */
-export default function CygmaSection() {
+export default async function CygmaSection() {
+  const { initiatives: INITIATIVES, home: { cygma: copy } } = await getSiteContent();
   const { cygma } = INITIATIVES;
 
   return (
@@ -106,13 +108,13 @@ export default function CygmaSection() {
                 href="/cygma"
                 className="group mt-10 inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-brand-cyan"
               >
-                <span className="link-underline">The CYGMA initiative</span>
+                <span className="link-underline">{copy.linkLabel}</span>
                 <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
               </Link>
             </div>
 
             <div className="lg:col-span-6 lg:pl-8">
-              <p className="text-[0.8125rem] font-semibold text-white/60">Intended to develop intelligence around</p>
+              <p className="text-[0.8125rem] font-semibold text-white/60">{copy.directionsLabel}</p>
               <ol className="mt-6 divide-y divide-white/10 border-y border-white/10">
                 {cygma.directions.map((direction, i) => (
                   <li

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/adminAuth";
 import AdminDashboardClient from "@/components/admin/AdminDashboardClient";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata = {
   title: "Admin",
@@ -19,5 +20,7 @@ export default async function AdminPage({
 
   const { tab = "overview" } = await searchParams;
 
-  return <AdminDashboardClient username={session.u} expiresAt={session.exp} tab={tab} />;
+  const { people } = await getSiteContent();
+
+  return <AdminDashboardClient username={session.u} people={people} expiresAt={session.exp} tab={tab} />;
 }

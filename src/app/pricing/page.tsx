@@ -3,8 +3,9 @@ import Link from "next/link";
 import { Check, ShieldCheck } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { PAYMENT_TERMS, SERVICE_PACKAGES, formatINR } from "@/data/legal";
+
+import { formatINR } from "@/data/legal";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/pricing" },
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const { identity: COMPANY_IDENTITY, packages: SERVICE_PACKAGES, legal: { paymentTerms: PAYMENT_TERMS } } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-10 pt-16 sm:pt-24">

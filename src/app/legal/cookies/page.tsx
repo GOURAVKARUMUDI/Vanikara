@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import LegalDocument, { MailLink, type LegalSection } from "@/components/legal/LegalDocument";
 import CookieSettingsButton from "@/components/layout/CookieSettingsButton";
-import { COMPANY_IDENTITY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
@@ -20,98 +20,98 @@ const STORAGE: { name: string; type: string; category: string; purpose: string; 
   { name: "_ga, _ga_*", type: "Cookie", category: "Analytics (optional)", purpose: "Google Analytics for Firebase — how the site is used", duration: "Up to 14 months" },
 ];
 
-const sections: LegalSection[] = [
-  {
-    id: "what",
-    title: "What cookies and browser storage are",
-    body: (
-      <p>
-        Cookies are small text files a website stores in your browser. Websites can also use local storage, session storage and
-        IndexedDB for similar purposes. We call all of these &quot;cookies&quot; in this policy.
-      </p>
-    ),
-  },
-  {
-    id: "categories",
-    title: "The categories we use",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 marker:text-fg-subtle">
-        <li><strong>Essential</strong> — needed for the site to work and be secure (sign-in, remembering your cookie choice). Always on.</li>
-        <li><strong>Preference</strong> — remember choices such as the theme. They do not track you.</li>
-        <li><strong>Analytics</strong> — help us understand how the site is used. <strong>Off unless you accept them.</strong></li>
-        <li>We do <strong>not</strong> use advertising or cross-site tracking cookies.</li>
-      </ul>
-    ),
-  },
-  {
-    id: "list",
-    title: "Exactly what we store",
-    body: (
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-line text-fg">
-              <th className="py-2 pr-3 font-semibold">Name</th>
-              <th className="py-2 pr-3 font-semibold">Type</th>
-              <th className="py-2 pr-3 font-semibold">Category</th>
-              <th className="py-2 pr-3 font-semibold">Purpose</th>
-              <th className="py-2 font-semibold">Duration</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border-subtle)] align-top">
-            {STORAGE.map((row) => (
-              <tr key={row.name}>
-                <td className="py-2 pr-3 font-mono text-xs text-fg">{row.name}</td>
-                <td className="py-2 pr-3">{row.type}</td>
-                <td className="py-2 pr-3">{row.category}</td>
-                <td className="py-2 pr-3">{row.purpose}</td>
-                <td className="py-2">{row.duration}</td>
+export default async function CookiePolicyPage() {
+  const { identity: COMPANY_IDENTITY } = await getSiteContent();
+  const sections: LegalSection[] = [
+    {
+      id: "what",
+      title: "What cookies and browser storage are",
+      body: (
+        <p>
+          Cookies are small text files a website stores in your browser. Websites can also use local storage, session storage and
+          IndexedDB for similar purposes. We call all of these &quot;cookies&quot; in this policy.
+        </p>
+      ),
+    },
+    {
+      id: "categories",
+      title: "The categories we use",
+      body: (
+        <ul className="list-disc space-y-2 pl-5 marker:text-fg-subtle">
+          <li><strong>Essential</strong> — needed for the site to work and be secure (sign-in, remembering your cookie choice). Always on.</li>
+          <li><strong>Preference</strong> — remember choices such as the theme. They do not track you.</li>
+          <li><strong>Analytics</strong> — help us understand how the site is used. <strong>Off unless you accept them.</strong></li>
+          <li>We do <strong>not</strong> use advertising or cross-site tracking cookies.</li>
+        </ul>
+      ),
+    },
+    {
+      id: "list",
+      title: "Exactly what we store",
+      body: (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-line text-fg">
+                <th className="py-2 pr-3 font-semibold">Name</th>
+                <th className="py-2 pr-3 font-semibold">Type</th>
+                <th className="py-2 pr-3 font-semibold">Category</th>
+                <th className="py-2 pr-3 font-semibold">Purpose</th>
+                <th className="py-2 font-semibold">Duration</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ),
-  },
-  {
-    id: "vercel",
-    title: "Performance measurement",
-    body: (
-      <p>
-        Our host, Vercel, measures page speed and anonymous visit counts without cookies and without identifying you. Razorpay may set
-        its own cookies on its checkout pages to process payments securely; those are covered by Razorpay&apos;s policies.
-      </p>
-    ),
-  },
-  {
-    id: "choices",
-    title: "Your choices",
-    body: (
-      <>
+            </thead>
+            <tbody className="divide-y divide-[var(--border-subtle)] align-top">
+              {STORAGE.map((row) => (
+                <tr key={row.name}>
+                  <td className="py-2 pr-3 font-mono text-xs text-fg">{row.name}</td>
+                  <td className="py-2 pr-3">{row.type}</td>
+                  <td className="py-2 pr-3">{row.category}</td>
+                  <td className="py-2 pr-3">{row.purpose}</td>
+                  <td className="py-2">{row.duration}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ),
+    },
+    {
+      id: "vercel",
+      title: "Performance measurement",
+      body: (
         <p>
-          When you first visit, you can accept all cookies, keep essential cookies only, or choose categories. You can change your
-          choice at any time: <CookieSettingsButton className="font-semibold text-intel underline-offset-2 hover:underline" />.
+          Our host, Vercel, measures page speed and anonymous visit counts without cookies and without identifying you. Razorpay may set
+          its own cookies on its checkout pages to process payments securely; those are covered by Razorpay&apos;s policies.
         </p>
+      ),
+    },
+    {
+      id: "choices",
+      title: "Your choices",
+      body: (
+        <>
+          <p>
+            When you first visit, you can accept all cookies, keep essential cookies only, or choose categories. You can change your
+            choice at any time: <CookieSettingsButton className="font-semibold text-intel underline-offset-2 hover:underline" />.
+          </p>
+          <p>
+            You can also block or delete cookies in your browser settings. Blocking essential cookies may stop sign-in and some features
+            from working.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "more",
+      title: "More information",
+      body: (
         <p>
-          You can also block or delete cookies in your browser settings. Blocking essential cookies may stop sign-in and some features
-          from working.
+          How we use personal data is explained in our <Link href="/legal/privacy">Privacy Policy</Link>. Questions:{" "}
+          <MailLink email={COMPANY_IDENTITY.supportEmail} subject="Cookies" />.
         </p>
-      </>
-    ),
-  },
-  {
-    id: "more",
-    title: "More information",
-    body: (
-      <p>
-        How we use personal data is explained in our <Link href="/legal/privacy">Privacy Policy</Link>. Questions:{" "}
-        <MailLink email={COMPANY_IDENTITY.supportEmail} subject="Cookies" />.
-      </p>
-    ),
-  },
-];
-
-export default function CookiePolicyPage() {
+      ),
+    },
+  ];
   return (
     <LegalDocument
       eyebrow="Privacy"

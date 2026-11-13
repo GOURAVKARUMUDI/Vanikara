@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { COMPANY_IDENTITY } from "@/data/company";
+import type { SiteContent } from "@/content/defaults";
 
 const CATEGORIES = [
   { id: "General", placeholder: "What would you like to discuss?" },
@@ -21,7 +21,7 @@ const fieldClass =
 
 const EMPTY = { name: "", email: "", subject: "", message: "", bot: "" };
 
-export default function ContactForm() {
+export default function ContactForm({ identity: COMPANY_IDENTITY }: Pick<SiteContent, "identity">) {
   const [category, setCategory] = useState<Category>("General");
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");

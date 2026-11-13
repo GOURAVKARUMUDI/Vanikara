@@ -2,42 +2,42 @@ import Link from "next/link";
 import Image from "next/image";
 import BrandMark from "@/components/brand/BrandMark";
 import CookieSettingsButton from "@/components/layout/CookieSettingsButton";
-import { COMPANY_IDENTITY, NAVIGATION } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
-const COLUMNS = [
-  {
-    title: "Products",
-    links: [
-      ...NAVIGATION.products.map(({ href, label }) => ({ href, label })),
-      { href: "/what-we-build", label: "Overview" },
-      { href: "/pricing", label: "Pricing" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { href: "/about", label: "About" },
-      { href: "/leadership", label: "Leadership" },
-      { href: "/technology", label: "Technology" },
-      { href: "/careers", label: "Careers" },
-      { href: "/contact", label: "Contact" },
-      { href: "/login", label: "Sign in" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { href: "/legal/terms", label: "Terms & Conditions" },
-      { href: "/legal/privacy", label: "Privacy Policy" },
-      { href: "/legal/refund", label: "Refund & Cancellation" },
-      { href: "/legal/shipping", label: "Shipping & Delivery" },
-      { href: "/legal/cookies", label: "Cookie Policy" },
-      { href: "/legal/legal-information", label: "Company information" },
-    ],
-  },
-];
-
-export default function Footer() {
+export default async function Footer() {
+  const { identity: COMPANY_IDENTITY, navigation: NAVIGATION } = await getSiteContent();
+  const COLUMNS = [
+    {
+      title: "Products",
+      links: [
+        ...NAVIGATION.products.map(({ href, label }) => ({ href, label })),
+        { href: "/what-we-build", label: "Overview" },
+        { href: "/pricing", label: "Pricing" },
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        { href: "/about", label: "About" },
+        { href: "/leadership", label: "Leadership" },
+        { href: "/technology", label: "Technology" },
+        { href: "/careers", label: "Careers" },
+        { href: "/contact", label: "Contact" },
+        { href: "/login", label: "Sign in" },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { href: "/legal/terms", label: "Terms & Conditions" },
+        { href: "/legal/privacy", label: "Privacy Policy" },
+        { href: "/legal/refund", label: "Refund & Cancellation" },
+        { href: "/legal/shipping", label: "Shipping & Delivery" },
+        { href: "/legal/cookies", label: "Cookie Policy" },
+        { href: "/legal/legal-information", label: "Company information" },
+      ],
+    },
+  ];
   return (
     <footer className="relative mt-16 overflow-hidden border-t border-line">
       <div aria-hidden="true" className="footer-glow-line" />

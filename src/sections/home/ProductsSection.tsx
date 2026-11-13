@@ -1,9 +1,11 @@
 import { MapPin } from "lucide-react";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
-import { INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
+import Lines from "@/components/ui/Lines";
 
-export default function ProductsSection() {
+export default async function ProductsSection() {
+  const { initiatives: INITIATIVES, home: { products: copy } } = await getSiteContent();
   const { foodDelivery } = INITIATIVES;
 
   return (
@@ -11,14 +13,13 @@ export default function ProductsSection() {
       <div className="container-page">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
           <div className="max-w-2xl">
-            <Eyebrow>Products</Eyebrow>
+            <Eyebrow>{copy.eyebrow}</Eyebrow>
             <h2 id="products-title" className="text-headline mt-5 text-fg">
-              Two initiatives.
-              <br className="hidden sm:block" /> One direction.
+              <Lines text={copy.title} breakClassName="hidden sm:block" />
             </h2>
           </div>
           <p className="max-w-sm text-[1.0625rem] leading-relaxed text-fg-muted">
-            A product with a launch date, and a long-term initiative that will grow alongside it.
+            {copy.lead}
           </p>
         </div>
 
@@ -50,13 +51,13 @@ export default function ProductsSection() {
 
               <div className="mt-9">
                 <Button href="/food-delivery" variant="secondary" arrow>
-                  Explore the platform
+                  {copy.buttonLabel}
                 </Button>
               </div>
             </div>
 
             <div className="relative border-t border-line bg-surface-sunken/60 p-7 sm:p-10 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-12">
-              <p className="text-[0.8125rem] font-semibold text-fg">What we are designing for</p>
+              <p className="text-[0.8125rem] font-semibold text-fg">{copy.designingForLabel}</p>
               <ul className="mt-6 space-y-5">
                 {foodDelivery.principles.map((principle, i) => (
                   <li key={principle.title} className="flex gap-4" data-reveal style={{ ["--reveal-delay" as string]: `${200 + i * 90}ms` }}>

@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
-import { COMPANY_IDENTITY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const { identity: COMPANY_IDENTITY } = await getSiteContent();
   return {
     name: "VANIKARA",
     short_name: "VANIKARA",

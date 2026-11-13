@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 import ThemeSwitcher from "./layout/ThemeSwitcher";
 import AccountMenu, { Avatar } from "./auth/AccountMenu";
 import { googleSignOut, useSession } from "./auth/session";
-import { COMPANY_IDENTITY, NAVIGATION } from "@/data/company";
+import type { SiteContent } from "@/content/defaults";
 
 type MenuKey = "company" | "products" | null;
 
@@ -22,7 +22,7 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function Navbar() {
+export default function Navbar({ identity: COMPANY_IDENTITY, navigation: NAVIGATION }: Pick<SiteContent, "identity" | "navigation">) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<MenuKey>(null);

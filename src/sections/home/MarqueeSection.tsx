@@ -1,10 +1,11 @@
-import { INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 /**
  * A slow, continuous band of what VANIKARA is working on — drawn from the
  * same data as the product sections, so it never says more than they do.
  */
-export default function MarqueeSection() {
+export default async function MarqueeSection() {
+  const { initiatives: INITIATIVES } = await getSiteContent();
   const { foodDelivery, cygma } = INITIATIVES;
   const warm = foodDelivery.principles.map((p) => p.title);
   const cool = cygma.directions.map((d) => `CYGMA · ${d.title}`);

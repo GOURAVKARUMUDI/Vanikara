@@ -92,7 +92,7 @@ export const FOUNDERS_AND_LEADERSHIP: Founder[] = [
     designation: "CHRO & Head of Marketing",
     roleShort: "CHRO",
     isFounder: false,
-    isDirector: false,
+    isDirector: true,
     responsibilities: ["People", "Culture", "Marketing"],
     linkedin: "https://www.linkedin.com/in/sri-chandra-shekar-reddy-yarreddu-9b4368437/",
     bio: "Leads people, culture and marketing — building the team VANIKARA will grow with, and how the company presents itself.",

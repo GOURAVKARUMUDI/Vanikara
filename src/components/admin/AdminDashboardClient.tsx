@@ -3,8 +3,8 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Inbox, LayoutDashboard, LogOut, Settings, ShieldCheck, Users } from "lucide-react";
-import { FOUNDERS_AND_LEADERSHIP } from "@/data/company";
+import { AlertTriangle, FilePenLine, Inbox, LayoutDashboard, LogOut, Settings, ShieldCheck, Users } from "lucide-react";
+import type { Founder } from "@/data/company";
 import { BrandSymbol } from "@/components/brand/BrandMark";
 
 const CRMOverview = dynamic(() => import("@/components/admin/CRMOverview"), { ssr: false });
@@ -13,9 +13,12 @@ const UsersManager = dynamic(() => import("@/components/admin/UsersManager"), { 
 const ContactManager = dynamic(() => import("@/components/admin/ContactManager"), { ssr: false });
 const SettingsManager = dynamic(() => import("@/components/admin/SettingsManager"), { ssr: false });
 const PrivacyManager = dynamic(() => import("@/components/admin/PrivacyManager"), { ssr: false });
+const ContentEditor = dynamic(() => import("@/components/admin/ContentEditor"), { ssr: false });
 
 interface Props {
   username: string;
+  /** Leadership from the live site content. */
+  people: Founder[];
   /** Session expiry, seconds since epoch. */
   expiresAt: number;
   tab: string;
@@ -23,13 +26,14 @@ interface Props {
 
 const TABS = [
   { id: "overview", label: "Overview", Icon: LayoutDashboard },
+  { id: "content", label: "Website content", Icon: FilePenLine },
   { id: "contacts", label: "Contacts & Inquiries", Icon: Inbox },
   { id: "users", label: "Users", Icon: Users },
   { id: "settings", label: "Settings", Icon: Settings },
   { id: "privacy", label: "Privacy Control", Icon: ShieldCheck },
 ];
 
-export default function AdminDashboardClient({ username, expiresAt, tab: initialTab }: Props) {
+export default function AdminDashboardClient({ username, people, expiresAt, tab: initialTab }: Props) {
   const router = useRouter();
   const [activeTab, setActiveTab] = React.useState(
     TABS.some((t) => t.id === initialTab) ? initialTab : "overview"
@@ -165,7 +169,7 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
                   Leadership registry
                 </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {FOUNDERS_AND_LEADERSHIP.map((leader) => (
+                  {people.map((leader) => (
                     <div key={leader.id} className="space-y-1.5 rounded-card border border-line bg-surface-sunken/50 p-4">
                       <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-intel">
                         {leader.designation}
@@ -185,6 +189,7 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
             </div>
           )}
 
+          {activeTab === "content" && <ContentEditor />}
           {activeTab === "contacts" && <ContactManager />}
           {activeTab === "users" && <UsersManager />}
           {activeTab === "settings" && <SettingsManager />}

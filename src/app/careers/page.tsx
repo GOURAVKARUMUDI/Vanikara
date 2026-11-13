@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
-import { COMPANY_IDENTITY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 
 const AREAS = ["Engineering", "Product & design", "Operations", "Business & partnerships"];
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  const { identity: COMPANY_IDENTITY } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-12 pt-16 sm:pt-24">

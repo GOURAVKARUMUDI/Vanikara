@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import RevealText from "@/components/motion/RevealText";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { SYMBOL_SRC } from "@/components/brand/BrandMark";
 
-export default function ClosingSection() {
+import { SYMBOL_SRC } from "@/components/brand/BrandMark";
+import { getSiteContent } from "@/lib/content";
+
+export default async function ClosingSection() {
+  const { identity: COMPANY_IDENTITY, home: { closing: copy } } = await getSiteContent();
   return (
     <section aria-labelledby="closing-title" className="relative section-atmosphere overflow-hidden py-20 sm:py-28" data-tone="deep">
       <div className="container-page">
@@ -22,15 +24,14 @@ export default function ClosingSection() {
             />
           </div>
           <h2 id="closing-title" className="text-headline mt-6 text-fg">
-            <RevealText>This is the beginning.</RevealText>
+            <RevealText>{copy.title}</RevealText>
           </h2>
           <p className="text-lead mx-auto mt-5 max-w-lg">
-            VANIKARA is still early. The products are being built and the ambition is long-term. We would rather build
-            carefully than appear finished too soon.
+            {copy.body}
           </p>
           <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
             <Button href="/contact" size="lg" arrow>
-              Contact VANIKARA
+              {copy.buttonLabel}
             </Button>
             <Button href={`mailto:${COMPANY_IDENTITY.officialEmail}`} variant="secondary" size="lg">
               {COMPANY_IDENTITY.officialEmail}

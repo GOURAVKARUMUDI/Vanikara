@@ -158,6 +158,16 @@ create table if not exists public.privacy_config (
   updated_at timestamptz not null default now()
 );
 
+-- ---------- Website content (admin "Website content" editor) ---------------
+-- One row per content group. Only overrides are stored; anything missing
+-- falls back to the defaults in the code. Read and written by the server only.
+create table if not exists public.site_content (
+  key text primary key check (char_length(key) <= 64),
+  value jsonb not null,
+  updated_at timestamptz not null default now(),
+  updated_by text
+);
+
 -- ---------- Repair: bring tables created by older scripts up to date -------
 -- `create table if not exists` never alters an existing table, so add any
 -- column or relationship the app needs that an earlier schema lacked.
@@ -221,6 +231,7 @@ alter table public.careers_applications enable row level security;
 alter table public.admin_audit_logs     enable row level security;
 alter table public.users                enable row level security;
 alter table public.privacy_config       enable row level security;
+alter table public.site_content         enable row level security;
 
 -- Private tables: remove any policy that might grant the public key access
 -- (e.g. from an older schema). With RLS on and no policies, anon and
@@ -230,7 +241,7 @@ declare
   t text;
   p record;
 begin
-  foreach t in array array['leads', 'clients', 'payments', 'careers_applications', 'admin_audit_logs', 'users'] loop
+  foreach t in array array['leads', 'clients', 'payments', 'careers_applications', 'admin_audit_logs', 'users', 'site_content'] loop
     for p in select policyname from pg_policies where schemaname = 'public' and tablename = t loop
       execute format('drop policy if exists %I on public.%I', p.policyname, t);
     end loop;

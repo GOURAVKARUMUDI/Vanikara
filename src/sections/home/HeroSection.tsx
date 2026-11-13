@@ -1,9 +1,10 @@
 import Button from "@/components/ui/Button";
 import BrandStage from "@/components/brand/BrandStage";
 import RevealText from "@/components/motion/RevealText";
-import { COMPANY_IDENTITY, INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
-export default function HeroSection() {
+export default async function HeroSection() {
+  const { identity: COMPANY_IDENTITY, initiatives: INITIATIVES, home: { hero: copy } } = await getSiteContent();
   const { foodDelivery, cygma } = INITIATIVES;
 
   return (
@@ -27,8 +28,8 @@ export default function HeroSection() {
           <h1 id="hero-title" className="text-display mt-6 text-fg">
             <RevealText mode="load" delay={120}>
               {[
-                { text: "Building what\ncomes " },
-                { text: "next", className: "text-shimmer" },
+                { text: `${copy.headlineStart}\n${copy.headlineMiddle} ` },
+                { text: copy.headlineHighlight, className: "text-shimmer" },
                 { text: ".", className: "text-brand-orange" },
               ]}
             </RevealText>
@@ -43,10 +44,10 @@ export default function HeroSection() {
             style={{ ["--rise-delay" as string]: "320ms" }}
           >
             <Button href="/about" size="lg" arrow>
-              Explore VANIKARA
+              {copy.primaryButton}
             </Button>
             <Button href="/what-we-build" variant="secondary" size="lg">
-              Our Products
+              {copy.secondaryButton}
             </Button>
           </div>
 

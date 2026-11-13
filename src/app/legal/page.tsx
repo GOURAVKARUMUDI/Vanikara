@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { GRIEVANCE_OFFICER, LEGAL_DOCUMENTS, LEGAL_EFFECTIVE_DATE } from "@/data/legal";
+
+import { LEGAL_DOCUMENTS } from "@/data/legal";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Legal",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/legal" },
 };
 
-export default function LegalHubPage() {
+export default async function LegalHubPage() {
+  const { identity: COMPANY_IDENTITY, legal: { grievanceOfficer: GRIEVANCE_OFFICER, effectiveDate: LEGAL_EFFECTIVE_DATE } } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-12 pt-16 sm:pt-24">

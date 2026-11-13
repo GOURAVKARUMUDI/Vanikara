@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { Founder } from "@/data/company";
-import { GRIEVANCE_OFFICER } from "@/data/legal";
+
 import { SYMBOL_SRC } from "@/components/brand/BrandMark";
+import { getSiteContent } from "@/lib/content";
 
 interface FounderCardProps {
   person: Founder;
@@ -26,7 +27,8 @@ function sameName(a: string, b: string) {
  * areas of responsibility, a short bio and LinkedIn. Initials stand in for
  * photographs until real portraits are available — no stock or generated faces.
  */
-export default function FounderCard({ person, index }: FounderCardProps) {
+export default async function FounderCard({ person, index }: FounderCardProps) {
+  const { legal: { grievanceOfficer: GRIEVANCE_OFFICER } } = await getSiteContent();
   const tone = index % 2 === 0 ? "warm" : "cool";
   const isGrievanceOfficer = sameName(person.publicName, GRIEVANCE_OFFICER.name);
   const focus = [...person.responsibilities, ...(isGrievanceOfficer ? ["Grievance Officer"] : [])];

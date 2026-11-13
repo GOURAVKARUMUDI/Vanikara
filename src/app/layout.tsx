@@ -17,7 +17,7 @@ import FirebaseAnalytics from "@/components/auth/FirebaseAnalytics";
 import PreferencesModal from "@/components/layout/PreferencesModal";
 import { ThemeProvider, THEME_BOOT_SCRIPT } from "@/components/layout/ThemeContext";
 import { ConsentProvider } from "@/context/ConsentContext";
-import { COMPANY_IDENTITY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -31,7 +31,9 @@ const manrope = Manrope({
 
 const TITLE = "VANIKARA — Building What Comes Next";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const { identity: COMPANY_IDENTITY } = await getSiteContent();
+  return {
   metadataBase: new URL(COMPANY_IDENTITY.siteUrl),
   title: {
     default: TITLE,
@@ -68,7 +70,8 @@ export const metadata: Metadata = {
     title: TITLE,
     description: COMPANY_IDENTITY.supportingStatement,
   },
-};
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -80,7 +83,8 @@ export const viewport: Viewport = {
   ],
 };
 
-const ORGANIZATION_JSON_LD = {
+function organizationJsonLd(COMPANY_IDENTITY: Awaited<ReturnType<typeof getSiteContent>>["identity"]) {
+  return {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: COMPANY_IDENTITY.legalName,
@@ -98,16 +102,23 @@ const ORGANIZATION_JSON_LD = {
     { "@type": "ContactPoint", contactType: "general enquiries", email: COMPANY_IDENTITY.officialEmail, areaServed: "IN", availableLanguage: "en" },
     { "@type": "ContactPoint", contactType: "customer support", email: COMPANY_IDENTITY.supportEmail, areaServed: "IN", availableLanguage: "en" },
   ],
-};
+  };
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/** JSON for a <script> tag: "<" is escaped so no text can close the tag early. */
+function safeJson(value: unknown) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await getSiteContent();
   return (
     <html lang="en" data-theme="light" className={manrope.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+          dangerouslySetInnerHTML={{ __html: safeJson(organizationJsonLd(content.identity)) }}
         />
       </head>
       <body className="relative flex min-h-screen flex-col font-sans">
@@ -142,7 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               Skip to content
             </a>
-            <Navbar />
+            <Navbar identity={content.identity} navigation={content.navigation} />
             <main id="main-content" className="relative flex-1 pt-[var(--header-height)]">
               {children}
             </main>

@@ -4,7 +4,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
 import { BrandSymbol } from "@/components/brand/BrandMark";
-import { INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Food Delivery Platform",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "VANIKARA is exploring a restaurant-first approach to food delivery economics. In development, targeting launch in Guntur, Andhra Pradesh in November 2026.",
 };
 
-export default function FoodDeliveryPage() {
+export default async function FoodDeliveryPage() {
+  const { initiatives: INITIATIVES } = await getSiteContent();
   const { foodDelivery } = INITIATIVES;
 
   return (

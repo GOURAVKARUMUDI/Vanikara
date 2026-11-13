@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { COMPANY_IDENTITY } from "@/data/company";
+
 import { GrievanceCard } from "@/components/legal/LegalDocument";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Company Information",
@@ -10,21 +11,21 @@ export const metadata: Metadata = {
   alternates: { canonical: "/legal/legal-information" },
 };
 
-const C = COMPANY_IDENTITY;
+export default async function LegalInformationPage() {
+  const { identity: COMPANY_IDENTITY } = await getSiteContent();
+  const C = COMPANY_IDENTITY;
 
-const DETAILS = [
-  { label: "Registered name", val: C.legalName },
-  { label: "Brand name", val: C.brandName },
-  { label: "Corporate Identity Number (CIN)", val: C.cin },
-  { label: "Company type", val: "Private limited company, limited by shares" },
-  { label: "Incorporated under", val: "Companies Act, 2013 (Ministry of Corporate Affairs)" },
-  { label: "Date of incorporation", val: C.incorporationDate },
-  { label: "State", val: `${C.state}, ${C.country}` },
-  { label: "Business email", val: C.officialEmail },
-  { label: "Customer support", val: C.supportEmail },
-];
-
-export default function LegalInformationPage() {
+  const DETAILS = [
+    { label: "Registered name", val: C.legalName },
+    { label: "Brand name", val: C.brandName },
+    { label: "Corporate Identity Number (CIN)", val: C.cin },
+    { label: "Company type", val: "Private limited company, limited by shares" },
+    { label: "Incorporated under", val: "Companies Act, 2013 (Ministry of Corporate Affairs)" },
+    { label: "Date of incorporation", val: C.incorporationDate },
+    { label: "State", val: `${C.state}, ${C.country}` },
+    { label: "Business email", val: C.officialEmail },
+    { label: "Customer support", val: C.supportEmail },
+  ];
   return (
     <div className="container-page pb-16 pt-10 sm:pt-14">
       <div className="mx-auto max-w-3xl">

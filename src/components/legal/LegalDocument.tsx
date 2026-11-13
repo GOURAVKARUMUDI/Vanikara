@@ -1,8 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION } from "@/data/legal";
+import { getSiteContent } from "@/lib/content";
 
 export interface LegalSection {
   id: string;
@@ -24,7 +23,8 @@ interface LegalDocumentProps {
  * contents with anchor links, numbered sections, and the grievance
  * officer's details. Keeps all policies consistent and easy to scan.
  */
-export default function LegalDocument({ eyebrow, title, intro, sections, showGrievance = true }: LegalDocumentProps) {
+export default async function LegalDocument({ eyebrow, title, intro, sections, showGrievance = true }: LegalDocumentProps) {
+  const { identity: COMPANY_IDENTITY, legal: { effectiveDate: LEGAL_EFFECTIVE_DATE, version: LEGAL_VERSION } } = await getSiteContent();
   return (
     <div className="container-page pb-16 pt-10 sm:pt-14">
       <div className="mx-auto max-w-3xl">
@@ -78,7 +78,8 @@ export default function LegalDocument({ eyebrow, title, intro, sections, showGri
   );
 }
 
-export function GrievanceCard() {
+export async function GrievanceCard() {
+  const { legal: { grievanceOfficer: GRIEVANCE_OFFICER } } = await getSiteContent();
   return (
     <aside aria-labelledby="grievance-title" className="surface mt-6 rounded-panel p-6 sm:p-8">
       <h2 id="grievance-title" className="text-base font-bold text-fg">

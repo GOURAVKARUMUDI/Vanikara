@@ -1,16 +1,18 @@
 import Eyebrow from "@/components/ui/Eyebrow";
-import { COMPANY_IDENTITY, COMPANY_TIMELINE } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
+import Lines from "@/components/ui/Lines";
 
-export default function TimelineSection({ showHeader = true }: { showHeader?: boolean }) {
+export default async function TimelineSection({ showHeader = true }: { showHeader?: boolean }) {
+  const { identity: COMPANY_IDENTITY, timeline: COMPANY_TIMELINE, home: { timeline: copy } } = await getSiteContent();
   return (
     <section aria-labelledby={showHeader ? "timeline-title" : undefined} aria-label={showHeader ? undefined : "Timeline"} className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
       <div className="container-page">
         {showHeader && (
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
             <div className="max-w-2xl">
-              <Eyebrow>Timeline</Eyebrow>
+              <Eyebrow>{copy.eyebrow}</Eyebrow>
               <h2 id="timeline-title" className="text-headline mt-5 text-fg">
-                Early, and on the record.
+                <Lines text={copy.title} />
               </h2>
             </div>
             <p className="max-w-sm text-[1.0625rem] leading-relaxed text-fg-muted">

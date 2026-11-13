@@ -4,7 +4,7 @@ import { MapPin } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
 import { SYMBOL_SRC } from "@/components/brand/BrandMark";
-import { INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     "VANIKARA's two initiatives: a food delivery platform in development for Guntur, and CYGMA AI, a long-term intelligence initiative.",
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const { initiatives: INITIATIVES } = await getSiteContent();
   const { foodDelivery, cygma } = INITIATIVES;
 
   return (

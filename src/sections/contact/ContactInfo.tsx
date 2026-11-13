@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { COMPANY_IDENTITY } from "@/data/company";
-import { GRIEVANCE_OFFICER } from "@/data/legal";
+
 import { BrandSymbol } from "@/components/brand/BrandMark";
+import { getSiteContent } from "@/lib/content";
 
-const CHANNELS = [
-  { label: "General enquiries", email: COMPANY_IDENTITY.officialEmail },
-  { label: "Support", email: COMPANY_IDENTITY.supportEmail },
-];
-
-export default function ContactInfo() {
+export default async function ContactInfo() {
+  const { identity: COMPANY_IDENTITY, legal: { grievanceOfficer: GRIEVANCE_OFFICER } } = await getSiteContent();
+  const CHANNELS = [
+    { label: "General enquiries", email: COMPANY_IDENTITY.officialEmail },
+    { label: "Support", email: COMPANY_IDENTITY.supportEmail },
+  ];
   return (
     <div className="rise-in space-y-10" style={{ ["--rise-delay" as string]: "120ms" }}>
       <div className="space-y-6">

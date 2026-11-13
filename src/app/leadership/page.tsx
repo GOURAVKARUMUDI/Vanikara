@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import SectionHeader from "@/components/ui/SectionHeader";
 import FounderCard from "@/components/people/FounderCard";
 import Button from "@/components/ui/Button";
-import { COMPANY_IDENTITY, FOUNDERS_AND_LEADERSHIP } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Leadership",
   description: "The leadership of VANIKARA Intelligence Private Limited.",
 };
 
-export default function LeadershipPage() {
+export default async function LeadershipPage() {
+  const { identity: COMPANY_IDENTITY, people: FOUNDERS_AND_LEADERSHIP } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-12 pt-16 sm:pt-24">

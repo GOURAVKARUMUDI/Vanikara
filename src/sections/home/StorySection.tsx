@@ -2,18 +2,17 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Eyebrow from "@/components/ui/Eyebrow";
 import RevealText from "@/components/motion/RevealText";
-import { COMPANY_IDENTITY, COMPANY_STORY } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
-const STATEMENT = "We build what\nwe believe\nshould exist.";
-
-export default function StorySection() {
+export default async function StorySection() {
+  const { identity: COMPANY_IDENTITY, story: COMPANY_STORY, home: { story: copy } } = await getSiteContent();
   return (
     <section aria-labelledby="story-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="warm">
       <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
-          <Eyebrow>The company</Eyebrow>
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
           <h2 id="story-title" className="text-headline mt-5 text-fg">
-            <RevealText>{STATEMENT}</RevealText>
+            <RevealText>{copy.statement}</RevealText>
           </h2>
         </div>
 
@@ -36,7 +35,7 @@ export default function StorySection() {
           </dl>
 
           <Link href="/about" className="group inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-intel">
-            <span className="link-underline">More about VANIKARA</span>
+            <span className="link-underline">{copy.linkLabel}</span>
             <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
           </Link>
         </div>

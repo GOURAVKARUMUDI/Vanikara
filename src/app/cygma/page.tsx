@@ -3,7 +3,7 @@ import Image from "next/image";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
 import { SYMBOL_SRC } from "@/components/brand/BrandMark";
-import { INITIATIVES } from "@/data/company";
+import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "CYGMA AI",
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
     "CYGMA is VANIKARA's proprietary long-term intelligence initiative — company-specific intelligence around its products, knowledge, systems and operations. Not a public chatbot.",
 };
 
-export default function CygmaPage() {
+export default async function CygmaPage() {
+  const { initiatives: INITIATIVES } = await getSiteContent();
   const { cygma, foodDelivery } = INITIATIVES;
 
   return (

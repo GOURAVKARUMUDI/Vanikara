@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ContactForm from "@/sections/contact/ContactForm";
+import { getSiteContent } from "@/lib/content";
 import ContactInfo from "@/sections/contact/ContactInfo";
 
 export const metadata: Metadata = {
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
     "Contact VANIKARA for general enquiries, partnerships, product discussions or support.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { identity } = await getSiteContent();
   return (
     <>
       <section className="container-page pb-12 pt-16 sm:pt-24">
@@ -27,7 +29,7 @@ export default function ContactPage() {
             <ContactInfo />
           </div>
           <div className="lg:col-span-7">
-            <ContactForm />
+            <ContactForm identity={identity} />
           </div>
         </div>
       </section>

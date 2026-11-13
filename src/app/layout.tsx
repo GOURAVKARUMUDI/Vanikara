@@ -90,10 +90,8 @@ const ORGANIZATION_JSON_LD = {
   foundingDate: "2026-04-01",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "D-No-4-6-26/4, Near Maruthi Multi Speciality Hospital, Koritepadu",
     addressLocality: "Guntur",
     addressRegion: "Andhra Pradesh",
-    postalCode: "522007",
     addressCountry: "IN",
   },
   contactPoint: [

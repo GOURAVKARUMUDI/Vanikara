@@ -111,10 +111,6 @@ export function GrievanceCard() {
           <dt className="text-fg-subtle">Hours</dt>
           <dd className="mt-0.5 text-fg">{GRIEVANCE_OFFICER.hours}</dd>
         </div>
-        <div className="sm:col-span-2">
-          <dt className="text-fg-subtle">Address</dt>
-          <dd className="mt-0.5 text-fg">{GRIEVANCE_OFFICER.address}</dd>
-        </div>
       </dl>
     </aside>
   );

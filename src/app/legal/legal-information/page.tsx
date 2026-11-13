@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { COMPANY_IDENTITY, FOUNDERS_AND_LEADERSHIP } from "@/data/company";
+import { COMPANY_IDENTITY } from "@/data/company";
 import { GrievanceCard } from "@/components/legal/LegalDocument";
 
 export const metadata: Metadata = {
   title: "Company Information",
-  description: "Registered name, CIN, registered office, directors and grievance officer of VANIKARA Intelligence Private Limited.",
+  description: "Registered name, CIN, registered office and grievance officer of VANIKARA Intelligence Private Limited.",
   alternates: { canonical: "/legal/legal-information" },
 };
 
@@ -23,8 +23,6 @@ const DETAILS = [
   { label: "Business email", val: C.officialEmail },
   { label: "Customer support", val: C.supportEmail },
 ];
-
-const DIRECTORS = FOUNDERS_AND_LEADERSHIP.filter((p) => p.isDirector);
 
 export default function LegalInformationPage() {
   return (
@@ -60,10 +58,6 @@ export default function LegalInformationPage() {
             <div className="grid gap-1 px-6 py-3.5 text-sm sm:grid-cols-[14rem_1fr] sm:px-8">
               <dt className="text-fg-subtle">Registered office</dt>
               <dd className="font-semibold text-fg">{C.registeredOffice}</dd>
-            </div>
-            <div className="grid gap-1 px-6 py-3.5 text-sm sm:grid-cols-[14rem_1fr] sm:px-8">
-              <dt className="text-fg-subtle">Directors</dt>
-              <dd className="font-semibold text-fg">{DIRECTORS.map((d) => d.fullName).join(", ")}</dd>
             </div>
           </dl>
         </section>

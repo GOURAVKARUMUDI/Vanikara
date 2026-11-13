@@ -63,7 +63,8 @@ const sections: LegalSection[] = [
     title: "Who is responsible for your data",
     body: (
       <p>
-        {C.legalName} (CIN {C.cin}), {C.registeredOffice}, is the <strong>Data Fiduciary</strong> for personal data collected
+        {C.legalName} (CIN {C.cin}), Guntur, Andhra Pradesh (registered office on our{" "}
+        <Link href="/legal/legal-information">Company Information</Link> page), is the <strong>Data Fiduciary</strong> for personal data collected
         through this website, as defined in the Digital Personal Data Protection Act, 2023 (&quot;DPDP Act&quot;). This policy
         also meets the Information Technology Act, 2000 and the Information Technology (Reasonable Security Practices and Procedures
         and Sensitive Personal Data or Information) Rules, 2011.

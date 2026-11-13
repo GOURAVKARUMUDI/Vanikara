@@ -20,7 +20,8 @@ const sections: LegalSection[] = [
       <p>
         This website, <strong>{C.siteUrl.replace("https://", "")}</strong>, is operated by <strong>{C.legalName}</strong>{" "}
         (&quot;VANIKARA&quot;, &quot;we&quot;, &quot;us&quot;), a private limited company incorporated under the Companies Act, 2013
-        (CIN {C.cin}), with its registered office at {C.registeredOffice}. You can reach us at <MailLink email={C.officialEmail} />.
+        (CIN {C.cin}), registered in Guntur, Andhra Pradesh — full details on our{" "}
+        <Link href="/legal/legal-information">Company Information</Link> page. You can reach us at <MailLink email={C.officialEmail} />.
       </p>
     ),
   },

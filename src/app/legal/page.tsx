@@ -67,10 +67,6 @@ export default function LegalHubPage() {
               <dt className="text-[0.8125rem] text-fg-subtle">Operations</dt>
               <dd className="mt-1.5 text-[0.9375rem] font-semibold text-fg">{COMPANY_IDENTITY.operationalLocation}</dd>
             </div>
-            <div className="sm:col-span-2 lg:col-span-4">
-              <dt className="text-[0.8125rem] text-fg-subtle">Registered office</dt>
-              <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-fg">{COMPANY_IDENTITY.registeredOffice}</dd>
-            </div>
           </dl>
           <p className="mt-8 border-t border-line pt-6 text-sm text-fg-subtle">
             All policies effective {LEGAL_EFFECTIVE_DATE}. Grievance Officer: {GRIEVANCE_OFFICER.name},{" "}

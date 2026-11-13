@@ -32,7 +32,7 @@ export default function LeadershipPage() {
         </h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {founders.map((person, i) => (
-            <FounderCard key={person.id} person={person} index={i} detailed />
+            <FounderCard key={person.id} person={person} index={i} />
           ))}
         </div>
       </section>
@@ -47,7 +47,7 @@ export default function LeadershipPage() {
               </h2>
             </div>
             {leadership.map((person, i) => (
-              <FounderCard key={person.id} person={person} index={i + founders.length} detailed />
+              <FounderCard key={person.id} person={person} index={i + founders.length} />
             ))}
           </div>
         </section>

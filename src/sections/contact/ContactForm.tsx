@@ -8,7 +8,10 @@ import type { SiteContent } from "@/content/defaults";
 
 const CATEGORIES = [
   { id: "General", placeholder: "What would you like to discuss?" },
-  { id: "Partnership", placeholder: "Tell us about your restaurant or partnership idea." },
+  { id: "Restaurant", placeholder: "Tell us your restaurant's name, city and what you'd want from a delivery platform. Early interest only; no onboarding yet." },
+  { id: "Delivery partner", placeholder: "Tell us your city, the vehicle you use and when you'd be available. Early interest only; no onboarding yet." },
+  { id: "Customer", placeholder: "Tell us what you'd want from a food delivery app in Guntur. Early interest only." },
+  { id: "Partnership", placeholder: "Tell us about your partnership idea." },
   { id: "Product", placeholder: "Questions or thoughts about our products." },
   { id: "Support", placeholder: "How can we help?" },
   { id: "Media", placeholder: "Your publication, topic and timeline." },
@@ -21,8 +24,13 @@ const fieldClass =
 
 const EMPTY = { name: "", email: "", subject: "", message: "", bot: "" };
 
-export default function ContactForm({ identity: COMPANY_IDENTITY }: Pick<SiteContent, "identity">) {
-  const [category, setCategory] = useState<Category>("General");
+export default function ContactForm({
+  identity: COMPANY_IDENTITY,
+  initialCategory,
+}: Pick<SiteContent, "identity"> & { initialCategory?: string }) {
+  const startCategory = CATEGORIES.find((c) => c.id === initialCategory)?.id ?? "General";
+  const [category, setCategory] = useState<Category>(startCategory);
+  const [reference, setReference] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -62,6 +70,7 @@ export default function ContactForm({ identity: COMPANY_IDENTITY }: Pick<SiteCon
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "We couldn't send your message.");
+      setReference(typeof data.reference === "string" ? data.reference : null);
       setStatus("success");
     } catch (err) {
       setErrorMessage(
@@ -79,11 +88,17 @@ export default function ContactForm({ identity: COMPANY_IDENTITY }: Pick<SiteCon
         <p className="mx-auto mt-3 max-w-sm text-[0.9375rem] leading-relaxed text-fg-muted">
           A member of the team will reply to {form.email || "your email"}.
         </p>
+        {reference && (
+          <p className="mt-5 text-sm text-fg-muted">
+            Your reference: <span className="font-semibold tabular-nums text-fg">{reference}</span>. Quote it in any follow-up.
+          </p>
+        )}
         <div className="mt-8">
           <Button
             variant="secondary"
             onClick={() => {
               setStatus("idle");
+              setReference(null);
               setForm(EMPTY);
             }}
           >

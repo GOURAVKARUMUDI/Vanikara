@@ -18,7 +18,7 @@ export const LEGAL_VERSION = "2.0";
  */
 export const GRIEVANCE_OFFICER = {
   name: "Gourav Karumudi",
-  designation: "Chief Executive Officer & Director",
+  designation: "CEO & Founder",
   email: COMPANY_IDENTITY.supportEmail,
   hours: "Monday to Saturday, 10:00–18:00 IST (excluding public holidays)",
   /** Consumer Protection (E-Commerce) Rules 2020, Rule 4(5) */
@@ -39,42 +39,6 @@ export const PAYMENT_TERMS = {
   failedPaymentRefundWithin: "5–7 business days",
 };
 
-export interface ServicePackage {
-  id: string;
-  name: string;
-  price: number;
-  summary: string;
-  includes: string[];
-}
-
-/**
- * Standard website / software packages. Mirrors the `packages` table
- * seeded by supabase/setup_new_project.sql — keep the two in step.
- */
-export const SERVICE_PACKAGES: ServicePackage[] = [
-  {
-    id: "basic",
-    name: "Basic",
-    price: 5000,
-    summary: "A single-page website for a new business or individual.",
-    includes: ["1 page", "Contact form", "Standard SEO setup"],
-  },
-  {
-    id: "standard",
-    name: "Standard",
-    price: 15000,
-    summary: "A multi-page website with content and simple selling.",
-    includes: ["Up to 5 pages", "Blog setup", "Basic e-commerce"],
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: 30000,
-    summary: "A larger site or web application with a custom dashboard.",
-    includes: ["Pages as agreed in the proposal", "Custom dashboard", "Advanced SEO setup"],
-  },
-];
-
 export const formatINR = (amount: number) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount);
 
@@ -84,7 +48,6 @@ export const LEGAL_DOCUMENTS = [
   { href: "/legal/privacy", title: "Privacy Policy", desc: "What personal data we collect, why, and your rights under Indian law." },
   { href: "/legal/refund", title: "Refund & Cancellation Policy", desc: "How cancellations work and when and how refunds are paid." },
   { href: "/legal/shipping", title: "Shipping & Delivery Policy", desc: "How our digital services are delivered — nothing is physically shipped." },
-  { href: "/pricing", title: "Pricing", desc: "Our standard packages and how custom projects are priced." },
   { href: "/legal/cookies", title: "Cookie Policy", desc: "The cookies and browser storage the site uses, and your choices." },
   { href: "/legal/security", title: "Security & Responsible Disclosure", desc: "How we protect data and how to report a vulnerability." },
   { href: "/legal/legal-information", title: "Company Information", desc: "Registered name, CIN, registered office and grievance officer." },

@@ -43,10 +43,10 @@ export default async function HeroSection() {
             className="rise-in mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
             style={{ ["--rise-delay" as string]: "320ms" }}
           >
-            <Button href="/about" size="lg" arrow>
+            <Button href="/what-we-build" size="lg" arrow>
               {copy.primaryButton}
             </Button>
-            <Button href="/what-we-build" variant="secondary" size="lg">
+            <Button href="/contact" variant="secondary" size="lg">
               {copy.secondaryButton}
             </Button>
           </div>

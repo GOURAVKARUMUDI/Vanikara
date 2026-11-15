@@ -305,7 +305,7 @@ export default function Navbar({ identity: COMPANY_IDENTITY, navigation: NAVIGAT
                     Sign out
                   </button>
                 )}
-                {(showAdmin || !session.user) && (
+                {showAdmin && (
                   <Link
                     href={showAdmin ? "/admin" : "/login"}
                     onClick={() => setMobileOpen(false)}

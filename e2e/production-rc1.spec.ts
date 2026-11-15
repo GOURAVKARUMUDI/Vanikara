@@ -15,7 +15,7 @@ async function prepare(page: Page, { consent = true }: { consent?: boolean } = {
 }
 
 const PAGES = [
-  { path: "/", heading: /Building what/ },
+  { path: "/", heading: /Building practical technology/ },
   { path: "/about", heading: /conversation/ },
   { path: "/what-we-build", heading: /Two initiatives/ },
   { path: "/food-delivery", heading: /Food delivery/ },
@@ -25,7 +25,6 @@ const PAGES = [
   { path: "/careers", heading: /Build with us/ },
   { path: "/contact", heading: /Let's talk/ },
   { path: "/legal", heading: /Policies/ },
-  { path: "/pricing", heading: /Clear prices/ },
   { path: "/legal/terms", heading: /Terms & Conditions/ },
   { path: "/legal/privacy", heading: /Privacy Policy/ },
   { path: "/legal/refund", heading: /Refund & Cancellation Policy/ },
@@ -60,6 +59,8 @@ test.describe("VANIKARA website", () => {
     await expect(page).toHaveURL(/\/what-we-build$/);
     await page.goto("/ai");
     await expect(page).toHaveURL(/\/cygma$/);
+    await page.goto("/pricing");
+    await expect(page).toHaveURL(/\/what-we-build$/);
   });
 
   test("unknown routes show the 404 page", async ({ page }) => {
@@ -84,7 +85,7 @@ test.describe("VANIKARA website", () => {
     await prepare(page);
     await page.goto("/");
     const footer = page.getByRole("contentinfo");
-    for (const name of ["Terms & Conditions", "Privacy Policy", "Refund & Cancellation", "Shipping & Delivery", "Pricing", "Contact"]) {
+    for (const name of ["Terms & Conditions", "Privacy Policy", "Refund & Cancellation", "Shipping & Delivery", "Contact"]) {
       await expect(footer.getByRole("link", { name, exact: false }).first()).toBeVisible();
     }
   });

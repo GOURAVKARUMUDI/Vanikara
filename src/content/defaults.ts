@@ -7,7 +7,7 @@ import {
   NAVIGATION,
   PHILOSOPHY_PRINCIPLES,
 } from "@/data/company";
-import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION, PAYMENT_TERMS, SERVICE_PACKAGES } from "@/data/legal";
+import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION, PAYMENT_TERMS } from "@/data/legal";
 
 /**
  * Default website content. The admin "Website content" editor saves
@@ -18,11 +18,11 @@ import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION, PAYMENT_TERMS, 
 /** Text of the home page sections (headings, labels, buttons). */
 export const HOME_COPY = {
   hero: {
-    headlineStart: "Building what",
-    headlineMiddle: "comes",
-    headlineHighlight: "next",
-    primaryButton: "Explore VANIKARA",
-    secondaryButton: "Our Products",
+    headlineStart: "Building practical technology",
+    headlineMiddle: "for real-world",
+    headlineHighlight: "businesses",
+    primaryButton: "Explore our products",
+    secondaryButton: "Contact us",
   },
   story: {
     eyebrow: "The company",
@@ -68,7 +68,6 @@ export const CONTENT_DEFAULTS = {
   people: FOUNDERS_AND_LEADERSHIP,
   timeline: COMPANY_TIMELINE,
   initiatives: INITIATIVES,
-  packages: SERVICE_PACKAGES,
   legal: {
     effectiveDate: LEGAL_EFFECTIVE_DATE,
     version: LEGAL_VERSION,

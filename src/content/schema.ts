@@ -63,13 +63,6 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     hidden: ["id"],
   },
   {
-    key: "packages",
-    title: "Pricing packages",
-    description: "Packages and prices (in INR) on the Pricing page. Keep them in step with your invoices.",
-    pages: ["/pricing"],
-    hidden: ["id"],
-  },
-  {
     key: "legal",
     title: "Legal facts",
     description: "Effective date, Grievance Officer and payment terms used by every policy page. Have changes reviewed before publishing.",

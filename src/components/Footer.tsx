@@ -12,7 +12,6 @@ export default async function Footer() {
       links: [
         ...NAVIGATION.products.map(({ href, label }) => ({ href, label })),
         { href: "/what-we-build", label: "Overview" },
-        { href: "/pricing", label: "Pricing" },
       ],
     },
     {
@@ -23,7 +22,6 @@ export default async function Footer() {
         { href: "/technology", label: "Technology" },
         { href: "/careers", label: "Careers" },
         { href: "/contact", label: "Contact" },
-        { href: "/login", label: "Sign in" },
       ],
     },
     {

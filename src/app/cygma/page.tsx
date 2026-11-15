@@ -85,12 +85,27 @@ export default async function CygmaPage() {
         </div>
       </section>
 
-      {/* Directions */}
+      {/* Purpose */}
+      <section aria-labelledby="purpose-title" className="container-page py-16 sm:py-24">
+        <div className="grid gap-12 border-t border-line pt-16 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-5" data-reveal>
+            <Eyebrow tone="cool">Purpose</Eyebrow>
+            <h2 id="purpose-title" className="text-headline mt-5 text-fg">
+              Why VANIKARA wants internal intelligence.
+            </h2>
+          </div>
+          <p className="text-[1.0625rem] leading-relaxed text-fg-muted lg:col-span-6 lg:col-start-7 lg:pt-12" data-reveal>
+            {cygma.summary}
+          </p>
+        </div>
+      </section>
+
+      {/* Potential applications */}
       <section aria-labelledby="directions-title" className="container-page py-16 sm:py-24">
         <div data-reveal className="max-w-2xl">
-          <Eyebrow tone="cool">Direction</Eyebrow>
+          <Eyebrow tone="cool">Potential applications</Eyebrow>
           <h2 id="directions-title" className="text-headline mt-5 text-fg">
-            Intended to develop intelligence around the company.
+            Possible internal uses, not finished features.
           </h2>
         </div>
         <ol className="mt-12 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
@@ -107,6 +122,25 @@ export default async function CygmaPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* Development status */}
+      <section aria-labelledby="status-title" className="container-page pb-16 sm:pb-24">
+        <div data-reveal className="max-w-2xl">
+          <Eyebrow tone="cool">Development status</Eyebrow>
+          <h2 id="status-title" className="text-headline mt-5 text-fg">
+            What is conceptual, prototyped, or in use.
+          </h2>
+        </div>
+        <ul className="mt-10 divide-y divide-line border-y border-line" data-reveal>
+          {cygma.developmentStatus.map((row) => (
+            <li key={row.stage} className="grid gap-2 py-5 sm:grid-cols-12 sm:gap-6">
+              <span className="font-semibold text-fg sm:col-span-3">{row.stage}</span>
+              <span className="text-sm font-semibold text-intel sm:col-span-2">{row.state}</span>
+              <span className="text-[0.9375rem] leading-relaxed text-fg-muted sm:col-span-7">{row.desc}</span>
+            </li>
+          ))}
+        </ul>
         <p className="mt-6 text-sm text-fg-subtle" data-reveal>
           {cygma.note}
         </p>

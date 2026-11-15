@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { supabaseService } from "@/utils/supabase/service";
 import { sanitize, apiResponse, logError, isBot, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
@@ -59,8 +60,11 @@ export async function POST(req: Request) {
     const sSubject = sanitize(subject).slice(0, 200);
     const sMessage = sanitize(message).slice(0, 5000);
 
+    // Reference the visitor can quote in follow-ups. Stored with the enquiry, so admins can search for it.
+    const reference = `VNK-${randomBytes(3).toString("hex").toUpperCase()}`;
+
     // Format description detail for leads database storing
-    const crmStoredMessage = `Subject: ${sSubject}\nOrganization: ${sOrg}\nPhone: ${sPhone}\n\nMessage Details:\n${sMessage}`;
+    const crmStoredMessage = `Reference: ${reference}\nSubject: ${sSubject}\nOrganization: ${sOrg}\nPhone: ${sPhone}\n\nMessage Details:\n${sMessage}`;
 
     // 3. Capture the enquiry on two independent paths at once: the database
     //    (shown in the admin dashboard, retried on failure) and a backup copy
@@ -128,7 +132,11 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ success: true, message: "Your message has been securely submitted. The VANIKARA team will review it shortly." });
+    return NextResponse.json({
+      success: true,
+      reference,
+      message: "Your message has been securely submitted. The VANIKARA team will review it shortly.",
+    });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {

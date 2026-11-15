@@ -32,7 +32,7 @@ export const COMPANY_IDENTITY = {
   brandName: "VANIKARA",
   tagline: "Building what comes next.",
   supportingStatement:
-    "VANIKARA is a student-founded technology company building products around real-world problems while developing a long-term vision for intelligent systems.",
+    "An Indian technology company developing restaurant-focused digital platforms, and intelligent systems for real operational problems.",
   shortStatement: "A student-founded technology company building products around real-world problems.",
   mission: "We build what we believe should exist.",
   foundingDate: "01 April 2026",
@@ -117,9 +117,9 @@ export const COMPANY_TIMELINE: TimelineMilestone[] = [
     description: "Work starts on the food delivery platform.",
   },
   {
-    date: "November 2026",
+    date: "2027",
     title: "Target launch in Guntur",
-    description: "Planned initial launch of the food delivery platform in Guntur, Andhra Pradesh.",
+    description: "Planned initial launch of the food delivery platform in Guntur, Andhra Pradesh. Exact date to be announced.",
     isTarget: true,
   },
 ];
@@ -131,7 +131,7 @@ export const INITIATIVES = {
     title: "Food Delivery Platform",
     nameNote: "Final product name to be announced.",
     status: "In development",
-    targetLaunch: "November 2026",
+    targetLaunch: "2027 (date to be announced)",
     initialMarket: "Guntur, Andhra Pradesh",
     heroHeading: "Food delivery, reconsidered from the restaurant's side.",
     summary:
@@ -218,6 +218,11 @@ export const INITIATIVES = {
         desc: "A foundation for internal capabilities the company does not have yet.",
       },
     ],
+    developmentStatus: [
+      { stage: "Conceptual", state: "Yes", desc: "The purpose, scope and directions described on this page." },
+      { stage: "Prototyped", state: "Not yet", desc: "No prototype is shown publicly." },
+      { stage: "In use", state: "No", desc: "Nothing is in production or available to anyone outside VANIKARA." },
+    ],
     note: "CYGMA is at an early, exploratory stage. We describe direction here, not finished capability.",
   },
 };
@@ -232,7 +237,7 @@ export const NAVIGATION = {
     {
       href: "/food-delivery",
       label: "Food Delivery Platform",
-      desc: "In development · Guntur · Nov 2026",
+      desc: "In development · Guntur · 2027",
       tone: "warm" as const,
     },
     {

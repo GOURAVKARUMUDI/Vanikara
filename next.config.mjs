@@ -70,6 +70,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/pricing',
+        destination: '/what-we-build',
+        permanent: true,
+      },
+      {
         source: '/ai',
         destination: '/cygma',
         permanent: true,

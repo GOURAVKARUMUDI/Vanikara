@@ -9,8 +9,29 @@ import { getSiteContent } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Food Delivery Platform",
   description:
-    "VANIKARA is exploring a restaurant-first approach to food delivery economics. In development, targeting launch in Guntur, Andhra Pradesh in November 2026.",
+    "VANIKARA is exploring a restaurant-first approach to food delivery economics. In development, targeting launch in Guntur, Andhra Pradesh in 2027. Exact date to be announced.",
 };
+
+const INTEREST_PATHS = [
+  {
+    topic: "restaurant",
+    title: "Restaurants",
+    desc: "Tell us about your restaurant and what you would want from a delivery platform.",
+    cta: "Register restaurant interest",
+  },
+  {
+    topic: "partner",
+    title: "Delivery partners",
+    desc: "Tell us your city, how you travel and when you would be available.",
+    cta: "Register partner interest",
+  },
+  {
+    topic: "customer",
+    title: "Customers",
+    desc: "Tell us what you would want from a food delivery app in Guntur.",
+    cta: "Register customer interest",
+  },
+];
 
 export default async function FoodDeliveryPage() {
   const { initiatives: INITIATIVES } = await getSiteContent();
@@ -128,6 +149,31 @@ export default async function FoodDeliveryPage() {
             </ul>
           </div>
         </div>
+      </section>
+
+      {/* Early interest — not live onboarding */}
+      <section aria-labelledby="interest-title" className="container-page py-16 sm:py-24">
+        <div data-reveal className="max-w-2xl">
+          <Eyebrow>Register interest</Eyebrow>
+          <h2 id="interest-title" className="text-headline mt-5 text-fg">
+            Tell us which side of the platform you are on.
+          </h2>
+          <p className="mt-4 text-[1.0625rem] leading-relaxed text-fg-muted">
+            These are early-interest forms. The platform is not live and nobody is onboarded yet. Final commercial terms will
+            be published once they are validated.
+          </p>
+        </div>
+        <ul className="mt-12 grid gap-4 md:grid-cols-3">
+          {INTEREST_PATHS.map((path, i) => (
+            <li key={path.topic} data-reveal style={{ ["--reveal-delay" as string]: `${i * 90}ms` }} className="surface flex flex-col rounded-feature p-7">
+              <h3 className="text-lg font-bold text-fg">{path.title}</h3>
+              <p className="mt-2 flex-1 text-[0.9375rem] leading-relaxed text-fg-muted">{path.desc}</p>
+              <Button href={`/contact?topic=${path.topic}`} variant="secondary" className="mt-6 w-full" arrow>
+                {path.cta}
+              </Button>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Status + CTA */}

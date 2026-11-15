@@ -58,9 +58,12 @@ export default function AccountMenu({ session, isActive }: { session: SessionSta
   const { user, isAdmin } = session;
 
   if (!user) {
+    // Public visitors get no sign-in link: VANIKARA has no public accounts.
+    // Staff reach the admin console through its direct link.
+    if (!isAdmin) return null;
     return (
       <Link
-        href={isAdmin ? "/admin" : "/login"}
+        href="/admin"
         aria-current={isActive ? "page" : undefined}
         aria-label={isAdmin ? "Admin console" : "Sign in"}
         className={`hidden h-9 items-center gap-1.5 rounded-full px-2.5 text-[0.8125rem] font-semibold transition-colors hover:bg-surface-sunken md:inline-flex ${

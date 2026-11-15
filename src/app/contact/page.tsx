@@ -10,7 +10,20 @@ export const metadata: Metadata = {
     "Contact VANIKARA for general enquiries, partnerships, product discussions or support.",
 };
 
-export default async function ContactPage() {
+/** Links such as /contact?topic=restaurant preselect the matching enquiry type. */
+const TOPIC_TO_CATEGORY: Record<string, string> = {
+  restaurant: "Restaurant",
+  partner: "Delivery partner",
+  customer: "Customer",
+  partnership: "Partnership",
+  product: "Product",
+  support: "Support",
+  media: "Media",
+};
+
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ topic?: string }> }) {
+  const { topic } = await searchParams;
+  const initialCategory = topic ? TOPIC_TO_CATEGORY[topic.toLowerCase()] : undefined;
   const { identity } = await getSiteContent();
   return (
     <>
@@ -29,7 +42,7 @@ export default async function ContactPage() {
             <ContactInfo />
           </div>
           <div className="lg:col-span-7">
-            <ContactForm identity={identity} />
+            <ContactForm identity={identity} initialCategory={initialCategory} />
           </div>
         </div>
       </section>

@@ -7,7 +7,7 @@ import { BrandSymbol } from "@/components/brand/BrandMark";
 import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Food Delivery Platform",
+  title: "Food Delivery Platform in Guntur",
   description:
     "VANIKARA is exploring a restaurant-first approach to food delivery economics. In development, targeting launch in Guntur, Andhra Pradesh in 2027. Exact date to be announced.",
 };

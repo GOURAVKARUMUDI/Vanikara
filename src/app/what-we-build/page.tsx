@@ -7,7 +7,7 @@ import { SYMBOL_SRC } from "@/components/brand/BrandMark";
 import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Products",
+  title: "What we build",
   description:
     "VANIKARA's two initiatives: a food delivery platform in development for Guntur, and CYGMA AI, a long-term intelligence initiative.",
 };

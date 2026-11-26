@@ -1,384 +1,429 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, ChevronDown, LayoutDashboard, LogIn } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, Search, X, LayoutDashboard, LogIn, User } from "lucide-react";
 import BrandMark from "@/components/brand/BrandMark";
-import Button from "@/components/ui/Button";
 import ThemeSwitcher from "./layout/ThemeSwitcher";
-import AccountMenu, { Avatar } from "./auth/AccountMenu";
+import AccountMenu from "./auth/AccountMenu";
 import { googleSignOut, useSession } from "./auth/session";
 import type { SiteContent } from "@/content/defaults";
 
-type MenuKey = "company" | "products" | null;
+type MenuKey = "company" | "products" | "technology" | "careers" | "contact" | null;
 
-const PRIMARY_LINKS = [
-  { href: "/technology", label: "Technology" },
-  { href: "/about", label: "About" },
+interface NavItem {
+  href: string;
+  label: string;
+  desc: string;
+}
+
+const MENUS: Record<Exclude<MenuKey, null>, { label: string; items: NavItem[] }> = {
+  company: {
+    label: "Company",
+    items: [
+      { href: "/about", label: "About Vanikara", desc: "Our mission, story, and product-first philosophy" },
+      { href: "/leadership", label: "Leadership", desc: "Founders, directors, and corporate governance" },
+      { href: "/about#journey", label: "Our Journey", desc: "Verified company milestones and roadmap" },
+      { href: "/about#principles", label: "Our Principles", desc: "Operating standards guiding how we build" },
+    ],
+  },
+  products: {
+    label: "Products",
+    items: [
+      { href: "/what-we-build", label: "All Initiatives", desc: "Overview of Vanikara's product portfolio" },
+      { href: "/food-delivery", label: "Food Delivery Platform", desc: "Restaurant-first delivery ecosystem · Target 2027 (Guntur)" },
+      { href: "/cygma", label: "CYGMA Intelligence", desc: "Proprietary internal operational intelligence initiative" },
+    ],
+  },
+  technology: {
+    label: "Technology",
+    items: [
+      { href: "/technology", label: "Engineering", desc: "Modular architecture, data systems, and reliability" },
+      { href: "/technology#security", label: "Security", desc: "Defense-in-depth, RLS, and privacy by design" },
+      { href: "/cygma", label: "Research & Innovation", desc: "Long-term internal intelligence exploration" },
+    ],
+  },
+  careers: {
+    label: "Careers",
+    items: [
+      { href: "/careers", label: "Open Positions", desc: "Explore current roles and general applications" },
+      { href: "/careers?type=Internship", label: "Internships", desc: "Student and early-career engineering opportunities" },
+      { href: "/account/applications", label: "Application Tracking", desc: "Check the status of your submitted applications" },
+    ],
+  },
+  contact: {
+    label: "Contact",
+    items: [
+      { href: "/contact", label: "General Enquiries", desc: "Reach our team in Guntur, Andhra Pradesh" },
+      { href: "/contact?topic=partnership", label: "Business Partnerships", desc: "Restaurant, delivery partner, and enterprise enquiries" },
+      { href: "/contact?topic=support", label: "Support", desc: "Assistance, policy queries, and grievance redressal" },
+    ],
+  },
+};
+
+const SEARCH_INDEX = [
+  { href: "/", title: "Home", category: "Page", desc: "Vanikara corporate homepage" },
+  { href: "/about", title: "About Vanikara", category: "Company", desc: "Story, mission, principles, and milestones" },
+  { href: "/leadership", title: "Leadership", category: "Company", desc: "Founders and directors of Vanikara Intelligence" },
+  { href: "/what-we-build", title: "What We Build", category: "Products", desc: "Overview of all Vanikara initiatives" },
+  { href: "/food-delivery", title: "Food Delivery Platform", category: "Product", desc: "Restaurant-first delivery platform targeting Guntur 2027" },
+  { href: "/cygma", title: "CYGMA Intelligence", category: "Initiative", desc: "Proprietary internal operational intelligence" },
+  { href: "/technology", title: "Technology & Engineering", category: "Technology", desc: "Architecture, security, reliability, and stack" },
+  { href: "/careers", title: "Careers & Internships", category: "Careers", desc: "Open roles, internships, and application submission" },
+  { href: "/contact", title: "Contact & Enquiries", category: "Contact", desc: "General enquiries, partnerships, and support" },
+  { href: "/account", title: "Account Portal", category: "Account", desc: "Track applications, enquiries, and privacy preferences" },
+  { href: "/legal", title: "Legal & Compliance", category: "Legal", desc: "Terms, privacy, refund, shipping, cookies, and CIN" },
 ];
 
 function isActive(pathname: string, href: string) {
-  return pathname === href || pathname.startsWith(`${href}/`);
+  const clean = href.split("#")[0].split("?")[0];
+  if (clean === "/") return pathname === "/";
+  return pathname === clean || pathname.startsWith(`${clean}/`);
 }
 
-export default function Navbar({ identity: COMPANY_IDENTITY, navigation: NAVIGATION }: Pick<SiteContent, "identity" | "navigation">) {
+export default function Navbar({
+  identity: _identity,
+  navigation: _navigation,
+}: Pick<SiteContent, "identity" | "navigation">) {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<MenuKey>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const closeTimer = useRef<number | null>(null);
-  const menuToggleRef = useRef<HTMLButtonElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navRef = useRef<HTMLElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const idBase = useId();
+  const session = useSession(pathname);
 
-  // Close all menus on navigation
+  // Close menus on route change
   useEffect(() => {
     setOpenMenu(null);
     setMobileOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
 
-  // Glass state after a small scroll. setState bails out when unchanged.
+  // Outside click and Escape handling
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Account state for the sign-in control (display only; access is
-  // enforced server-side). Re-read on navigation and on sign-in/out.
-  const session = useSession(pathname);
-  const showAdmin = session.isAdmin;
-
-  // Mobile menu: scroll lock, Escape, focus management
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const root = document.documentElement;
-    const previousOverflow = root.style.overflow;
-    root.style.overflow = "hidden";
-
-    const firstLink = mobileMenuRef.current?.querySelector<HTMLElement>("a, button");
-    firstLink?.focus({ preventScroll: true });
-
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMobileOpen(false);
-        menuToggleRef.current?.focus();
-        return;
-      }
-      if (event.key !== "Tab" || !mobileMenuRef.current) return;
-      const focusables = [
-        menuToggleRef.current,
-        ...Array.from(mobileMenuRef.current.querySelectorAll<HTMLElement>("a, button")),
-      ].filter(Boolean) as HTMLElement[];
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      root.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [mobileOpen]);
-
-  // Desktop dropdowns: Escape closes and returns focus
-  useEffect(() => {
-    if (!openMenu) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        document.getElementById(`${idBase}-${openMenu}-trigger`)?.focus();
+    const onPointer = (e: PointerEvent) => {
+      if (openMenu && !navRef.current?.contains(e.target as Node)) {
         setOpenMenu(null);
       }
     };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpenMenu(null);
+        setMobileOpen(false);
+        setSearchOpen(false);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [openMenu, idBase]);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [openMenu]);
 
-  const cancelClose = useCallback(() => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-    closeTimer.current = null;
-  }, []);
+  // Focus search input on open
+  useEffect(() => {
+    if (searchOpen) {
+      requestAnimationFrame(() => searchInputRef.current?.focus());
+    } else {
+      setSearchQuery("");
+    }
+  }, [searchOpen]);
 
-  const scheduleClose = useCallback(() => {
-    cancelClose();
-    closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
-  }, [cancelClose]);
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
+  // Admin console uses its own dedicated application shell
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
-  const productsActive = NAVIGATION.products.some((p) => isActive(pathname, p.href)) || pathname === "/what-we-build";
-  const companyActive = NAVIGATION.company.some((c) => isActive(pathname, c.href));
-
-  const navItemClass = (active: boolean) =>
-    `link-underline inline-flex items-center gap-1 px-1 py-2 text-[0.9375rem] font-medium transition-colors duration-200 ${
-      active ? "text-fg" : "text-fg-muted hover:text-fg"
-    }`;
-
-  const renderDropdown = (key: Exclude<MenuKey, null>, label: string, active: boolean) => {
-    const open = openMenu === key;
-    const panelId = `${idBase}-${key}-panel`;
-    return (
-      <div
-        className="relative"
-        onMouseEnter={() => {
-          cancelClose();
-          setOpenMenu(key);
-        }}
-        onMouseLeave={scheduleClose}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpenMenu(null);
-        }}
-      >
-        <button
-          id={`${idBase}-${key}-trigger`}
-          type="button"
-          aria-expanded={open}
-          aria-controls={panelId}
-          onClick={() => setOpenMenu(open ? null : key)}
-          className={navItemClass(active)}
-          aria-current={active ? "page" : undefined}
-        >
-          {label}
-          <ChevronDown
-            aria-hidden="true"
-            className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-
-        <div
-          id={panelId}
-          data-open={open}
-          className="nav-panel absolute left-1/2 top-full -translate-x-1/2 pt-3"
-        >
-          <div className="liquid-glass glass-strong w-[22rem] rounded-feature p-2">
-            {key === "products" ? (
-              <>
-                {NAVIGATION.products.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="group flex items-start gap-3 rounded-compact p-3 transition-colors hover:bg-surface-sunken"
-                    aria-current={isActive(pathname, item.href) ? "page" : undefined}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
-                        item.tone === "warm" ? "bg-brand-orange" : "bg-brand-blue"
-                      }`}
-                    />
-                    <span className="flex-1">
-                      <span className="block text-sm font-semibold text-fg">{item.label}</span>
-                      <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{item.desc}</span>
-                    </span>
-                    <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-fg-subtle opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
-                  </Link>
-                ))}
-                <div className="rule mx-3 my-1" />
-                <Link
-                  href="/what-we-build"
-                  className="group flex items-center justify-between rounded-compact px-3 py-2.5 text-[0.8125rem] font-semibold text-intel transition-colors hover:bg-surface-sunken"
-                >
-                  Overview of our work
-                  <ArrowUpRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
-                </Link>
-              </>
-            ) : (
-              NAVIGATION.company.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="block rounded-compact p-3 transition-colors hover:bg-surface-sunken"
-                  aria-current={isActive(pathname, item.href) ? "page" : undefined}
-                >
-                  <span className="block text-sm font-semibold text-fg">{item.label}</span>
-                  <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{item.desc}</span>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const mobileLinks = [
-    { href: "/about", label: "About" },
-    { href: "/what-we-build", label: "Products" },
-    { href: "/technology", label: "Technology" },
-    { href: "/leadership", label: "Leadership" },
-    { href: "/careers", label: "Careers" },
-    { href: "/contact", label: "Contact" },
-  ];
+  const filteredSearch = searchQuery.trim()
+    ? SEARCH_INDEX.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : SEARCH_INDEX.slice(0, 6);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div aria-hidden="true" className="scroll-progress" />
-      {/* Mobile full-screen menu (sits beneath the bar so the toggle stays reachable) */}
-      <div
-        ref={mobileMenuRef}
-        id={`${idBase}-mobile-menu`}
-        data-open={mobileOpen}
-        className="mobile-menu mobile-menu--glass lg:hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site navigation"
-        aria-hidden={!mobileOpen}
-        inert={!mobileOpen}
-      >
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_100%_0%,var(--glow-blue),transparent_70%),radial-gradient(50%_35%_at_0%_100%,var(--glow-orange),transparent_70%)]" />
-        <nav
-          aria-label="Mobile"
-          className="container-page relative flex h-full flex-col overflow-y-auto pb-[max(2rem,env(safe-area-inset-bottom))] pt-24"
-        >
-          <ul className="flex-1 space-y-1">
-            {mobileLinks.map((link, i) => {
-              const active = isActive(pathname, link.href);
-              return (
-                <li key={link.href} data-stagger style={{ ["--i" as string]: i }}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className="group flex items-baseline gap-4 border-b border-line py-4"
-                  >
-                    <span className="w-6 text-xs font-semibold tabular-nums text-fg-subtle">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className={`text-[1.75rem] font-bold leading-none tracking-tight transition-colors sm:text-4xl ${
-                        active ? "text-intel" : "text-fg group-active:text-intel"
+    <>
+      <header className="glass fixed inset-x-0 top-0 z-40 h-[var(--header-height)]">
+        <div className="container-page flex h-full items-center justify-between gap-4">
+          <div className="flex items-center gap-8">
+            <Link
+              href="/"
+              aria-label="VANIKARA — Home"
+              className="inline-flex shrink-0 items-center rounded-compact py-1"
+            >
+              <BrandMark size={24} priority />
+            </Link>
+
+            <nav ref={navRef} aria-label="Primary" className="hidden lg:flex lg:items-center lg:gap-1">
+              {(Object.keys(MENUS) as Exclude<MenuKey, null>[]).map((key) => {
+                const group = MENUS[key];
+                const isOpen = openMenu === key;
+                const activeGroup = group.items.some((i) => isActive(pathname, i.href));
+                return (
+                  <div key={key} className="relative">
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={`${idBase}-${key}`}
+                      onClick={() => setOpenMenu(isOpen ? null : key)}
+                      className={`inline-flex h-9 items-center gap-1 rounded-compact px-3 text-sm font-medium transition-colors ${
+                        activeGroup || isOpen
+                          ? "bg-surface-secondary text-fg"
+                          : "text-fg-muted hover:bg-surface-sunken hover:text-fg"
                       }`}
                     >
-                      {link.label}
-                    </span>
-                  </Link>
-                </li>
+                      <span>{group.label}</span>
+                      <ChevronDown
+                        aria-hidden="true"
+                        className={`h-3.5 w-3.5 transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    <div
+                      id={`${idBase}-${key}`}
+                      data-open={isOpen}
+                      inert={!isOpen}
+                      className="nav-panel absolute left-0 top-full z-50 pt-2"
+                    >
+                      <div className="glass-strong w-[320px] p-2">
+                        <ul className="space-y-0.5">
+                          {group.items.map((item) => {
+                            const active = isActive(pathname, item.href);
+                            return (
+                              <li key={item.href}>
+                                <Link
+                                  href={item.href}
+                                  aria-current={active ? "page" : undefined}
+                                  onClick={() => setOpenMenu(null)}
+                                  className={`block rounded-compact px-3 py-2.5 transition-colors ${
+                                    active
+                                      ? "bg-surface-secondary text-intel"
+                                      : "text-fg hover:bg-surface-sunken"
+                                  }`}
+                                >
+                                  <span className="block text-sm font-semibold">{item.label}</span>
+                                  <span className="mt-0.5 block text-xs text-fg-muted">{item.desc}</span>
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search site"
+              title="Search (⌘K)"
+              className="grid h-9 w-9 place-items-center rounded-compact text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
+            >
+              <Search aria-hidden="true" className="h-4 w-4" />
+            </button>
+
+            <ThemeSwitcher />
+            <AccountMenu session={session} isActive={pathname.startsWith("/account") || pathname.startsWith("/login")} />
+
+            <button
+              type="button"
+              aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileOpen}
+              aria-controls={`${idBase}-mobile`}
+              onClick={() => setMobileOpen((v) => !v)}
+              className="grid h-9 w-9 place-items-center rounded-compact text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg lg:hidden"
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile navigation drawer */}
+      {mobileOpen && (
+        <div
+          id={`${idBase}-mobile`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+          className="fixed inset-x-0 bottom-0 top-[var(--header-height)] z-40 overflow-y-auto bg-surface lg:hidden"
+        >
+          <div className="container-page space-y-6 py-6">
+            {(Object.keys(MENUS) as Exclude<MenuKey, null>[]).map((key) => {
+              const group = MENUS[key];
+              return (
+                <div key={key} className="border-b border-line pb-4">
+                  <p className="font-mono text-xs font-medium uppercase tracking-wider text-fg-subtle">
+                    {group.label}
+                  </p>
+                  <ul className="mt-2 space-y-1">
+                    {group.items.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                          onClick={() => setMobileOpen(false)}
+                          className="block rounded-compact py-2 text-base font-medium text-fg hover:text-intel"
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               );
             })}
-          </ul>
 
-          <div data-stagger style={{ ["--i" as string]: mobileLinks.length }} className="mt-10 space-y-6">
-            <div className="grid grid-cols-2 gap-3">
-              {NAVIGATION.products.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="liquid-glass glass rounded-card p-4"
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`mb-3 block h-1.5 w-6 rounded-full ${item.tone === "warm" ? "bg-brand-orange" : "bg-brand-blue"}`}
-                  />
-                  <span className="block text-sm font-semibold text-fg">{item.label}</span>
-                  <span className="mt-1 block text-xs text-fg-muted">{item.desc}</span>
-                </Link>
-              ))}
-            </div>
-            <div className="flex items-end justify-between gap-4">
-              <div className="flex flex-col gap-1 text-sm text-fg-muted">
-                <a href={`mailto:${COMPANY_IDENTITY.officialEmail}`} className="w-fit font-medium text-fg">
-                  {COMPANY_IDENTITY.officialEmail}
-                </a>
-                <span>{COMPANY_IDENTITY.operationalLocation}</span>
-              </div>
-              <div className="flex shrink-0 flex-col items-end gap-2">
-                {session.user && (
+            <div className="flex flex-wrap gap-3 pt-2">
+              {session.user ? (
+                <>
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileOpen(false)}
+                    className="btn btn-secondary btn-md flex-1"
+                  >
+                    <User className="h-4 w-4" />
+                    My Account
+                  </Link>
                   <button
                     type="button"
                     onClick={() => {
                       setMobileOpen(false);
                       googleSignOut();
                     }}
-                    className="liquid-glass glass inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-semibold text-fg"
-                    aria-label={`Sign out ${session.user.name}`}
+                    className="btn btn-outline btn-md"
                   >
-                    <Avatar name={session.user.name} picture={session.user.picture} size={28} />
                     Sign out
                   </button>
-                )}
-                {showAdmin && (
-                  <Link
-                    href={showAdmin ? "/admin" : "/login"}
-                    onClick={() => setMobileOpen(false)}
-                    className="liquid-glass glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-fg"
-                  >
-                    {showAdmin ? (
-                      <LayoutDashboard aria-hidden="true" className="h-4 w-4 text-ambition" />
-                    ) : (
-                      <LogIn aria-hidden="true" className="h-4 w-4 text-intel" />
-                    )}
-                    {showAdmin ? "Admin" : "Sign in"}
-                  </Link>
-                )}
-              </div>
+                </>
+              ) : (
+                <Link
+                  href="/account/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="btn btn-primary btn-md w-full"
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign in to Account
+                </Link>
+              )}
+              {session.isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileOpen(false)}
+                  className="btn btn-outline btn-md w-full"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Vanikara Console
+                </Link>
+              )}
             </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      )}
 
-      {/* Bar */}
-      <div className={`container-page relative z-50 transition-[padding] duration-500 ease-brand ${scrolled ? "pt-3" : "pt-0"}`}>
+      {/* Site Search Modal */}
+      {searchOpen && (
         <div
-          className={`flex items-center justify-between rounded-feature border transition-[height,background-color,border-color,box-shadow,padding] duration-500 ease-brand ${
-            scrolled
-              ? "glass liquid-glass h-14 px-3 sm:px-4"
-              : "h-[72px] border-transparent bg-transparent px-0 shadow-none"
-          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search Vanikara"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 px-4 pt-20 backdrop-blur-[2px]"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSearchOpen(false);
+          }}
         >
-          <Link href="/" className="rounded-compact py-1 pr-2" aria-label="VANIKARA — home">
-            <BrandMark size={26} priority />
-          </Link>
-
-          <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
-            {renderDropdown("company", "Company", companyActive)}
-            {renderDropdown("products", "Products", productsActive)}
-            {PRIMARY_LINKS.map((link) => {
-              const active = isActive(pathname, link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={active ? "page" : undefined}
-                  className={navItemClass(active)}
+          <div className="glass-strong w-full max-w-xl overflow-hidden">
+            <search>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className="flex items-center gap-3 border-b border-line px-4 py-3"
+              >
+                <Search aria-hidden="true" className="h-4 w-4 shrink-0 text-fg-muted" />
+                <label htmlFor={`${idBase}-search`} className="sr-only">
+                  Search Vanikara pages and initiatives
+                </label>
+                <input
+                  ref={searchInputRef}
+                  id={`${idBase}-search`}
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search initiatives, technology, careers, policies..."
+                  className="w-full bg-transparent text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(false)}
+                  aria-label="Close search"
+                  className="rounded-compact p-1 text-fg-muted hover:bg-surface-sunken hover:text-fg"
                 >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
+                  <X className="h-4 w-4" />
+                </button>
+              </form>
+            </search>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <AccountMenu session={session} isActive={isActive(pathname, showAdmin ? "/admin" : "/login")} />
-            <ThemeSwitcher />
-
-            <Button href="/contact" size="sm" arrow className="hidden sm:inline-flex">
-              Contact
-            </Button>
-
-            <button
-              ref={menuToggleRef}
-              type="button"
-              onClick={() => setMobileOpen((open) => !open)}
-              aria-expanded={mobileOpen}
-              aria-controls={`${idBase}-mobile-menu`}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              className="relative grid h-10 w-10 place-items-center rounded-full text-fg transition-colors hover:bg-surface-sunken lg:hidden"
-            >
-              <span aria-hidden="true" className="menu-toggle__line top-1/2" />
-              <span aria-hidden="true" className="menu-toggle__line top-1/2" />
-            </button>
+            <div className="max-h-80 overflow-y-auto p-2">
+              {filteredSearch.length === 0 ? (
+                <p className="px-3 py-6 text-center text-sm text-fg-muted">
+                  No pages matched &ldquo;{searchQuery}&rdquo;.
+                </p>
+              ) : (
+                <ul className="space-y-0.5">
+                  {filteredSearch.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setSearchOpen(false)}
+                        className="group flex items-center justify-between gap-3 rounded-compact px-3 py-2.5 transition-colors hover:bg-surface-secondary"
+                      >
+                        <div>
+                          <span className="flex items-center gap-2 text-sm font-medium text-fg">
+                            {item.title}
+                            <span className="rounded bg-surface-sunken px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
+                              {item.category}
+                            </span>
+                          </span>
+                          <span className="block text-xs text-fg-muted">{item.desc}</span>
+                        </div>
+                        <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4 shrink-0 text-fg-subtle" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      )}
+    </>
   );
 }

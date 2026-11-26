@@ -1,137 +1,53 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
-import RevealText from "@/components/motion/RevealText";
+import Button from "@/components/ui/Button";
 import { getSiteContent } from "@/lib/content";
 
-// Signal network: points of an abstract intelligence graph (viewBox 400×300)
-const NODES: [number, number][] = [
-  [40, 60], [130, 30], [220, 80], [320, 40], [370, 130], [280, 170], [170, 150], [70, 190], [150, 250], [260, 260], [350, 230],
-];
-const LINKS: [number, number][] = [
-  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 2], [2, 6], [6, 7], [7, 0], [6, 8], [8, 9], [9, 5], [9, 10], [10, 4], [6, 5],
-];
-
-/**
- * CYGMA — an atmospheric, always-dark band so the section reads as a
- * distinct chapter in both themes.
- */
 export default async function CygmaSection() {
-  const { initiatives: INITIATIVES, home: { cygma: copy } } = await getSiteContent();
-  const { cygma } = INITIATIVES;
+  const { initiatives } = await getSiteContent();
+  const { cygma } = initiatives;
 
   return (
-    <section aria-labelledby="cygma-title" className="relative py-12 sm:py-16">
-      <div className="container-page">
-        <div
-          data-reveal="settle"
-          className="beam-border relative isolate overflow-hidden rounded-panel border border-white/10 bg-navy px-6 py-16 text-white shadow-float sm:px-12 sm:py-20 lg:px-16 lg:py-24 dark:bg-surface-raised"
-        >
-          {/* Cool light field */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10"
-            style={{
-              background:
-                "radial-gradient(60% 70% at 85% 10%, color-mix(in oklab, var(--vanikara-blue) 45%, transparent), transparent 70%), radial-gradient(40% 50% at 100% 100%, color-mix(in oklab, var(--vanikara-cyan) 22%, transparent), transparent 70%), radial-gradient(50% 60% at 0% 100%, color-mix(in oklab, var(--vanikara-deep-blue) 70%, transparent), transparent 70%)",
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 opacity-40"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
-              backgroundSize: "56px 56px",
-              WebkitMaskImage: "radial-gradient(ellipse 60% 70% at 80% 20%, #000, transparent 75%)",
-              maskImage: "radial-gradient(ellipse 60% 70% at 80% 20%, #000, transparent 75%)",
-            }}
-          />
+    <section aria-labelledby="cygma-heading" className="border-b border-white/10 bg-[#101C30] text-[#F5F7FA]">
+      <div className="container-page py-20 sm:py-28">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
+          <div className="lg:col-span-6">
+            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
+              {cygma.index} · {cygma.status}
+            </span>
+            <h2 id="cygma-heading" className="text-headline mt-4 text-white">
+              CYGMA Intelligence
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-[#B8C4D4]">
+              {cygma.summary}
+            </p>
 
-          {/* Scan line sweeping the grid */}
-          <div aria-hidden="true" className="scanline -z-10" />
+            <ul className="mt-6 space-y-2 border-l-2 border-[#34445C] pl-4 text-sm text-[#B8C4D4]">
+              {cygma.clarifications.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
 
-          {/* Signal network */}
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 400 300"
-            className="pointer-events-none absolute -right-10 -top-6 -z-10 hidden w-[55%] max-w-[640px] opacity-60 lg:block"
-            fill="none"
-          >
-            {LINKS.map(([a, b]) => (
-              <line
-                key={`${a}-${b}`}
-                className="signal-link"
-                x1={NODES[a][0]}
-                y1={NODES[a][1]}
-                x2={NODES[b][0]}
-                y2={NODES[b][1]}
-                stroke="var(--vanikara-cyan)"
-                strokeOpacity="0.28"
-                strokeWidth="0.75"
-              />
-            ))}
-            {NODES.map(([x, y], i) => (
-              <circle
-                key={`${x}-${y}`}
-                className="signal-node"
-                cx={x}
-                cy={y}
-                r={i % 3 === 0 ? 2.6 : 1.8}
-                fill={i % 4 === 0 ? "var(--vanikara-gold)" : "var(--vanikara-cyan)"}
-                style={{ ["--d" as string]: `${(i * 0.37).toFixed(2)}s` }}
-              />
-            ))}
-          </svg>
-
-          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-6">
-              <p className="inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-white/70">
-                <span aria-hidden="true" className="live-dot !h-1.5 !w-1.5" style={{ ["--live-color" as string]: "var(--vanikara-cyan)" }} />
-                {cygma.index} · {cygma.status}
-              </p>
-              <h2 id="cygma-title" className="text-headline mt-5">
-                <RevealText>{cygma.title}</RevealText>
-              </h2>
-              <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">{cygma.summary}</p>
-
-              <ul className="mt-8 space-y-2.5 text-[0.9375rem] text-white/70">
-                {cygma.clarifications.map((line) => (
-                  <li key={line} className="flex items-center gap-3">
-                    <span aria-hidden="true" className="h-px w-4 bg-brand-cyan/70" />
-                    {line}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href="/cygma"
-                className="group mt-10 inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-brand-cyan"
-              >
-                <span className="link-underline">{copy.linkLabel}</span>
-                <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
-              </Link>
+            <div className="mt-8">
+              <Button href="/cygma" variant="inverse" arrow>
+                Explore CYGMA Intelligence
+              </Button>
             </div>
+          </div>
 
-            <div className="lg:col-span-6 lg:pl-8">
-              <p className="text-[0.8125rem] font-semibold text-white/60">{copy.directionsLabel}</p>
-              <ol className="mt-6 divide-y divide-white/10 border-y border-white/10">
-                {cygma.directions.map((direction, i) => (
-                  <li
-                    key={direction.title}
-                    data-reveal
-                    style={{ ["--reveal-delay" as string]: `${120 + i * 80}ms` }}
-                    className="grid grid-cols-[2.5rem_1fr] gap-2 py-5"
-                  >
-                    <span className="text-sm font-semibold tabular-nums text-white/40">{String(i + 1).padStart(2, "0")}</span>
-                    <div>
-                      <p className="font-semibold">{direction.title}</p>
-                      <p className="mt-1 text-sm leading-relaxed text-white/65">{direction.desc}</p>
-                    </div>
-                  </li>
+          <div className="lg:col-span-6">
+            <div className="rounded-card border border-[#34445C] bg-[#152238] p-6 sm:p-8">
+              <p className="font-mono text-xs uppercase tracking-wider text-[#8D9DB3]">
+                Intended Research & Operational Directions
+              </p>
+              <dl className="mt-6 divide-y divide-[#34445C]">
+                {cygma.directions.map((dir) => (
+                  <div key={dir.title} className="grid grid-cols-1 gap-1 py-3.5 sm:grid-cols-12 sm:gap-4">
+                    <dt className="text-sm font-semibold text-white sm:col-span-4">{dir.title}</dt>
+                    <dd className="text-sm text-[#B8C4D4] sm:col-span-8">{dir.desc}</dd>
+                  </div>
                 ))}
-              </ol>
-              <p className="mt-6 text-sm text-white/50">{cygma.note}</p>
+              </dl>
+              <p className="mt-5 font-mono text-xs text-[#8D9DB3]">{cygma.note}</p>
             </div>
           </div>
         </div>

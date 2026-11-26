@@ -1,13 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import useSWR from "swr";
-import { fetcher } from "@/lib/fetcher";
-import { AlertTriangle, Briefcase, FilePenLine, Inbox, LayoutDashboard, LogOut, Settings, ShieldCheck, Users } from "lucide-react";
+import {
+  Activity,
+  Briefcase,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  FilePenLine,
+  Inbox,
+  Layers,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  ShieldAlert,
+  ShieldCheck,
+  Users,
+  X,
+} from "lucide-react";
 import type { Founder } from "@/data/company";
-import { BrandSymbol } from "@/components/brand/BrandMark";
+import BrandMark from "@/components/brand/BrandMark";
+import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 
 const CRMOverview = dynamic(() => import("@/components/admin/CRMOverview"), { ssr: false });
 const LeadsTable = dynamic(() => import("@/components/admin/LeadsTable"), { ssr: false });
@@ -17,39 +33,42 @@ const SettingsManager = dynamic(() => import("@/components/admin/SettingsManager
 const PrivacyManager = dynamic(() => import("@/components/admin/PrivacyManager"), { ssr: false });
 const ContentEditor = dynamic(() => import("@/components/admin/ContentEditor"), { ssr: false });
 const ApplicationsManager = dynamic(() => import("@/components/admin/ApplicationsManager"), { ssr: false });
+const JobsManager = dynamic(() => import("@/components/admin/JobsManager"), { ssr: false });
+const RegistrationsManager = dynamic(() => import("@/components/admin/RegistrationsManager"), { ssr: false });
+const SecurityCentre = dynamic(() => import("@/components/admin/SecurityCentre"), { ssr: false });
 
 interface Props {
   username: string;
-  /** Leadership from the live site content. */
   people: Founder[];
-  /** Session expiry, seconds since epoch. */
   expiresAt: number;
   tab: string;
 }
 
 const TABS = [
-  { id: "overview", label: "Overview", Icon: LayoutDashboard },
-  { id: "content", label: "Website content", Icon: FilePenLine },
-  { id: "contacts", label: "Contacts & Inquiries", Icon: Inbox },
-  { id: "applications", label: "Applications", Icon: Briefcase },
-  { id: "users", label: "Users", Icon: Users },
-  { id: "settings", label: "Settings", Icon: Settings },
-  { id: "privacy", label: "Privacy Control", Icon: ShieldCheck },
+  { id: "overview", label: "Command Centre", group: "Operations", Icon: LayoutDashboard },
+  { id: "content", label: "Website Studio", group: "Content", Icon: FilePenLine },
+  { id: "contacts", label: "CRM & Enquiries", group: "Operations", Icon: Inbox },
+  { id: "applications", label: "Recruitment", group: "People", Icon: Briefcase },
+  { id: "products", label: "Products & Interest", group: "Operations", Icon: Layers },
+  { id: "users", label: "User Management", group: "People", Icon: Users },
+  { id: "security", label: "Security & Audit", group: "Governance", Icon: ShieldAlert },
+  { id: "privacy", label: "Privacy Centre", group: "Governance", Icon: ShieldCheck },
+  { id: "settings", label: "System Health", group: "Governance", Icon: Activity },
 ];
 
-export default function AdminDashboardClient({ username, people, expiresAt, tab: initialTab }: Props) {
+export default function AdminDashboardClient({ username, expiresAt, tab: initialTab }: Props) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = React.useState(
-    TABS.some((t) => t.id === initialTab) ? initialTab : "overview"
-  );
-  const [signingOut, setSigningOut] = React.useState(false);
+  const [activeTab, setActiveTab] = useState(TABS.some((t) => t.id === initialTab) ? initialTab : "overview");
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   const handleTabChange = (id: string) => {
     setActiveTab(id);
+    setMobileNavOpen(false);
     window.history.pushState(null, "", `?tab=${id}`);
   };
 
-  // Keep the tab in sync with browser back/forward
   React.useEffect(() => {
     const onPop = () => {
       const t = new URLSearchParams(window.location.search).get("tab") ?? "overview";
@@ -59,164 +78,165 @@ export default function AdminDashboardClient({ username, people, expiresAt, tab:
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  // Return to sign-in when the session expires
-  React.useEffect(() => {
-    const ms = expiresAt * 1000 - Date.now();
-    const timer = window.setTimeout(() => router.replace("/login?expired=1"), Math.max(0, ms));
-    return () => window.clearTimeout(timer);
-  }, [expiresAt, router]);
-
-  const signOut = async () => {
+  const handleSignOut = async () => {
     setSigningOut(true);
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } finally {
-      window.dispatchEvent(new Event("vk-auth-change"));
       router.replace("/login");
       router.refresh();
     }
   };
 
-  // Database health: every admin panel reads from Supabase, so say clearly
-  // when it cannot be reached instead of leaving empty or broken panels.
-  const [dbDown, setDbDown] = React.useState(false);
-
-  // Live "new" counters on the tabs — new submissions show up within 30 seconds
-  const { data: leadsRes } = useSWR("/api/leads", fetcher, { refreshInterval: 30_000 });
-  const { data: appsRes } = useSWR("/api/admin/applications", fetcher, { refreshInterval: 30_000 });
-  const newCounts: Record<string, number> = {
-    contacts: ((leadsRes?.data ?? []) as { status?: string }[]).filter((l) => l.status === "new").length,
-    applications: ((appsRes?.data ?? []) as { status?: string }[]).filter((a) => a.status === "new").length,
-  };
-  React.useEffect(() => {
-    fetch("/api/admin/settings", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((body) => setDbDown(body?.success === true && body.data?.dbConnected === false))
-      .catch(() => {});
-  }, []);
-
-  const displayName = username.charAt(0).toUpperCase() + username.slice(1);
+  const currentTabMeta = TABS.find((t) => t.id === activeTab) ?? TABS[0];
 
   return (
-    <div className="min-h-screen bg-transparent pt-8 sm:pt-12">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-        {/* Header */}
-        <header className="mb-10 flex flex-col items-start justify-between gap-5 border-b border-line pb-8 md:flex-row md:items-center">
-          <div className="flex items-center gap-4">
-            <BrandSymbol size={36} alt="" />
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Admin</h1>
-              <p className="mt-1 text-sm text-fg-muted">Internal operations for VANIKARA</p>
+    <div className="-mt-[var(--header-height)] flex min-h-screen bg-surface-secondary text-fg">
+      {/* Desktop Sidebar */}
+      <aside
+        className={`hidden flex-col border-r border-line bg-surface transition-[width] duration-200 lg:flex ${
+          collapsed ? "w-[72px]" : "w-64"
+        }`}
+      >
+        <div className="flex h-16 items-center justify-between border-b border-line px-4">
+          {!collapsed ? (
+            <div className="flex items-center gap-2">
+              <BrandMark variant="symbol" size={22} />
+              <span className="font-display text-sm font-bold tracking-tight text-fg">Vanikara Console</span>
             </div>
-          </div>
-          <div className="flex w-full items-center gap-2 sm:w-auto">
-            <div className="liquid-glass glass flex flex-1 items-center gap-3 rounded-card px-4 py-2.5 sm:flex-none">
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-action text-xs font-bold uppercase text-white">
-                {username[0]}
-              </div>
-              <div className="text-xs">
-                <div className="font-bold text-fg">{displayName}</div>
-                <div className="mt-0.5 flex items-center gap-1.5 text-fg-muted">
-                  <span aria-hidden="true" className="live-dot !h-1.5 !w-1.5" />
-                  Signed in as admin
-                </div>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={signOut}
-              disabled={signingOut}
-              className="btn btn-secondary btn-md shrink-0"
-            >
-              <LogOut aria-hidden="true" className="h-4 w-4" />
-              <span className="hidden sm:inline">{signingOut ? "Signing out…" : "Sign out"}</span>
-            </button>
-          </div>
-        </header>
+          ) : (
+            <BrandMark variant="symbol" size={22} />
+          )}
+          <button
+            type="button"
+            onClick={() => setCollapsed((v) => !v)}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="rounded-compact p-1.5 text-fg-muted hover:bg-surface-sunken hover:text-fg"
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        </div>
 
-        {dbDown && (
-          <div role="alert" className="mb-8 flex items-start gap-3 rounded-card border border-brand-orange/30 bg-brand-orange/10 p-4 text-sm text-fg">
-            <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-ambition" />
-            <div>
-              <p className="font-semibold">The database can&apos;t be reached.</p>
-              <p className="mt-1 text-fg-muted">
-                Leads, clients and users are stored in Supabase, which isn&apos;t responding. Check that the Supabase
-                project is active and that <code className="text-xs">NEXT_PUBLIC_SUPABASE_URL</code> points to it. See the
-                Settings tab for details.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Tab Navigation — scrolls sideways on small screens */}
-        <nav aria-label="Admin sections" className="-mx-4 mb-10 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <div className="liquid-glass glass flex w-max gap-1 rounded-card p-1.5">
-            {TABS.map(({ id, label, Icon }) => (
+        <nav aria-label="Console modules" className="flex-1 space-y-1 overflow-y-auto p-3">
+          {TABS.map(({ id, label, Icon }) => {
+            const active = activeTab === id;
+            return (
               <button
                 key={id}
                 type="button"
                 onClick={() => handleTabChange(id)}
-                aria-current={activeTab === id ? "page" : undefined}
-                className={`flex items-center gap-2 whitespace-nowrap rounded-compact px-4 py-2 text-[0.8125rem] font-semibold transition-all ${
-                  activeTab === id ? "bg-action text-white shadow-md" : "text-fg-muted hover:bg-surface-sunken/70 hover:text-fg"
+                title={collapsed ? label : undefined}
+                aria-current={active ? "page" : undefined}
+                className={`flex w-full items-center gap-3 rounded-compact px-3 py-2.5 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-intel/10 text-intel"
+                    : "text-fg-muted hover:bg-surface-sunken hover:text-fg"
                 }`}
               >
-                <Icon aria-hidden="true" className="h-4 w-4" />
-                {label}
-                {newCounts[id] > 0 && (
-                  <span
-                    className={`grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[0.6875rem] font-bold tabular-nums ${
-                      activeTab === id ? "bg-white text-action" : "bg-brand-orange text-white"
-                    }`}
-                    aria-label={`${newCounts[id]} new`}
-                  >
-                    {newCounts[id]}
-                  </span>
-                )}
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                {!collapsed && <span className="truncate">{label}</span>}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </nav>
 
-        {/* Dynamic Content */}
-        <main key={activeTab} className="page-enter">
-          {activeTab === "overview" && (
-            <div className="space-y-8">
-              <CRMOverview />
-
-              {/* Leadership Registry Overview */}
-              <div className="surface rounded-panel p-6 sm:p-8">
-                <h2 className="mb-6 flex items-center gap-2 text-base font-bold text-fg">
-                  <span className="inline-block h-5 w-1.5 rounded-full bg-action"></span>
-                  Leadership registry
-                </h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {people.map((leader) => (
-                    <div key={leader.id} className="space-y-1.5 rounded-card border border-line bg-surface-sunken/50 p-4">
-                      <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-intel">
-                        {leader.designation}
-                      </span>
-                      <p className="text-sm font-bold text-fg">{leader.fullName}</p>
-                      <p className="text-xs leading-relaxed text-fg-muted">
-                        {leader.responsibilities?.join(", ") || ""}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-8">
-                <LeadsTable />
-              </div>
+        <div className="border-t border-line p-3">
+          {!collapsed && (
+            <div className="mb-3 rounded-compact bg-surface-secondary px-3 py-2 text-xs">
+              <p className="font-semibold text-fg">{username}</p>
+              <p className="font-mono text-[10px] text-fg-subtle">
+                Session until {new Date(expiresAt * 1000).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+              </p>
             </div>
           )}
+          <button
+            type="button"
+            disabled={signingOut}
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-3 rounded-compact px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-status-error/10 hover:text-status-error"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>{signingOut ? "Signing out..." : "Sign out"}</span>}
+          </button>
+        </div>
+      </aside>
 
-          {activeTab === "content" && <ContentEditor />}
-          {activeTab === "contacts" && <ContactManager />}
-          {activeTab === "applications" && <ApplicationsManager />}
-          {activeTab === "users" && <UsersManager />}
-          {activeTab === "settings" && <SettingsManager />}
-          {activeTab === "privacy" && <PrivacyManager />}
+      {/* Main Content Area */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-surface px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen((v) => !v)}
+              aria-label="Toggle console menu"
+              className="rounded-compact p-2 text-fg-muted hover:bg-surface-sunken lg:hidden"
+            >
+              {mobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm">
+              <span className="hidden font-mono text-xs uppercase text-fg-subtle sm:inline">Vanikara Console</span>
+              <span className="hidden text-fg-subtle sm:inline">/</span>
+              <span className="font-semibold text-fg">{currentTabMeta.label}</span>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              target="_blank"
+              className="inline-flex h-9 items-center gap-1.5 rounded-compact border border-line px-3 text-xs font-medium text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
+            >
+              <span>Live site</span>
+              <ExternalLink className="h-3.5 w-3.5" />
+            </Link>
+            <ThemeSwitcher />
+          </div>
+        </header>
+
+        {/* Mobile Drawer */}
+        {mobileNavOpen && (
+          <div className="border-b border-line bg-surface p-3 lg:hidden">
+            <div className="grid grid-cols-2 gap-1.5">
+              {TABS.map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => handleTabChange(id)}
+                  className={`flex items-center gap-2 rounded-compact px-3 py-2 text-xs font-medium ${
+                    activeTab === id ? "bg-intel/10 text-intel" : "text-fg-muted hover:bg-surface-sunken"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span className="truncate">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl space-y-8">
+            {activeTab === "overview" && (
+              <div className="space-y-8">
+                <CRMOverview />
+                <LeadsTable />
+              </div>
+            )}
+            {activeTab === "content" && <ContentEditor />}
+            {activeTab === "contacts" && <ContactManager />}
+            {activeTab === "applications" && (
+              <div className="space-y-10">
+                <JobsManager />
+                <div className="rule" />
+                <ApplicationsManager />
+              </div>
+            )}
+            {activeTab === "products" && <RegistrationsManager />}
+            {activeTab === "users" && <UsersManager />}
+            {activeTab === "security" && <SecurityCentre />}
+            {activeTab === "privacy" && <PrivacyManager />}
+            {activeTab === "settings" && <SettingsManager />}
+          </div>
         </main>
       </div>
     </div>

@@ -1,55 +1,59 @@
 import type { Metadata } from "next";
 import SectionHeader from "@/components/ui/SectionHeader";
-import FounderCard from "@/components/people/FounderCard";
+import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
+import FounderCard from "@/components/people/FounderCard";
 import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Leadership",
-  description: "The leadership of VANIKARA Intelligence Private Limited.",
+  description:
+    "Founders, directors, and corporate governance of VANIKARA Intelligence Private Limited.",
 };
 
 export default async function LeadershipPage() {
-  const { identity: COMPANY_IDENTITY, people: FOUNDERS_AND_LEADERSHIP } = await getSiteContent();
+  const { identity, people } = await getSiteContent();
+
   return (
     <>
-      <section className="container-page pb-12 pt-16 sm:pt-24">
-        <SectionHeader
-          as="h1"
-          eyebrow="Leadership"
-          tone="cool"
-          title="The people building VANIKARA."
-          lead="Leading VANIKARA's administration, technology, operations and finance, alongside its people, culture and marketing."
-        />
-      </section>
-
-      <section aria-labelledby="leadership-heading" className="container-page py-12">
-        <h2 id="leadership-heading" className="sr-only">
-          Leadership
-        </h2>
-        <div className="grid max-w-4xl gap-5 sm:grid-cols-2">
-          {FOUNDERS_AND_LEADERSHIP.map((person, i) => (
-            <FounderCard key={person.id} person={person} index={i} />
-          ))}
+      <section className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <SectionHeader
+            as="h1"
+            eyebrow="Leadership & Governance"
+            tone="cool"
+            title="The people building VANIKARA."
+            lead={`${identity.legalName} is led by its founders and board of directors in ${identity.operationalLocation}.`}
+          />
         </div>
       </section>
 
-      <section aria-labelledby="governance-heading" className="container-page py-16 sm:py-24">
-        <div className="grid gap-8 border-t border-line pt-12 lg:grid-cols-12" data-reveal>
-          <div className="lg:col-span-5">
-            <h2 id="governance-heading" className="text-title text-fg">
-              Governance
-            </h2>
+      <section className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2" data-reveal>
+            {people.map((person, index) => (
+              <FounderCard key={person.id} person={person} index={index} />
+            ))}
           </div>
-          <div className="space-y-6 lg:col-span-7">
-            <p className="text-[1.0625rem] leading-relaxed text-fg-muted">
-              {COMPANY_IDENTITY.legalName} is a private limited company incorporated on {COMPANY_IDENTITY.incorporationDate}{" "}
-              under the Companies Act, 2013, in Andhra Pradesh.
+        </div>
+      </section>
+
+      <section className="bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <div className="surface p-6 sm:p-10" data-reveal>
+            <Eyebrow tone="cool">Corporate Governance</Eyebrow>
+            <h2 className="text-title mt-3 text-fg">Accountability & statutory compliance</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-fg-muted">
+              Registered under the Companies Act, 2013 (CIN <span className="font-mono">{identity.cin}</span>). All statutory disclosures, grievance officer contacts, and legal policies are maintained transparently in our Legal Hub.
             </p>
-            <p className="text-sm tabular-nums text-fg-subtle">CIN {COMPANY_IDENTITY.cin}</p>
-            <Button href="/contact" variant="secondary" arrow>
-              Contact us
-            </Button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/legal/legal-information" variant="outline" arrow>
+                Company Information
+              </Button>
+              <Button href="/contact" variant="ghost">
+                Contact Leadership
+              </Button>
+            </div>
           </div>
         </div>
       </section>

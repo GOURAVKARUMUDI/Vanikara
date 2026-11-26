@@ -1,6 +1,5 @@
 import React from "react";
 import Eyebrow from "./Eyebrow";
-import RevealText from "@/components/motion/RevealText";
 
 interface SectionHeaderProps {
   eyebrow?: string;
@@ -8,7 +7,6 @@ interface SectionHeaderProps {
   title: React.ReactNode;
   lead?: React.ReactNode;
   align?: "left" | "center";
-  /** Heading level; pages use h1 once, sections use h2. */
   as?: "h1" | "h2";
   className?: string;
   children?: React.ReactNode;
@@ -16,7 +14,7 @@ interface SectionHeaderProps {
 
 export default function SectionHeader({
   eyebrow,
-  tone = "warm",
+  tone = "cool",
   title,
   lead,
   align = "left",
@@ -25,7 +23,6 @@ export default function SectionHeader({
   children,
 }: SectionHeaderProps) {
   const centered = align === "center";
-  // Page headers sit above the fold: animate with CSS so they never wait on JS.
   const isPageHeader = Heading === "h1";
   return (
     <header
@@ -33,10 +30,10 @@ export default function SectionHeader({
       data-reveal={isPageHeader ? undefined : true}
     >
       {eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
-      <Heading className={`${Heading === "h1" ? "text-display" : "text-headline"} text-fg ${eyebrow ? "mt-4" : ""}`}>
-        {typeof title === "string" ? <RevealText mode={isPageHeader ? "load" : "scroll"} delay={isPageHeader ? 80 : 0}>{title}</RevealText> : title}
+      <Heading className={`${isPageHeader ? "text-page-title" : "text-headline"} text-fg ${eyebrow ? "mt-3" : ""}`}>
+        {title}
       </Heading>
-      {lead && <p className={`text-lead mt-5 ${centered ? "mx-auto" : ""} max-w-2xl`}>{lead}</p>}
+      {lead && <p className={`text-lead mt-4 ${centered ? "mx-auto" : ""} max-w-2xl`}>{lead}</p>}
       {children}
     </header>
   );

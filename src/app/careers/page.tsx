@@ -1,77 +1,100 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
-import Button from "@/components/ui/Button";
 import Eyebrow from "@/components/ui/Eyebrow";
+import Button from "@/components/ui/Button";
 import ApplicationForm from "@/sections/careers/ApplicationForm";
+import JobBoard, { type PublicJob } from "@/sections/careers/JobBoard";
 import { getSiteContent } from "@/lib/content";
+import { supabaseService } from "@/utils/supabase/service";
 
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "VANIKARA is an early-stage company. Opportunities across technology, product, operations, design and business will grow with it.",
+    "Explore open engineering, product, and internship opportunities at VANIKARA Intelligence Private Limited in Guntur, Andhra Pradesh.",
 };
 
-const AREAS = ["Engineering", "Product & design", "Operations", "Business & partnerships"];
+async function fetchPublishedJobs(): Promise<PublicJob[]> {
+  try {
+    const { data, error } = await supabaseService
+      .from("job_positions")
+      .select("id, slug, title, department, location, employment_type, work_arrangement, description, application_deadline")
+      .eq("status", "published")
+      .order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data as PublicJob[];
+  } catch {
+    return [];
+  }
+}
 
-export default async function CareersPage() {
-  const { identity: COMPANY_IDENTITY } = await getSiteContent();
+export default async function CareersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const [{ identity }, jobs, params] = await Promise.all([
+    getSiteContent(),
+    fetchPublishedJobs(),
+    searchParams,
+  ]);
+
   return (
     <>
-      <section className="container-page pb-12 pt-16 sm:pt-24">
-        <SectionHeader
-          as="h1"
-          eyebrow="Careers"
-          title="Build with us."
-          lead="VANIKARA is an early-stage company. As it grows, opportunities across technology, product, operations, design and business will grow with it."
-        />
+      <section className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <SectionHeader
+            as="h1"
+            eyebrow="Careers at Vanikara"
+            tone="cool"
+            title="Build with us."
+            lead="We are an early-stage technology product company. We value clarity, ownership, and engineers and operators who care deeply about real-world execution."
+          >
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="#open-positions" arrow>
+                Open Positions
+              </Button>
+              <Button href="#apply" variant="outline">
+                General Application
+              </Button>
+              <Link
+                href="/account/applications"
+                className="inline-flex h-11 items-center px-3 text-sm font-medium text-intel hover:underline"
+              >
+                Track an existing application →
+              </Link>
+            </div>
+          </SectionHeader>
+        </div>
       </section>
 
-      <section aria-labelledby="careers-now" className="container-page py-12 sm:py-20">
-        <div className="grid gap-12 border-t border-line pt-14 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-6" data-reveal>
-            <h2 id="careers-now" className="text-title text-fg">
-              No open roles are listed right now.
-            </h2>
-            <p className="mt-4 max-w-lg text-[1.0625rem] leading-relaxed text-fg-muted">
-              We would still like to hear from people who care about practical execution and long-term ambition.
-              Conversations happen directly with the founders.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button href="#apply" arrow>
-                Apply now
-              </Button>
-              <Button href={`mailto:${COMPANY_IDENTITY.officialEmail}`} variant="secondary">
-                {COMPANY_IDENTITY.officialEmail}
-              </Button>
-            </div>
+      {/* Open Positions */}
+      <section id="open-positions" className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="max-w-2xl">
+            <Eyebrow tone="cool">Open Roles</Eyebrow>
+            <h2 className="text-headline mt-3 text-fg">Published opportunities.</h2>
           </div>
-          <div className="lg:col-span-5 lg:col-start-8" data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
-            <p className="text-[0.8125rem] font-semibold text-fg">Areas we expect to grow in</p>
-            <ul className="mt-5 border-t border-line">
-              {AREAS.map((area) => (
-                <li key={area} className="border-b border-line py-4 text-lg font-semibold text-fg">
-                  {area}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 text-sm text-fg-subtle">Based in {COMPANY_IDENTITY.operationalLocation}.</p>
+          <div className="mt-8">
+            <JobBoard jobs={jobs} initialType={params.type} />
           </div>
         </div>
       </section>
 
-      <section id="apply" aria-labelledby="apply-title" className="container-page scroll-mt-28 pb-20 sm:pb-28">
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-4" data-reveal>
-            <Eyebrow tone="cool">Apply</Eyebrow>
-            <h2 id="apply-title" className="text-title mt-4 text-fg">
-              Send us your application.
-            </h2>
-            <p className="mt-4 text-[0.9375rem] leading-relaxed text-fg-muted">
-              Tell us the role you&apos;d like and attach your résumé. Every application is read by the team.
-            </p>
-          </div>
-          <div className="lg:col-span-8">
-            <ApplicationForm contactEmail={COMPANY_IDENTITY.officialEmail} />
+      {/* General Application Form */}
+      <section id="apply" className="bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <Eyebrow tone="warm">Apply Directly</Eyebrow>
+              <h2 className="text-headline mt-3 text-fg">Submit your application.</h2>
+              <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+                All applications are reviewed by humans. Upload your résumé (PDF or DOCX, max 4 MB) and you will receive an immediate reference number for status tracking.
+              </p>
+            </div>
+            <div className="lg:col-span-8">
+              <ApplicationForm contactEmail={identity.officialEmail} />
+            </div>
           </div>
         </div>
       </section>

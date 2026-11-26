@@ -1,58 +1,41 @@
 import Eyebrow from "@/components/ui/Eyebrow";
 import { getSiteContent } from "@/lib/content";
-import Lines from "@/components/ui/Lines";
 
-export default async function TimelineSection({ showHeader = true }: { showHeader?: boolean }) {
-  const { identity: COMPANY_IDENTITY, timeline: COMPANY_TIMELINE, home: { timeline: copy } } = await getSiteContent();
+export default async function TimelineSection() {
+  const { timeline } = await getSiteContent();
+
   return (
-    <section aria-labelledby={showHeader ? "timeline-title" : undefined} aria-label={showHeader ? undefined : "Timeline"} className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
-      <div className="container-page">
-        {showHeader && (
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end" data-reveal>
-            <div className="max-w-2xl">
-              <Eyebrow>{copy.eyebrow}</Eyebrow>
-              <h2 id="timeline-title" className="text-headline mt-5 text-fg">
-                <Lines text={copy.title} />
-              </h2>
-            </div>
-            <p className="max-w-sm text-[1.0625rem] leading-relaxed text-fg-muted">
-              Registered in Andhra Pradesh · <span className="whitespace-nowrap">CIN <span className="tabular-nums">{COMPANY_IDENTITY.cin}</span></span>
-            </p>
-          </div>
-        )}
+    <section id="journey" aria-labelledby="timeline-heading" className="border-b border-line bg-surface-secondary">
+      <div className="container-page py-20 sm:py-28">
+        <div className="max-w-2xl" data-reveal>
+          <Eyebrow tone="cool">Company Journey</Eyebrow>
+          <h2 id="timeline-heading" className="text-headline mt-4 text-fg">
+            Verified milestones and roadmap.
+          </h2>
+          <p className="mt-3 text-base text-fg-muted">
+            Completed milestones are clearly distinguished from planned roadmap targets.
+          </p>
+        </div>
 
-        <ol className={`relative grid gap-0 md:grid-cols-4 md:gap-6 ${showHeader ? "mt-14" : ""}`}>
-          {/* Connecting line (desktop) */}
-          <span aria-hidden="true" data-reveal="draw" className="absolute left-0 right-0 top-[7px] hidden h-px bg-line-strong md:block" />
-          <span
-            aria-hidden="true"
-            data-reveal="draw"
-            className="absolute left-0 right-0 top-[7px] hidden h-px md:block"
-            style={{ background: "var(--gradient-signature)", opacity: 0.7, ["--reveal-delay" as string]: "200ms" }}
-          />
-          {COMPANY_TIMELINE.map((item, i) => (
-            <li
-              key={item.title}
-              data-reveal
-              style={{ ["--reveal-delay" as string]: `${i * 110}ms` }}
-              className="relative border-l border-line-strong pb-10 pl-7 last:pb-0 md:border-l-0 md:pb-0 md:pl-0"
-            >
-              <span
-                aria-hidden="true"
-                className={`absolute -left-[7.5px] top-0 grid h-[15px] w-[15px] place-items-center rounded-full border md:left-0 ${
-                  item.isTarget
-                    ? "node-pulse border-dashed border-brand-orange bg-surface"
-                    : "border-brand-blue bg-surface"
-                }`}
-              >
-                <span className={`h-[5px] w-[5px] rounded-full ${item.isTarget ? "bg-brand-orange" : "bg-brand-blue"}`} />
-              </span>
-              <p className={`text-[0.8125rem] font-semibold md:mt-8 ${item.isTarget ? "text-ambition" : "text-intel"}`}>
-                {item.date}
-                {item.isTarget && <span className="ml-2 font-medium text-fg-subtle">Target</span>}
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-fg">{item.title}</h3>
-              <p className="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{item.description}</p>
+        <ol className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4" data-reveal>
+          {timeline.map((item) => (
+            <li key={`${item.date}-${item.title}`} className="surface flex flex-col justify-between p-6">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs font-semibold text-fg">{item.date}</span>
+                  <span
+                    className={`rounded px-2 py-0.5 font-mono text-[10px] font-medium uppercase ${
+                      item.isTarget
+                        ? "bg-ambition/10 text-ambition"
+                        : "bg-status-success/10 text-status-success"
+                    }`}
+                  >
+                    {item.isTarget ? "Planned Target" : "Completed"}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold text-fg">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{item.description}</p>
+              </div>
             </li>
           ))}
         </ol>

@@ -1,40 +1,22 @@
-import Image from "next/image";
 import Button from "@/components/ui/Button";
-import RevealText from "@/components/motion/RevealText";
 
-import { SYMBOL_SRC } from "@/components/brand/BrandMark";
-import { getSiteContent } from "@/lib/content";
-
-export default async function ClosingSection() {
-  const { identity: COMPANY_IDENTITY, home: { closing: copy } } = await getSiteContent();
+export default function ClosingSection() {
   return (
-    <section aria-labelledby="closing-title" className="relative section-atmosphere overflow-hidden py-20 sm:py-28" data-tone="deep">
-      <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center" data-reveal="quiet">
-          <div aria-hidden="true" className="relative mx-auto grid h-36 w-36 place-items-center">
-            <div className="stage-halo stage-halo--blur" />
-            <div className="stage-halo" />
-            <Image
-              src={SYMBOL_SRC}
-              alt=""
-              width={96}
-              height={78}
-              sizes="72px"
-              className="float-y relative h-auto w-[72px]"
-            />
-          </div>
-          <h2 id="closing-title" className="text-headline mt-6 text-fg">
-            <RevealText>{copy.title}</RevealText>
+    <section aria-labelledby="closing-cta-heading" className="bg-surface">
+      <div className="container-page py-20 sm:py-28">
+        <div className="mx-auto max-w-3xl text-center" data-reveal>
+          <h2 id="closing-cta-heading" className="text-headline text-fg">
+            The future is built together.
           </h2>
-          <p className="text-lead mx-auto mt-5 max-w-lg">
-            {copy.body}
+          <p className="text-lead mx-auto mt-4 max-w-2xl">
+            Whether you are a restaurant owner in Guntur, an engineer looking to build meaningful systems, or an organization exploring collaboration, we welcome your enquiry.
           </p>
-          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button href="/contact" size="lg" arrow>
-              {copy.buttonLabel}
+              Contact Vanikara
             </Button>
-            <Button href={`mailto:${COMPANY_IDENTITY.officialEmail}`} variant="secondary" size="lg">
-              {COMPANY_IDENTITY.officialEmail}
+            <Button href="/careers" variant="outline" size="lg">
+              Explore Careers
             </Button>
           </div>
         </div>

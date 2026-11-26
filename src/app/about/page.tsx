@@ -1,93 +1,168 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
-import PrinciplesSection from "@/sections/home/PrinciplesSection";
-import TimelineSection from "@/sections/home/TimelineSection";
-import FoundersSection from "@/sections/home/FoundersSection";
+import Button from "@/components/ui/Button";
+import FounderCard from "@/components/people/FounderCard";
 import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Vanikara",
   description:
-    "VANIKARA began as a conversation between students about real-world problems. Learn about the company, its principles and the people building it.",
+    "VANIKARA Intelligence Private Limited is a technology product company based in Guntur, Andhra Pradesh, building practical digital platforms and internal intelligent systems.",
 };
 
 export default async function AboutPage() {
-  const { identity: COMPANY_IDENTITY, story: COMPANY_STORY } = await getSiteContent();
-  const FACTS = [
-    { label: "Legal name", value: COMPANY_IDENTITY.legalName },
-    { label: "CIN", value: COMPANY_IDENTITY.cin },
-    { label: "Founded", value: COMPANY_IDENTITY.foundingDate },
-    { label: "Incorporated", value: COMPANY_IDENTITY.incorporationDate },
-    { label: "Based in", value: COMPANY_IDENTITY.operationalLocation },
-  ];
+  const { identity, story, principles, timeline, people } = await getSiteContent();
+
   return (
     <>
-      <section className="container-page pb-16 pt-16 sm:pt-24">
-        <SectionHeader
-          as="h1"
-          eyebrow="About VANIKARA"
-          title={COMPANY_STORY.heading}
-          lead={COMPANY_STORY.paragraphs[0]}
-        />
+      <section className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <SectionHeader
+            as="h1"
+            eyebrow="About Vanikara"
+            tone="cool"
+            title={story.heading}
+            lead={identity.supportingStatement}
+          />
+        </div>
       </section>
 
-      <section aria-labelledby="about-intent" className="container-page py-16 sm:py-24">
-        <div className="grid gap-12 border-t border-line pt-16 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-7" data-reveal>
-            <Eyebrow tone="cool">Intent</Eyebrow>
-            <p id="about-intent" className="text-headline mt-5 text-fg">
-              An attempt to create — rather than simply follow conventional paths.
-            </p>
-          </div>
-          <div className="space-y-10 lg:col-span-5 lg:pt-12" data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-            <div>
-              <h2 className="text-lg font-semibold text-fg">Why we exist</h2>
-              <p className="mt-3 text-[1.0625rem] leading-relaxed text-fg-muted">
-                People work around inefficient systems every day. Businesses accept limits they have learned to live
-                with. VANIKARA exists to notice those gaps and build practical alternatives.
-              </p>
+      {/* Story, Mission & Vision */}
+      <section className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
+            <div className="space-y-5 lg:col-span-7">
+              <Eyebrow tone="cool">Company Story</Eyebrow>
+              <h2 className="text-headline text-fg">A product-first approach from day one.</h2>
+              {story.paragraphs.map((p) => (
+                <p key={p} className="text-base leading-relaxed text-fg-muted">
+                  {p}
+                </p>
+              ))}
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-fg">The name</h2>
-              <p className="mt-3 text-[1.0625rem] leading-relaxed text-fg-muted">
-                &ldquo;Vanikara&rdquo; draws on the idea of commerce and craft — the people who build and conduct
-                enterprise. For us it means building with skill, operating with purpose, and creating something of our
-                own.
-              </p>
+
+            <div className="space-y-6 lg:col-span-5">
+              <div className="surface p-6">
+                <p className="font-mono text-xs font-medium uppercase tracking-wider text-intel">Mission</p>
+                <p className="mt-2 text-lg font-semibold text-fg">{identity.mission}</p>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+                  To design and engineer practical software products that improve unit economics and operational clarity for real-world businesses.
+                </p>
+              </div>
+              <div className="surface p-6">
+                <p className="font-mono text-xs font-medium uppercase tracking-wider text-intel">Long-Term Vision</p>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+                  To build enduring commercial platforms supported by proprietary internal operational intelligence, grounded in transparent business models and disciplined engineering.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <PrinciplesSection />
-      <TimelineSection />
-      <FoundersSection />
-
-      <section aria-labelledby="facts-title" className="container-page py-16 sm:py-24">
-        <div className="surface rounded-panel p-7 sm:p-10 lg:p-12" data-reveal>
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <h2 id="facts-title" className="text-title text-fg">
-              Company information
-            </h2>
-            <Link
-              href="/legal/legal-information"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-intel"
-            >
-              <span className="link-underline">Registration details</span>
-              <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
-            </Link>
+      {/* Operating Principles */}
+      <section id="principles" className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <div className="max-w-2xl" data-reveal>
+            <Eyebrow tone="cool">Operating Principles</Eyebrow>
+            <h2 className="text-headline mt-3 text-fg">How we work.</h2>
           </div>
-          <dl className="mt-8 grid gap-x-8 gap-y-6 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-5">
-            {FACTS.map((fact) => (
-              <div key={fact.label}>
-                <dt className="text-[0.8125rem] text-fg-subtle">{fact.label}</dt>
-                <dd className="mt-1.5 text-[0.9375rem] font-semibold tabular-nums text-fg [overflow-wrap:anywhere]">{fact.value}</dd>
+
+          <div className="mt-12 grid grid-cols-1 gap-8 border-t border-line pt-10 md:grid-cols-3" data-reveal>
+            {principles.map((item, idx) => (
+              <div key={item.title} className="space-y-2">
+                <span className="font-mono text-xs text-intel">0{idx + 1}</span>
+                <h3 className="text-lg font-semibold text-fg">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-fg-muted">{item.desc}</p>
               </div>
             ))}
-          </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* Company Journey */}
+      <section id="journey" className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="max-w-2xl" data-reveal>
+            <Eyebrow tone="cool">Company Journey</Eyebrow>
+            <h2 className="text-headline mt-3 text-fg">Verified milestones.</h2>
+          </div>
+
+          <ol className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4" data-reveal>
+            {timeline.map((m) => (
+              <li key={`${m.date}-${m.title}`} className="surface p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs font-semibold text-fg">{m.date}</span>
+                  <span
+                    className={`rounded px-2 py-0.5 font-mono text-[10px] font-medium uppercase ${
+                      m.isTarget ? "bg-ambition/10 text-ambition" : "bg-status-success/10 text-status-success"
+                    }`}
+                  >
+                    {m.isTarget ? "Planned Target" : "Completed"}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold text-fg">{m.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{m.description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Leadership Preview */}
+      <section className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between" data-reveal>
+            <div>
+              <Eyebrow tone="cool">Leadership</Eyebrow>
+              <h2 className="text-headline mt-3 text-fg">Founders & Directors.</h2>
+            </div>
+            <Button href="/leadership" variant="outline" arrow>
+              View leadership page
+            </Button>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2" data-reveal>
+            {people.map((person, index) => (
+              <FounderCard key={person.id} person={person} index={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Verified Corporate Identity */}
+      <section className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="surface p-6 sm:p-10" data-reveal>
+            <Eyebrow tone="cool">Corporate Identity</Eyebrow>
+            <h2 className="text-title mt-3 text-fg">Verified statutory registration</h2>
+            <dl className="mt-8 grid grid-cols-1 gap-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <dt className="font-mono text-xs uppercase text-fg-subtle">Legal Name</dt>
+                <dd className="mt-1 text-sm font-medium text-fg">{identity.legalName}</dd>
+              </div>
+              <div>
+                <dt className="font-mono text-xs uppercase text-fg-subtle">Corporate Identity Number</dt>
+                <dd className="mt-1 font-mono text-sm font-medium text-fg">{identity.cin}</dd>
+              </div>
+              <div>
+                <dt className="font-mono text-xs uppercase text-fg-subtle">Incorporation Date</dt>
+                <dd className="mt-1 text-sm font-medium text-fg">{identity.incorporationDate}</dd>
+              </div>
+              <div>
+                <dt className="font-mono text-xs uppercase text-fg-subtle">Operational Base</dt>
+                <dd className="mt-1 text-sm font-medium text-fg">{identity.operationalLocation}</dd>
+              </div>
+            </dl>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/contact" arrow>
+                Contact Vanikara
+              </Button>
+              <Button href="/legal/legal-information" variant="outline">
+                Full Company Information
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
     </>

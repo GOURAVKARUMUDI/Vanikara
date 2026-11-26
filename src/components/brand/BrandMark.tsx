@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-/** Intrinsic size of /brand/vanikara-symbol.png (trimmed from /logo.png). */
-export const SYMBOL_WIDTH = 876;
-export const SYMBOL_HEIGHT = 714;
+/** Intrinsic size of /brand/vanikara-symbol.png (approved supplied asset, cropped to its artwork). */
+export const SYMBOL_WIDTH = 1196;
+export const SYMBOL_HEIGHT = 974;
 export const SYMBOL_SRC = "/brand/vanikara-symbol.png";
 
 interface SymbolProps {

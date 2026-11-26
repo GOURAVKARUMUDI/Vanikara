@@ -58,9 +58,20 @@ export const CONTENT_GROUPS: ContentGroup[] = [
   {
     key: "initiatives",
     title: "Products & initiatives",
-    description: "The food delivery platform and CYGMA — text used on the home, product and overview pages.",
-    pages: ["/", "/what-we-build", "/food-delivery", "/cygma"],
+    description: "Food Services and CYGMA_AI copy used across overview and product pages.",
+    pages: ["/", "/what-we-build", "/food-delivery", "/cygma-ai"],
     hidden: ["id"],
+  },
+  {
+    key: "portfolio",
+    title: "Business & product portfolio",
+    description: "Hierarchical portfolio registry, development statuses, and visibility controls (public, internal, draft, archived). Changes apply immediately without code edits.",
+    pages: ["/", "/businesses", "/food-delivery", "/businesses/travel", "/businesses/hotels", "/businesses/quick-commerce", "/cygma-ai", "/cygma-ai/resume-intelligence"],
+    hidden: ["id", "parentId"],
+    enums: {
+      visibility: ["public", "internal", "draft", "archived"],
+      ecosystem: ["consumer", "cygma_ai", "technology"],
+    },
   },
   {
     key: "legal",

@@ -13,30 +13,32 @@ export default async function Footer() {
       links: [
         { href: "/about", label: "About Vanikara" },
         { href: "/leadership", label: "Leadership" },
-        { href: "/about#journey", label: "Our Journey" },
-        { href: "/about#principles", label: "Principles" },
+        { href: "/careers", label: "Careers" },
+        { href: "/contact", label: "Contact" },
       ],
     },
     {
-      title: "Products",
+      title: "Consumer Businesses",
       links: [
-        { href: "/what-we-build", label: "All Initiatives" },
-        { href: "/food-delivery", label: "Food Delivery Platform" },
-        { href: "/cygma", label: "CYGMA Intelligence" },
+        { href: "/businesses", label: "Ecosystem Overview" },
+        { href: "/food-delivery", label: "Food Services" },
+        { href: "/businesses/travel", label: "Travel Booking" },
+        { href: "/businesses/hotels", label: "Hotel Booking" },
+        { href: "/businesses/quick-commerce", label: "Quick Commerce" },
       ],
     },
     {
-      title: "Technology & Careers",
+      title: "Artificial Intelligence",
       links: [
+        { href: "/cygma-ai", label: "CYGMA_AI" },
+        { href: "/cygma-ai/resume-intelligence", label: "CYGMA-RI" },
+        { href: "/cygma-ai#responsible-ai", label: "Responsible AI" },
         { href: "/technology", label: "Engineering" },
-        { href: "/technology#security", label: "Security" },
-        { href: "/careers", label: "Open Positions" },
-        { href: "/account/applications", label: "Track Application" },
-        { href: "/contact", label: "Contact Us" },
+        { href: "/technology#security", label: "Cybersecurity" },
       ],
     },
     {
-      title: "Legal & Privacy",
+      title: "Legal",
       links: [
         { href: "/legal/terms", label: "Terms & Conditions" },
         { href: "/legal/privacy", label: "Privacy Policy" },
@@ -59,7 +61,7 @@ export default async function Footer() {
                 <BrandMark size={26} />
               </Link>
               <p className="mt-5 max-w-sm text-sm leading-relaxed text-fg-muted">
-                {COMPANY_IDENTITY.supportingStatement}
+                Vanikara Intelligence Private Limited develops connected consumer service platforms and proprietary enterprise intelligence systems.
               </p>
               <div className="mt-6 space-y-1.5 text-sm">
                 <a
@@ -95,7 +97,7 @@ export default async function Footer() {
                         </Link>
                       </li>
                     ))}
-                    {column.title === "Legal & Privacy" && (
+                    {column.title === "Legal" && (
                       <li>
                         <CookieSettingsButton className="link-underline text-fg-muted transition-colors hover:text-fg" />
                       </li>

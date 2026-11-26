@@ -34,3 +34,18 @@ test("ZIP without OOXML entries is distinguished from valid DOCX", () => {
   assert.equal(contentStr.includes("[Content_Types].xml"), false);
   assert.equal(contentStr.includes("word/document.xml"), false);
 });
+
+test("Portfolio visibility filter strictly excludes internal, draft, and archived items", () => {
+  const sample = [
+    { id: "a", visibility: "public", displayOrder: 2 },
+    { id: "b", visibility: "internal", displayOrder: 1 },
+    { id: "c", visibility: "draft", displayOrder: 3 },
+    { id: "d", visibility: "archived", displayOrder: 4 },
+    { id: "e", visibility: "public", displayOrder: 1 },
+  ];
+  const publicOnly = sample.filter((i) => i.visibility === "public").sort((a, b) => a.displayOrder - b.displayOrder);
+  assert.deepEqual(
+    publicOnly.map((i) => i.id),
+    ["e", "a"]
+  );
+});

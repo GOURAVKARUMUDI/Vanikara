@@ -15,11 +15,17 @@ async function prepare(page: Page, { consent = true }: { consent?: boolean } = {
 }
 
 const PAGES = [
-  { path: "/", heading: /Intelligence meets purpose/ },
+  { path: "/", heading: /Intelligence\. Connectivity\. Impact\./ },
+  { path: "/businesses", heading: /One connected consumer ecosystem/ },
+  { path: "/businesses/travel", heading: /Travel Booking/ },
+  { path: "/businesses/hotels", heading: /Hotel Booking/ },
+  { path: "/businesses/quick-commerce", heading: /Quick Commerce/ },
+  { path: "/cygma-ai", heading: /Intelligence, Built for Purpose/ },
+  { path: "/cygma-ai/resume-intelligence", heading: /Less Manual Verification/ },
   { path: "/about", heading: /conversation/ },
   { path: "/what-we-build", heading: /Two focused initiatives/ },
   { path: "/food-delivery", heading: /Food delivery/ },
-  { path: "/cygma", heading: /CYGMA Intelligence/ },
+  { path: "/cygma", heading: /Intelligence, Built for Purpose/ },
   { path: "/technology", heading: /How we intend to build/ },
   { path: "/leadership", heading: /people building VANIKARA/ },
   { path: "/careers", heading: /Build with us/ },
@@ -54,14 +60,30 @@ test.describe("VANIKARA website", () => {
     });
   }
 
-  test("legacy routes redirect", async ({ page }) => {
+  test("legacy routes and shortcuts redirect", async ({ page }) => {
     await prepare(page);
     await page.goto("/products");
     await expect(page).toHaveURL(/\/what-we-build$/);
     await page.goto("/ai");
-    await expect(page).toHaveURL(/\/cygma$/);
+    await expect(page).toHaveURL(/\/cygma-ai$/);
+    await page.goto("/cygma-ri");
+    await expect(page).toHaveURL(/\/cygma-ai\/resume-intelligence$/);
     await page.goto("/pricing");
     await expect(page).toHaveURL(/\/what-we-build$/);
+  });
+
+  test("portfolio API enforces public visibility and guards admin scope", async ({ request }) => {
+    const pub = await request.get("/api/portfolio");
+    expect(pub.status()).toBe(200);
+    const pubJson = await pub.json();
+    expect(pubJson.success).toBe(true);
+    expect(Array.isArray(pubJson.data.items)).toBe(true);
+    for (const item of pubJson.data.items) {
+      expect(item.visibility).toBe("public");
+    }
+
+    const adminScope = await request.get("/api/portfolio?scope=admin");
+    expect(adminScope.status()).toBe(401);
   });
 
   test("unknown routes show the 404 page", async ({ page }) => {

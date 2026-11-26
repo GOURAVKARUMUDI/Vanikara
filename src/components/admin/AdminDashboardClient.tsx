@@ -35,6 +35,7 @@ const ContentEditor = dynamic(() => import("@/components/admin/ContentEditor"), 
 const ApplicationsManager = dynamic(() => import("@/components/admin/ApplicationsManager"), { ssr: false });
 const JobsManager = dynamic(() => import("@/components/admin/JobsManager"), { ssr: false });
 const RegistrationsManager = dynamic(() => import("@/components/admin/RegistrationsManager"), { ssr: false });
+const PortfolioManager = dynamic(() => import("@/components/admin/PortfolioManager"), { ssr: false });
 const SecurityCentre = dynamic(() => import("@/components/admin/SecurityCentre"), { ssr: false });
 
 interface Props {
@@ -231,7 +232,13 @@ export default function AdminDashboardClient({ username, expiresAt, tab: initial
                 <ApplicationsManager />
               </div>
             )}
-            {activeTab === "products" && <RegistrationsManager />}
+            {activeTab === "products" && (
+              <div className="space-y-10">
+                <PortfolioManager />
+                <div className="rule" />
+                <RegistrationsManager />
+              </div>
+            )}
             {activeTab === "users" && <UsersManager />}
             {activeTab === "security" && <SecurityCentre />}
             {activeTab === "privacy" && <PrivacyManager />}

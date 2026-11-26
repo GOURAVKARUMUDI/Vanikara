@@ -1,0 +1,155 @@
+{
+  "version": "2.1",
+  "assets": [
+    {
+      "filename": "/brand/vanikara-symbol.png",
+      "dimensions": "876x714",
+      "page": "All pages (Navbar, Footer, Console, Login)",
+      "section": "Brand Identity",
+      "source": "Official supplied Vanikara brand asset",
+      "rights": "Proprietary \u2014 VANIKARA INTELLIGENCE PRIVATE LIMITED",
+      "type": "original",
+      "conceptual": false
+    },
+    {
+      "filename": "/images/hero/vanikara-connected-intelligence.webp",
+      "dimensions": "1376x768",
+      "page": "/",
+      "section": "Hero",
+      "source": "Custom AI 3D Studio Render (Gemini Image Generator)",
+      "rights": "Original project asset",
+      "type": "generated",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/cygma-ai/cygma-intelligence-core.webp",
+      "dimensions": "1376x768",
+      "page": "/, /cygma-ai",
+      "section": "CYGMA_AI Immersive Dark Showcase & Hero",
+      "source": "Custom AI 3D Render (Gemini Image Generator)",
+      "rights": "Original project asset",
+      "type": "generated",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/cygma-ai/intelligence-architecture.webp",
+      "dimensions": "1376x768",
+      "page": "/cygma-ai",
+      "section": "CYGMA_AI Modular Intelligence Architecture",
+      "source": "Custom AI 3D Render (Gemini Image Generator)",
+      "rights": "Original project asset",
+      "type": "generated",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/food/food-services-showcase.webp",
+      "dimensions": "2000x2666",
+      "originUrl": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=2000&q=85",
+      "page": "/, /food-delivery",
+      "section": "Food Services Primary Showcase",
+      "source": "Unsplash (Indian Restaurant Spread)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/food/dine-in-experience.webp",
+      "dimensions": "1600x1067",
+      "originUrl": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=85",
+      "page": "/food-delivery",
+      "section": "Dine-in Experience",
+      "source": "Unsplash (Modern Restaurant Interior)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/food/takeaway-counter.webp",
+      "dimensions": "1600x1200",
+      "originUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=85",
+      "page": "/food-delivery",
+      "section": "Takeaway & Pickup",
+      "source": "Unsplash (Contemporary Restaurant Counter)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/travel/travel-booking.webp",
+      "dimensions": "1600x1063",
+      "originUrl": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=85",
+      "page": "/, /businesses, /businesses/travel",
+      "section": "Travel Booking Portfolio & Hero",
+      "source": "Unsplash (Airplane Wing Above Clouds)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/hospitality/hotel-booking.webp",
+      "dimensions": "1600x1067",
+      "originUrl": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1600&q=85",
+      "page": "/, /businesses, /businesses/hotels",
+      "section": "Hotel Booking Portfolio & Hero",
+      "source": "Unsplash (Contemporary Sunlit Hotel Suite)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/quick-commerce/everyday-essentials.webp",
+      "dimensions": "1600x1200",
+      "originUrl": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=85",
+      "page": "/, /businesses, /businesses/quick-commerce",
+      "section": "Quick Commerce Portfolio & Hero",
+      "source": "Unsplash (Fresh Produce & Everyday Essentials)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/businesses/consumer-ecosystem.webp",
+      "dimensions": "2000x1335",
+      "originUrl": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=2000&q=85",
+      "page": "/businesses",
+      "section": "Unified Consumer Ecosystem Hero",
+      "source": "Unsplash (Connected Consumer Commerce)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/technology/engineering-infrastructure.webp",
+      "dimensions": "2000x1122",
+      "originUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=2000&q=85",
+      "page": "/, /technology",
+      "section": "Engineering & Infrastructure",
+      "source": "Unsplash (Enterprise Server Infrastructure)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/careers/collaboration.webp",
+      "dimensions": "2000x1334",
+      "originUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2000&q=85",
+      "page": "/, /careers",
+      "section": "Careers & Partnerships Collaboration",
+      "source": "Unsplash (Modern Technology Workplace Collaboration)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    },
+    {
+      "filename": "/images/corporate/about-architecture.webp",
+      "dimensions": "2000x1333",
+      "originUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=85",
+      "page": "/about",
+      "section": "About Vanikara Architectural Hero",
+      "source": "Unsplash (Modern Corporate Architecture)",
+      "rights": "Unsplash License (Free commercial use)",
+      "type": "licensed",
+      "conceptual": true
+    }
+  ]
+}

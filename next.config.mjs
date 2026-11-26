@@ -76,7 +76,12 @@ const nextConfig = {
       },
       {
         source: '/ai',
-        destination: '/cygma',
+        destination: '/cygma-ai',
+        permanent: true,
+      },
+      {
+        source: '/cygma-ri',
+        destination: '/cygma-ai/resume-intelligence',
         permanent: true,
       },
       {

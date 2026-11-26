@@ -7,8 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "playwright test --project=chromium",
-    "test:validate": "node scripts/e2e-validate.js"
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --test scripts/unit-tests.mjs",
+    "test:e2e": "playwright test --project=chromium --reporter=list",
+    "test:validate": "node scripts/e2e-validate.js",
+    "test:all": "npm run typecheck && npm run lint && npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.3",

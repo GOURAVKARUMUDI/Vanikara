@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ArrowRight, ChevronDown, Menu, Search, X, LayoutDashboard, LogIn, User } from "lucide-react";
 import BrandMark from "@/components/brand/BrandMark";
@@ -10,7 +11,7 @@ import AccountMenu from "./auth/AccountMenu";
 import { googleSignOut, useSession } from "./auth/session";
 import type { SiteContent } from "@/content/defaults";
 
-type MenuKey = "company" | "products" | "technology" | "careers" | "contact" | null;
+type MenuKey = "company" | "businesses" | "ai" | "technology" | "careers" | "contact" | null;
 
 interface NavItem {
   href: string;
@@ -25,23 +26,34 @@ const MENUS: Record<Exclude<MenuKey, null>, { label: string; items: NavItem[] }>
       { href: "/about", label: "About Vanikara", desc: "Our mission, story, and product-first philosophy" },
       { href: "/leadership", label: "Leadership", desc: "Founders, directors, and corporate governance" },
       { href: "/about#journey", label: "Our Journey", desc: "Verified company milestones and roadmap" },
-      { href: "/about#principles", label: "Our Principles", desc: "Operating standards guiding how we build" },
+      { href: "/legal/legal-information", label: "Corporate Governance", desc: "Statutory identity, CIN, and legal disclosures" },
     ],
   },
-  products: {
-    label: "Products",
+  businesses: {
+    label: "Businesses",
     items: [
-      { href: "/what-we-build", label: "All Initiatives", desc: "Overview of Vanikara's product portfolio" },
-      { href: "/food-delivery", label: "Food Delivery Platform", desc: "Restaurant-first delivery ecosystem · Target 2027 (Guntur)" },
-      { href: "/cygma", label: "CYGMA Intelligence", desc: "Proprietary internal operational intelligence initiative" },
+      { href: "/businesses", label: "Unified Consumer Ecosystem", desc: "Long-term vision for connected everyday services" },
+      { href: "/food-delivery", label: "Food Services", desc: "Food Delivery, Dine-in, Takeaway & Telephone Ordering" },
+      { href: "/businesses/travel", label: "Travel Booking", desc: "DPR / Planning Stage — future travel services" },
+      { href: "/businesses/hotels", label: "Hotel Booking", desc: "DPR / Planning Stage — future accommodation services" },
+      { href: "/businesses/quick-commerce", label: "Quick Commerce", desc: "Future Exploration — everyday essentials" },
+    ],
+  },
+  ai: {
+    label: "CYGMA_AI",
+    items: [
+      { href: "/cygma-ai", label: "CYGMA_AI Overview", desc: "Proprietary intelligence ecosystem powered by Vanikara" },
+      { href: "/cygma-ai/resume-intelligence", label: "CYGMA-RI — Resume Intelligence", desc: "B2B AI-powered resume analysis & pre-verification" },
+      { href: "/cygma-ai#internal-intelligence", label: "Internal Intelligence", desc: "Operational decision-support R&D" },
+      { href: "/cygma-ai#responsible-ai", label: "Responsible AI", desc: "Human oversight, privacy, and evidence standards" },
     ],
   },
   technology: {
     label: "Technology",
     items: [
       { href: "/technology", label: "Engineering", desc: "Modular architecture, data systems, and reliability" },
-      { href: "/technology#security", label: "Security", desc: "Defense-in-depth, RLS, and privacy by design" },
-      { href: "/cygma", label: "Research & Innovation", desc: "Long-term internal intelligence exploration" },
+      { href: "/technology#security", label: "Cybersecurity", desc: "Defense-in-depth, RLS, and privacy by design" },
+      { href: "/what-we-build", label: "All Initiatives", desc: "Complete product and research overview" },
     ],
   },
   careers: {
@@ -56,7 +68,8 @@ const MENUS: Record<Exclude<MenuKey, null>, { label: string; items: NavItem[] }>
     label: "Contact",
     items: [
       { href: "/contact", label: "General Enquiries", desc: "Reach our team in Guntur, Andhra Pradesh" },
-      { href: "/contact?topic=partnership", label: "Business Partnerships", desc: "Restaurant, delivery partner, and enterprise enquiries" },
+      { href: "/contact?topic=partnership", label: "Partnerships", desc: "Restaurant, travel, hospitality, and enterprise partners" },
+      { href: "/cygma-ai/resume-intelligence#early-access", label: "CYGMA-RI Early Access", desc: "B2B recruitment and enterprise enquiries" },
       { href: "/contact?topic=support", label: "Support", desc: "Assistance, policy queries, and grievance redressal" },
     ],
   },
@@ -64,14 +77,18 @@ const MENUS: Record<Exclude<MenuKey, null>, { label: string; items: NavItem[] }>
 
 const SEARCH_INDEX = [
   { href: "/", title: "Home", category: "Page", desc: "Vanikara corporate homepage" },
+  { href: "/businesses", title: "Unified Consumer Services Ecosystem", category: "Businesses", desc: "Food Services, Travel, Hotels, and Quick Commerce" },
+  { href: "/food-delivery", title: "Food Services", category: "Business", desc: "Food Delivery, Dine-in, Takeaway, and AI Telephone Ordering" },
+  { href: "/businesses/travel", title: "Travel Booking", category: "DPR / Planning", desc: "Connected travel services feasibility assessment" },
+  { href: "/businesses/hotels", title: "Hotel Booking", category: "DPR / Planning", desc: "Connected accommodation services feasibility assessment" },
+  { href: "/businesses/quick-commerce", title: "Quick Commerce", category: "Exploration", desc: "Future exploration into everyday essentials" },
+  { href: "/cygma-ai", title: "CYGMA_AI Ecosystem", category: "AI", desc: "Proprietary intelligence ecosystem powered by Vanikara Intelligence" },
+  { href: "/cygma-ai/resume-intelligence", title: "CYGMA-RI (Resume Intelligence)", category: "B2B Product", desc: "AI-powered B2B resume analysis and pre-verification platform" },
   { href: "/about", title: "About Vanikara", category: "Company", desc: "Story, mission, principles, and milestones" },
   { href: "/leadership", title: "Leadership", category: "Company", desc: "Founders and directors of Vanikara Intelligence" },
-  { href: "/what-we-build", title: "What We Build", category: "Products", desc: "Overview of all Vanikara initiatives" },
-  { href: "/food-delivery", title: "Food Delivery Platform", category: "Product", desc: "Restaurant-first delivery platform targeting Guntur 2027" },
-  { href: "/cygma", title: "CYGMA Intelligence", category: "Initiative", desc: "Proprietary internal operational intelligence" },
-  { href: "/technology", title: "Technology & Engineering", category: "Technology", desc: "Architecture, security, reliability, and stack" },
+  { href: "/technology", title: "Technology & Engineering", category: "Technology", desc: "Architecture, cybersecurity, reliability, and stack" },
   { href: "/careers", title: "Careers & Internships", category: "Careers", desc: "Open roles, internships, and application submission" },
-  { href: "/contact", title: "Contact & Enquiries", category: "Contact", desc: "General enquiries, partnerships, and support" },
+  { href: "/contact", title: "Contact & Partnerships", category: "Contact", desc: "General enquiries, partnerships, and support" },
   { href: "/account", title: "Account Portal", category: "Account", desc: "Track applications, enquiries, and privacy preferences" },
   { href: "/legal", title: "Legal & Compliance", category: "Legal", desc: "Terms, privacy, refund, shipping, cookies, and CIN" },
 ];
@@ -96,14 +113,12 @@ export default function Navbar({
   const idBase = useId();
   const session = useSession(pathname);
 
-  // Close menus on route change
   useEffect(() => {
     setOpenMenu(null);
     setMobileOpen(false);
     setSearchOpen(false);
   }, [pathname]);
 
-  // Outside click and Escape handling
   useEffect(() => {
     const onPointer = (e: PointerEvent) => {
       if (openMenu && !navRef.current?.contains(e.target as Node)) {
@@ -129,7 +144,6 @@ export default function Navbar({
     };
   }, [openMenu]);
 
-  // Focus search input on open
   useEffect(() => {
     if (searchOpen) {
       requestAnimationFrame(() => searchInputRef.current?.focus());
@@ -138,7 +152,6 @@ export default function Navbar({
     }
   }, [searchOpen]);
 
-  // Lock body scroll when mobile drawer is open
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.documentElement.style.overflow;
@@ -148,7 +161,6 @@ export default function Navbar({
     };
   }, [mobileOpen]);
 
-  // Admin console uses its own dedicated application shell
   if (pathname.startsWith("/admin")) {
     return null;
   }
@@ -160,13 +172,13 @@ export default function Navbar({
           item.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : SEARCH_INDEX.slice(0, 6);
+    : SEARCH_INDEX.slice(0, 7);
 
   return (
     <>
       <header className="glass fixed inset-x-0 top-0 z-40 h-[var(--header-height)]">
         <div className="container-page flex h-full items-center justify-between gap-4">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <Link
               href="/"
               aria-label="VANIKARA — Home"
@@ -175,7 +187,7 @@ export default function Navbar({
               <BrandMark size={24} priority />
             </Link>
 
-            <nav ref={navRef} aria-label="Primary" className="hidden lg:flex lg:items-center lg:gap-1">
+            <nav ref={navRef} aria-label="Primary" className="hidden lg:flex lg:items-center lg:gap-0.5">
               {(Object.keys(MENUS) as Exclude<MenuKey, null>[]).map((key) => {
                 const group = MENUS[key];
                 const isOpen = openMenu === key;
@@ -187,7 +199,7 @@ export default function Navbar({
                       aria-expanded={isOpen}
                       aria-controls={`${idBase}-${key}`}
                       onClick={() => setOpenMenu(isOpen ? null : key)}
-                      className={`inline-flex h-9 items-center gap-1 rounded-compact px-3 text-sm font-medium transition-colors ${
+                      className={`inline-flex h-9 items-center gap-1 rounded-compact px-2.5 text-sm font-medium transition-colors ${
                         activeGroup || isOpen
                           ? "bg-surface-secondary text-fg"
                           : "text-fg-muted hover:bg-surface-sunken hover:text-fg"
@@ -206,8 +218,12 @@ export default function Navbar({
                       inert={!isOpen}
                       className="nav-panel absolute left-0 top-full z-50 pt-2"
                     >
-                      <div className="glass-strong w-[320px] p-2">
-                        <ul className="space-y-0.5">
+                      <div
+                        className={`glass-strong p-2.5 ${
+                          key === "businesses" || key === "ai" ? "grid w-[560px] grid-cols-12 gap-3" : "w-[340px]"
+                        }`}
+                      >
+                        <ul className={`space-y-0.5 ${key === "businesses" || key === "ai" ? "col-span-7" : ""}`}>
                           {group.items.map((item) => {
                             const active = isActive(pathname, item.href);
                             return (
@@ -229,6 +245,52 @@ export default function Navbar({
                             );
                           })}
                         </ul>
+
+                        {key === "businesses" && (
+                          <Link
+                            href="/food-delivery"
+                            onClick={() => setOpenMenu(null)}
+                            className="group col-span-5 flex flex-col justify-between overflow-hidden rounded-compact border border-line bg-surface-secondary p-3 transition-colors hover:border-line-strong"
+                          >
+                            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
+                              <Image
+                                src="/images/businesses/food/food-services-showcase.webp"
+                                alt="Food Services preview"
+                                fill
+                                sizes="220px"
+                                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                              />
+                            </div>
+                            <div className="mt-3">
+                              <span className="font-mono text-[10px] uppercase text-ambition">Primary Initiative</span>
+                              <p className="mt-0.5 text-xs font-semibold text-fg">Food Services</p>
+                              <p className="mt-0.5 text-[11px] text-fg-muted">Delivery, Dine-in &amp; Takeaway</p>
+                            </div>
+                          </Link>
+                        )}
+
+                        {key === "ai" && (
+                          <Link
+                            href="/cygma-ai/resume-intelligence"
+                            onClick={() => setOpenMenu(null)}
+                            className="group col-span-5 flex flex-col justify-between overflow-hidden rounded-compact border border-[#1E2E4A] bg-[#080F20] p-3 text-white"
+                          >
+                            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
+                              <Image
+                                src="/images/cygma-ai/cygma-intelligence-core.webp"
+                                alt="CYGMA_AI computational core preview"
+                                fill
+                                sizes="220px"
+                                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                              />
+                            </div>
+                            <div className="mt-3">
+                              <span className="font-mono text-[10px] uppercase text-[#78A9FF]">Featured Product</span>
+                              <p className="mt-0.5 text-xs font-semibold text-white">CYGMA-RI</p>
+                              <p className="mt-0.5 text-[11px] text-[#B8C4D4]">B2B Resume Intelligence</p>
+                            </div>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -265,7 +327,6 @@ export default function Navbar({
         </div>
       </header>
 
-      {/* Mobile navigation drawer */}
       {mobileOpen && (
         <div
           id={`${idBase}-mobile`}
@@ -303,11 +364,7 @@ export default function Navbar({
             <div className="flex flex-wrap gap-3 pt-2">
               {session.user ? (
                 <>
-                  <Link
-                    href="/account"
-                    onClick={() => setMobileOpen(false)}
-                    className="btn btn-secondary btn-md flex-1"
-                  >
+                  <Link href="/account" onClick={() => setMobileOpen(false)} className="btn btn-secondary btn-md flex-1">
                     <User className="h-4 w-4" />
                     My Account
                   </Link>
@@ -323,21 +380,13 @@ export default function Navbar({
                   </button>
                 </>
               ) : (
-                <Link
-                  href="/account/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="btn btn-primary btn-md w-full"
-                >
+                <Link href="/account/login" onClick={() => setMobileOpen(false)} className="btn btn-primary btn-md w-full">
                   <LogIn className="h-4 w-4" />
                   Sign in to Account
                 </Link>
               )}
               {session.isAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileOpen(false)}
-                  className="btn btn-outline btn-md w-full"
-                >
+                <Link href="/admin" onClick={() => setMobileOpen(false)} className="btn btn-outline btn-md w-full">
                   <LayoutDashboard className="h-4 w-4" />
                   Vanikara Console
                 </Link>
@@ -347,7 +396,6 @@ export default function Navbar({
         </div>
       )}
 
-      {/* Site Search Modal */}
       {searchOpen && (
         <div
           role="dialog"
@@ -360,13 +408,10 @@ export default function Navbar({
         >
           <div className="glass-strong w-full max-w-xl overflow-hidden">
             <search>
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="flex items-center gap-3 border-b border-line px-4 py-3"
-              >
+              <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-3 border-b border-line px-4 py-3">
                 <Search aria-hidden="true" className="h-4 w-4 shrink-0 text-fg-muted" />
                 <label htmlFor={`${idBase}-search`} className="sr-only">
-                  Search Vanikara pages and initiatives
+                  Search Vanikara businesses, CYGMA_AI, careers, and policies
                 </label>
                 <input
                   ref={searchInputRef}
@@ -374,7 +419,7 @@ export default function Navbar({
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search initiatives, technology, careers, policies..."
+                  placeholder="Search businesses, CYGMA_AI, CYGMA-RI, careers, policies..."
                   className="w-full bg-transparent text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
                   autoCorrect="off"
                   autoCapitalize="none"

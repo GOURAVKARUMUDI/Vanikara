@@ -1,53 +1,65 @@
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { getSiteContent } from "@/lib/content";
+import { getPortfolioItemById } from "@/data/portfolio";
 
 export default async function CygmaSection() {
-  const { initiatives } = await getSiteContent();
-  const { cygma } = initiatives;
+  const { portfolio } = await getSiteContent();
+  const cygmaAi = getPortfolioItemById(portfolio, "cygma-ai");
 
   return (
-    <section aria-labelledby="cygma-heading" className="border-b border-white/10 bg-[#101C30] text-[#F5F7FA]">
-      <div className="container-page py-20 sm:py-28">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
-          <div className="lg:col-span-6">
+    <section
+      aria-labelledby="cygma-ai-heading"
+      className="relative overflow-hidden border-b border-[#1A2942] bg-[#080F20] text-[#F5F7FA]"
+    >
+      <div className="container-page py-24 sm:py-32">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12" data-reveal>
+          {/* Text Left */}
+          <div className="relative z-10 lg:col-span-5">
             <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
               <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
-              {cygma.index} · {cygma.status}
+              02 / Proprietary Intelligence
             </span>
-            <h2 id="cygma-heading" className="text-headline mt-4 text-white">
-              CYGMA Intelligence
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-[#B8C4D4]">
-              {cygma.summary}
+            <p className="mt-5 font-display text-2xl font-bold tracking-tight text-white">
+              CYGMA_AI
+            </p>
+            <p className="font-mono text-xs text-[#8D9DB3]">
+              Powered by Vanikara Intelligence · {cygmaAi?.developmentStatus ?? "In Development"}
             </p>
 
-            <ul className="mt-6 space-y-2 border-l-2 border-[#34445C] pl-4 text-sm text-[#B8C4D4]">
-              {cygma.clarifications.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
+            <h2 id="cygma-ai-heading" className="text-headline mt-5 text-white">
+              Intelligence, engineered for purpose.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-[#B8C4D4]">
+              A proprietary intelligence ecosystem designed to support specialized enterprise applications, intelligent workflows and internal operational systems.
+            </p>
 
-            <div className="mt-8">
-              <Button href="/cygma" variant="inverse" arrow>
-                Explore CYGMA Intelligence
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/cygma-ai" variant="inverse" size="lg" arrow>
+                Discover CYGMA_AI
               </Button>
             </div>
           </div>
 
-          <div className="lg:col-span-6">
-            <div className="rounded-card border border-[#34445C] bg-[#152238] p-6 sm:p-8">
-              <p className="font-mono text-xs uppercase tracking-wider text-[#8D9DB3]">
-                Intended Research & Operational Directions
-              </p>
-              <dl className="mt-6 divide-y divide-[#34445C]">
-                {cygma.directions.map((dir) => (
-                  <div key={dir.title} className="grid grid-cols-1 gap-1 py-3.5 sm:grid-cols-12 sm:gap-4">
-                    <dt className="text-sm font-semibold text-white sm:col-span-4">{dir.title}</dt>
-                    <dd className="text-sm text-[#B8C4D4] sm:col-span-8">{dir.desc}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="mt-5 font-mono text-xs text-[#8D9DB3]">{cygma.note}</p>
+          {/* Cinematic 3D Computational Core Visual */}
+          <div className="lg:col-span-7">
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[8px] bg-[#080F20]">
+              <Image
+                src="/images/cygma-ai/cygma-intelligence-core.webp"
+                alt="Precision-engineered dark titanium computational core with controlled blue internal channels representing CYGMA_AI"
+                fill
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                className="object-cover object-center transition-transform duration-700 ease-out hover:scale-[1.02]"
+              />
+              {/* Seamless midnight navy edge blend */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, transparent 58%, #080F20 100%)",
+                }}
+              />
             </div>
           </div>
         </div>

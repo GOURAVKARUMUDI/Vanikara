@@ -8,6 +8,7 @@ import {
   PHILOSOPHY_PRINCIPLES,
 } from "@/data/company";
 import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION, PAYMENT_TERMS } from "@/data/legal";
+import { PORTFOLIO_DEFAULTS } from "@/data/portfolio";
 
 /**
  * Default website content. The admin "Website content" editor saves
@@ -18,11 +19,11 @@ import { GRIEVANCE_OFFICER, LEGAL_EFFECTIVE_DATE, LEGAL_VERSION, PAYMENT_TERMS }
 /** Text of the home page sections (headings, labels, buttons). */
 export const HOME_COPY = {
   hero: {
-    headlineStart: "Building practical technology",
-    headlineMiddle: "for real-world",
-    headlineHighlight: "businesses",
-    primaryButton: "Explore our products",
-    secondaryButton: "Contact us",
+    headlineStart: "Intelligence. Connectivity. Impact.",
+    headlineMiddle: "Vanikara builds intelligent technology, connected consumer services and enterprise solutions designed to simplify everyday experiences and solve real-world challenges.",
+    headlineHighlight: "Connected Systems",
+    primaryButton: "Explore Our Businesses",
+    secondaryButton: "Explore CYGMA_AI",
   },
   story: {
     eyebrow: "The company",
@@ -68,6 +69,7 @@ export const CONTENT_DEFAULTS = {
   people: FOUNDERS_AND_LEADERSHIP,
   timeline: COMPANY_TIMELINE,
   initiatives: INITIATIVES,
+  portfolio: PORTFOLIO_DEFAULTS,
   legal: {
     effectiveDate: LEGAL_EFFECTIVE_DATE,
     version: LEGAL_VERSION,

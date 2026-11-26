@@ -55,7 +55,7 @@ This incremental upgrade extends the completed Vanikara V2 Premium Enterprise pl
 - `npx tsc --noEmit`: **PASS (0 errors)**
 - `npm run lint`: **PASS (0 errors, 0 warnings)**
 - `npm run build`: **PASS (all routes compiled & prerendered)**
-- `node --test scripts/unit-tests.mjs`: **PASS (4/4 unit tests including portfolio visibility filter)**
+- `node --test tests/unit/unit-tests.mjs`: **PASS (4/4 unit tests including portfolio visibility filter)**
 - `PLAYWRIGHT_PORT=3099 npx playwright test --project=chromium --reporter=list`: **PASS (59/59 Playwright E2E & security regression tests)**
 
 ## 7. Known Limitations & Pending Approvals

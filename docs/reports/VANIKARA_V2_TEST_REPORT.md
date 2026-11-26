@@ -7,7 +7,7 @@
 | **TypeScript Type Check** | `npx tsc --noEmit` | **PASS (0 errors)** | Full strict compilation across all routes, components, and services |
 | **Static Analysis (ESLint)** | `npm run lint` | **PASS (0 errors, 0 warnings)** | Next.js 16 + React 19 + unused imports rules |
 | **Production Build** | `npm run build` | **PASS (34/34 routes)** | Turbopack compilation + static/dynamic route generation |
-| **Unit Tests** | `node --test scripts/unit-tests.mjs` | **PASS (3/3 tests)** | PDF header/EOF validation, DOCX OOXML vs ZIP distinction, RBAC least-privilege matrix |
+| **Unit Tests** | `node --test tests/unit/unit-tests.mjs` | **PASS (3/3 tests)** | PDF header/EOF validation, DOCX OOXML vs ZIP distinction, RBAC least-privilege matrix |
 | **Playwright E2E & Security** | `PLAYWRIGHT_PORT=3099 npx playwright test --project=chromium --reporter=list` | **PASS (52/52 tests)** | 23 access-control & security regression tests + 29 public website, theme, mobile overflow (375px), cookie consent, redirect, 404, and health tests |
 
 ## 2. Verified Security Regression Cases (`e2e/auth-security.spec.ts`)

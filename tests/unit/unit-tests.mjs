@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 // Lightweight unit test suite for V2 RBAC and File Validation logic
-// Run with: node --test scripts/unit-tests.mjs
+// Run with: node --test tests/unit/unit-tests.mjs
 
 test("PDF validation rejects non-PDF buffers and truncated PDFs", () => {
   const fake = Buffer.from("not a pdf file at all");

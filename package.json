@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test:unit": "node --test scripts/unit-tests.mjs",
+    "test:unit": "node --test tests/unit/unit-tests.mjs",
     "test:e2e": "playwright test --project=chromium --reporter=list",
-    "test:validate": "node scripts/e2e-validate.js",
+    "test:validate": "node tests/e2e-validate.js",
     "test:all": "npm run typecheck && npm run lint && npm run test:unit && npm run test:e2e"
   },
   "dependencies": {

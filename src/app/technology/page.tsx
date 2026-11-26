@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ShieldCheck, Database, Cpu, Lock, CheckCircle2, Layers } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
@@ -69,6 +70,16 @@ export default function TechnologyPage() {
             title="How we intend to build."
             lead="Our engineering standards emphasize clarity, security in the data layer, and honest separation between what is operational today and what is planned."
           />
+          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/technology/engineering-infrastructure.webp"
+              alt="Enterprise computing and server infrastructure"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 

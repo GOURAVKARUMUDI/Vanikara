@@ -13,8 +13,8 @@ export default async function Footer() {
       links: [
         { href: "/about", label: "About Vanikara" },
         { href: "/leadership", label: "Leadership" },
-        { href: "/careers", label: "Careers" },
-        { href: "/contact", label: "Contact" },
+        { href: "/about#journey", label: "Our Journey" },
+        { href: "/legal/legal-information", label: "Corporate Governance" },
       ],
     },
     {
@@ -32,9 +32,18 @@ export default async function Footer() {
       links: [
         { href: "/cygma-ai", label: "CYGMA_AI" },
         { href: "/cygma-ai/resume-intelligence", label: "CYGMA-RI" },
+        { href: "/cygma-ai#internal-intelligence", label: "Internal Intelligence" },
         { href: "/cygma-ai#responsible-ai", label: "Responsible AI" },
+      ],
+    },
+    {
+      title: "Technology & Careers",
+      links: [
         { href: "/technology", label: "Engineering" },
         { href: "/technology#security", label: "Cybersecurity" },
+        { href: "/careers", label: "Careers" },
+        { href: "/contact?topic=partnership", label: "Partnerships" },
+        { href: "/contact", label: "Contact" },
       ],
     },
     {
@@ -46,44 +55,43 @@ export default async function Footer() {
         { href: "/legal/shipping", label: "Shipping & Delivery" },
         { href: "/legal/cookies", label: "Cookie Policy" },
         { href: "/legal/security", label: "Security Policy" },
-        { href: "/legal/legal-information", label: "Company Information" },
       ],
     },
   ];
 
   return (
     <PublicChrome>
-      <footer className="mt-20 border-t border-line bg-surface-secondary">
-        <div className="container-page py-16">
+      <footer className="border-t border-[#1E2E4A] bg-[#101C30] text-[#F5F7FA]">
+        <div className="container-page py-16 sm:py-20">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <Link href="/" aria-label="VANIKARA — Home" className="inline-flex rounded-compact">
+            <div className="lg:col-span-3">
+              <Link href="/" aria-label="VANIKARA — Home" className="inline-flex rounded-compact [&_span]:text-white">
                 <BrandMark size={26} />
               </Link>
-              <p className="mt-5 max-w-sm text-sm leading-relaxed text-fg-muted">
-                Vanikara Intelligence Private Limited develops connected consumer service platforms and proprietary enterprise intelligence systems.
+              <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#B8C4D4]">
+                Developing connected consumer service platforms and proprietary enterprise intelligence systems.
               </p>
               <div className="mt-6 space-y-1.5 text-sm">
                 <a
                   href={`mailto:${COMPANY_IDENTITY.officialEmail}`}
-                  className="link-underline block w-fit font-medium text-fg"
+                  className="block w-fit font-medium text-white hover:underline"
                 >
                   {COMPANY_IDENTITY.officialEmail}
                 </a>
                 <a
                   href={`mailto:${COMPANY_IDENTITY.supportEmail}`}
-                  className="link-underline block w-fit text-fg-muted hover:text-fg"
+                  className="block w-fit text-[#B8C4D4] hover:text-white hover:underline"
                 >
                   {COMPANY_IDENTITY.supportEmail}
                 </a>
-                <p className="pt-1 text-xs text-fg-subtle">{COMPANY_IDENTITY.operationalLocation}</p>
+                <p className="pt-1 text-xs text-[#8D9DB3]">{COMPANY_IDENTITY.operationalLocation}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
               {COLUMNS.map((column) => (
                 <nav key={column.title} aria-label={column.title}>
-                  <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-fg">
+                  <h2 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-white">
                     {column.title}
                   </h2>
                   <ul className="mt-4 space-y-2.5 text-sm">
@@ -91,7 +99,7 @@ export default async function Footer() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="link-underline text-fg-muted transition-colors hover:text-fg"
+                          className="text-[#B8C4D4] transition-colors hover:text-white hover:underline"
                         >
                           {link.label}
                         </Link>
@@ -99,7 +107,7 @@ export default async function Footer() {
                     ))}
                     {column.title === "Legal" && (
                       <li>
-                        <CookieSettingsButton className="link-underline text-fg-muted transition-colors hover:text-fg" />
+                        <CookieSettingsButton className="text-[#B8C4D4] transition-colors hover:text-white hover:underline" />
                       </li>
                     )}
                   </ul>
@@ -108,7 +116,7 @@ export default async function Footer() {
             </div>
           </div>
 
-          <div className="mt-14 flex flex-col gap-3 border-t border-line pt-6 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-14 flex flex-col gap-3 border-t border-[#253654] pt-6 text-xs text-[#8D9DB3] sm:flex-row sm:items-center sm:justify-between">
             <p>
               © {new Date().getFullYear()} {COMPANY_IDENTITY.legalName}. All rights reserved.
             </p>

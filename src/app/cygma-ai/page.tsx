@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
+import CygmaRiInterfacePreview from "@/components/cygma/CygmaRiInterfacePreview";
 import { getSiteContent } from "@/lib/content";
 import { getPortfolioItemById } from "@/data/portfolio";
 
@@ -45,105 +47,120 @@ export default async function CygmaAiOverviewPage() {
   const internalIntel = getPortfolioItemById(portfolio, "internal-operational-intelligence");
 
   return (
-    <div className="bg-[#101C30] text-[#F5F7FA]">
-      {/* Hero */}
-      <section className="border-b border-[#34445C]">
+    <div className="bg-[#080F20] text-[#F5F7FA]">
+      {/* Hero with Computational Core */}
+      <section className="border-b border-[#1A2942]">
         <div className="container-page py-20 sm:py-28">
-          <div className="max-w-4xl rise-in">
-            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
-              CYGMA_AI · Powered by Vanikara Intelligence · {cygmaAi?.developmentStatus ?? "In Development"}
-            </span>
-            <h1 className="text-page-title mt-4 text-white">Intelligence, Built for Purpose.</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#B8C4D4]">
-              CYGMA_AI is an intelligence ecosystem powered by Vanikara Intelligence, designed to support specialized AI applications, enterprise workflows and internal operational intelligence.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/cygma-ai/resume-intelligence" variant="inverse" size="lg" arrow>
-                Explore CYGMA-RI
-              </Button>
-              <Button href="#responsible-ai" variant="inverse-outline" size="lg">
-                Responsible Intelligence
-              </Button>
-            </div>
-            <p className="mt-6 font-mono text-xs text-[#8D9DB3]">
-              CYGMA_AI is an enterprise and internal intelligence ecosystem — not a general-purpose public chatbot.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Product: CYGMA-RI */}
-      <section className="border-b border-[#34445C]">
-        <div className="container-page py-16 sm:py-24">
-          <div className="rounded-card border border-[#34445C] bg-[#152238] p-8 sm:p-12" data-reveal>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
-              <div className="lg:col-span-8">
-                <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
-                  <span className="text-[#78A9FF]">FEATURED B2B PRODUCT</span>
-                  <span className="rounded bg-[#78A9FF]/15 px-2.5 py-0.5 text-[#78A9FF]">
-                    {cygmaRi?.developmentStatus ?? "In Development"}
-                  </span>
-                </div>
-                <h2 className="text-headline mt-3 text-white">CYGMA-RI — Resume Intelligence</h2>
-                <p className="mt-1 font-mono text-xs text-[#8D9DB3]">
-                  Powered by CYGMA_AI — Vanikara Intelligence
-                </p>
-                <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#B8C4D4]">
-                  An AI-powered B2B resume analysis and pre-verification platform designed to help recruiters evaluate candidate information, review supporting evidence from LinkedIn and GitHub where permitted, and reduce manual verification effort — while keeping final hiring decisions in human hands.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 lg:col-span-4 lg:items-end">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+            <div className="rise-in lg:col-span-5">
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
+                CYGMA_AI · Powered by Vanikara Intelligence
+              </span>
+              <h1 className="text-page-title mt-4 text-white">Intelligence, Built for Purpose.</h1>
+              <p className="mt-5 text-lg leading-relaxed text-[#B8C4D4]">
+                CYGMA_AI is an intelligence ecosystem powered by Vanikara Intelligence, designed to support specialized AI applications, enterprise workflows and internal operational intelligence.
+              </p>
+              <p className="mt-3 font-mono text-xs text-[#8D9DB3]">
+                Status: {cygmaAi?.developmentStatus ?? "In Development"} · Not a general-purpose public chatbot.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Button href="/cygma-ai/resume-intelligence" variant="inverse" size="lg" arrow>
                   Explore CYGMA-RI
                 </Button>
-                <Button href="/cygma-ai/resume-intelligence#early-access" variant="inverse-outline" size="md">
-                  Request Early Access
+                <Button href="#responsible-ai" variant="inverse-outline" size="lg">
+                  Responsible Intelligence
                 </Button>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[8px] bg-[#080F20]">
+                <Image
+                  src="/images/cygma-ai/cygma-intelligence-core.webp"
+                  alt="CYGMA_AI precision-engineered computational core"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="object-cover object-center"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "radial-gradient(ellipse at center, transparent 58%, #080F20 100%)" }}
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Intelligence Ecosystem & Internal Intelligence */}
-      <section id="internal-intelligence" className="border-b border-[#34445C]">
-        <div className="container-page py-16 sm:py-24">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12" data-reveal>
-            <div className="lg:col-span-4">
+      {/* Intelligence Ecosystem & Architecture Visual */}
+      <section id="internal-intelligence" className="border-b border-[#1A2942] bg-[#0D172B]">
+        <div className="container-page py-20 sm:py-28">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12" data-reveal>
+            <div className="lg:col-span-6">
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[8px] border border-[#1E2E4A] bg-[#080F20]">
+                <Image
+                  src="/images/cygma-ai/intelligence-architecture.webp"
+                  alt="CYGMA_AI modular enterprise intelligence architecture"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover object-center"
+                />
+              </div>
+            </div>
+            <div className="lg:col-span-6">
               <p className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">Ecosystem Scope</p>
               <h2 className="text-headline mt-3 text-white">Structured intelligence layers.</h2>
-              <p className="mt-3 text-sm leading-relaxed text-[#B8C4D4]">
-                Internal Operational Intelligence status:{" "}
-                <span className="font-mono text-[#78A9FF]">
-                  {internalIntel?.developmentStatus ?? "Research and Development"}
-                </span>
-                .
+              <p className="mt-2 font-mono text-xs text-[#8D9DB3]">
+                Internal Operational Intelligence: {internalIntel?.developmentStatus ?? "Research and Development"}
               </p>
-            </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-8">
-              {ECOSYSTEM_PILLARS.map((item, idx) => (
-                <div key={item.title} className="rounded-card border border-[#34445C] bg-[#152238] p-6">
-                  <span className="font-mono text-xs text-[#78A9FF]">0{idx + 1}</span>
-                  <h3 className="mt-2 text-base font-semibold text-white">{item.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[#B8C4D4]">{item.desc}</p>
-                </div>
-              ))}
+              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {ECOSYSTEM_PILLARS.map((item, idx) => (
+                  <div key={item.title} className="rounded-[8px] border border-[#1E2E4A] bg-[#132139] p-5">
+                    <span className="font-mono text-xs text-[#78A9FF]">0{idx + 1}</span>
+                    <h3 className="mt-1.5 text-sm font-semibold text-white">{item.title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-[#B8C4D4]">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Product: CYGMA-RI with Live Conceptual Preview */}
+      <section className="border-b border-[#1A2942] bg-[#080F20]">
+        <div className="container-page py-20 sm:py-28">
+          <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between" data-reveal>
+            <div className="max-w-2xl">
+              <span className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
+                Featured B2B Product · {cygmaRi?.developmentStatus ?? "In Development"}
+              </span>
+              <h2 className="text-headline mt-3 text-white">CYGMA-RI — Resume Intelligence</h2>
+              <p className="mt-3 text-base leading-relaxed text-[#B8C4D4]">
+                An AI-powered B2B resume analysis and pre-verification platform helping recruiters evaluate candidate claims and review supporting evidence while keeping hiring decisions in human hands.
+              </p>
+            </div>
+            <Button href="/cygma-ai/resume-intelligence" variant="inverse" size="lg" arrow>
+              Explore CYGMA-RI
+            </Button>
+          </div>
+          <CygmaRiInterfacePreview />
         </div>
       </section>
 
       {/* Responsible Intelligence */}
-      <section id="responsible-ai" className="border-b border-[#34445C]">
-        <div className="container-page py-16 sm:py-24">
+      <section id="responsible-ai" className="bg-[#0D172B]">
+        <div className="container-page py-20 sm:py-28">
           <div className="max-w-2xl" data-reveal>
             <p className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">Responsible AI</p>
             <h2 className="text-headline mt-3 text-white">Governance engineered into every product.</h2>
           </div>
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
             {RESPONSIBLE_PILLARS.map((item) => (
-              <div key={item.title} className="rounded-card border border-[#34445C] bg-[#152238] p-6">
+              <div key={item.title} className="rounded-[8px] border border-[#1E2E4A] bg-[#132139] p-6">
                 <h3 className="text-base font-semibold text-white">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#B8C4D4]">{item.desc}</p>
               </div>

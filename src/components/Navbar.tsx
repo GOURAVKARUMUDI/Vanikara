@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ArrowRight, ChevronDown, Menu, Search, X, LayoutDashboard, LogIn, User } from "lucide-react";
 import BrandMark from "@/components/brand/BrandMark";
@@ -217,8 +218,12 @@ export default function Navbar({
                       inert={!isOpen}
                       className="nav-panel absolute left-0 top-full z-50 pt-2"
                     >
-                      <div className="glass-strong w-[340px] p-2">
-                        <ul className="space-y-0.5">
+                      <div
+                        className={`glass-strong p-2.5 ${
+                          key === "businesses" || key === "ai" ? "grid w-[560px] grid-cols-12 gap-3" : "w-[340px]"
+                        }`}
+                      >
+                        <ul className={`space-y-0.5 ${key === "businesses" || key === "ai" ? "col-span-7" : ""}`}>
                           {group.items.map((item) => {
                             const active = isActive(pathname, item.href);
                             return (
@@ -240,6 +245,52 @@ export default function Navbar({
                             );
                           })}
                         </ul>
+
+                        {key === "businesses" && (
+                          <Link
+                            href="/food-delivery"
+                            onClick={() => setOpenMenu(null)}
+                            className="group col-span-5 flex flex-col justify-between overflow-hidden rounded-compact border border-line bg-surface-secondary p-3 transition-colors hover:border-line-strong"
+                          >
+                            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
+                              <Image
+                                src="/images/businesses/food/food-services-showcase.webp"
+                                alt="Food Services preview"
+                                fill
+                                sizes="220px"
+                                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                              />
+                            </div>
+                            <div className="mt-3">
+                              <span className="font-mono text-[10px] uppercase text-ambition">Primary Initiative</span>
+                              <p className="mt-0.5 text-xs font-semibold text-fg">Food Services</p>
+                              <p className="mt-0.5 text-[11px] text-fg-muted">Delivery, Dine-in &amp; Takeaway</p>
+                            </div>
+                          </Link>
+                        )}
+
+                        {key === "ai" && (
+                          <Link
+                            href="/cygma-ai/resume-intelligence"
+                            onClick={() => setOpenMenu(null)}
+                            className="group col-span-5 flex flex-col justify-between overflow-hidden rounded-compact border border-[#1E2E4A] bg-[#080F20] p-3 text-white"
+                          >
+                            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
+                              <Image
+                                src="/images/cygma-ai/cygma-intelligence-core.webp"
+                                alt="CYGMA_AI computational core preview"
+                                fill
+                                sizes="220px"
+                                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                              />
+                            </div>
+                            <div className="mt-3">
+                              <span className="font-mono text-[10px] uppercase text-[#78A9FF]">Featured Product</span>
+                              <p className="mt-0.5 text-xs font-semibold text-white">CYGMA-RI</p>
+                              <p className="mt-0.5 text-[11px] text-[#B8C4D4]">B2B Resume Intelligence</p>
+                            </div>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

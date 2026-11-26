@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle2, ShieldCheck, AlertTriangle, FileCheck2, Users 
 import Button from "@/components/ui/Button";
 import Eyebrow from "@/components/ui/Eyebrow";
 import CygmaRiEnquiryForm from "@/sections/cygma/CygmaRiEnquiryForm";
+import CygmaRiInterfacePreview from "@/components/cygma/CygmaRiInterfacePreview";
 import { getSiteContent } from "@/lib/content";
 import { getPortfolioItemById } from "@/data/portfolio";
 
@@ -74,51 +75,40 @@ export default async function CygmaRiProductPage() {
 
   return (
     <>
-      {/* Section 1: Product Hero (Deep Navy Enterprise Identity) */}
-      <section className="border-b border-[#34445C] bg-[#101C30] text-[#F5F7FA]">
+      {/* Section 1: Light Enterprise Product Hero contrasting with dark CYGMA_AI */}
+      <section className="border-b border-line bg-surface">
         <div className="container-page py-16 sm:py-24">
-          <Link href="/cygma-ai" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#78A9FF] hover:underline">
+          <Link href="/cygma-ai" className="inline-flex items-center gap-1.5 text-sm font-medium text-intel hover:underline">
             <ArrowLeft className="h-4 w-4" />
             CYGMA_AI Ecosystem
           </Link>
 
-          <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
-            <div className="rise-in lg:col-span-8">
-              <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
-                <span className="text-[#78A9FF]">CYGMA-RI (RESUME INTELLIGENCE)</span>
-                <span className="rounded bg-[#78A9FF]/15 px-2.5 py-0.5 text-[#78A9FF]">
+          <div className="mt-8 grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+            <div className="rise-in lg:col-span-5">
+              <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs">
+                <span className="font-semibold text-intel">CYGMA-RI (RESUME INTELLIGENCE)</span>
+                <span className="rounded bg-intel/10 px-2.5 py-0.5 text-intel">
                   {cygmaRi?.developmentStatus ?? "In Development"}
                 </span>
               </div>
-              <h1 className="text-page-title mt-4 text-white">
+              <h1 className="text-page-title mt-4 text-fg">
                 Less Manual Verification. More Informed Recruitment.
               </h1>
-              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#B8C4D4]">
+              <p className="mt-5 text-base leading-relaxed text-fg-muted">
                 CYGMA-RI (Resume Intelligence) is a B2B resume analysis and pre-verification platform powered by CYGMA_AI — Vanikara Intelligence. It helps companies and recruiters analyse resumes, match job requirements, identify inconsistencies, and review permitted supporting evidence from LinkedIn and GitHub while keeping final hiring decisions entirely in human hands.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button href="#early-access" variant="inverse" size="lg" arrow>
+                <Button href="#early-access" size="lg" arrow>
                   Request Early Access
                 </Button>
-                <Button href="#how-it-works" variant="inverse-outline" size="lg">
+                <Button href="#how-it-works" variant="outline" size="lg">
                   Explore How It Works
                 </Button>
               </div>
             </div>
 
-            <div className="lg:col-span-4">
-              <div className="rounded-card border border-[#34445C] bg-[#152238] p-6 space-y-3 text-xs">
-                <p className="font-mono uppercase tracking-wider text-[#78A9FF]">Product Boundaries</p>
-                <p className="text-sm font-semibold text-white">
-                  Intelligence supports the decision. Humans make it.
-                </p>
-                <ul className="space-y-1.5 text-[#B8C4D4]">
-                  <li>• B2B enterprise recruitment support tool</li>
-                  <li>• Not an autonomous hiring or rejection system</li>
-                  <li>• Not a guaranteed background check service</li>
-                  <li>• Not a consumer resume builder</li>
-                </ul>
-              </div>
+            <div className="lg:col-span-7">
+              <CygmaRiInterfacePreview />
             </div>
           </div>
         </div>

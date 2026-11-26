@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -54,6 +55,16 @@ export default async function BusinessesPage() {
               </Button>
             </div>
           </SectionHeader>
+          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/businesses/consumer-ecosystem.webp"
+              alt="Connected consumer services ecosystem visual"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 

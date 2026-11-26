@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -41,6 +42,16 @@ export default async function QuickCommercePage() {
               tone="cool"
               title="Quick Commerce"
               lead="Vanikara intends to explore convenient access to everyday essentials as part of its long-term consumer ecosystem. This initiative has not yet entered finalized planning."
+            />
+          </div>
+          <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/businesses/quick-commerce/everyday-essentials.webp"
+              alt="Fresh produce and everyday essentials"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
             />
           </div>
         </div>

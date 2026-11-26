@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -43,6 +44,16 @@ export default async function TravelBusinessPage() {
               tone="cool"
               title="Travel Booking"
               lead="Vanikara is exploring connected travel services as part of its long-term unified consumer ecosystem. This initiative is currently in the Detailed Project Report (DPR) and planning stage."
+            />
+          </div>
+          <div className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/businesses/travel/travel-booking.webp"
+              alt="Airplane wing above soft clouds in clear daylight"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
             />
           </div>
         </div>

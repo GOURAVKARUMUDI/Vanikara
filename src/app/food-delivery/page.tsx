@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CalendarDays, MapPin, PhoneCall, Store, Utensils, ShoppingBag } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
 import Accordion from "@/components/ui/Accordion";
 import InterestRegistrationForm from "@/sections/food-delivery/InterestRegistrationForm";
+import TelephoneOrderingVisual from "@/components/food/TelephoneOrderingVisual";
 import { getSiteContent } from "@/lib/content";
 import { getPortfolioItemById } from "@/data/portfolio";
 
@@ -94,6 +96,16 @@ export default async function FoodDeliveryPage() {
               </Button>
             </div>
           </SectionHeader>
+          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/businesses/food/food-services-showcase.webp"
+              alt="Editorial photograph of Indian restaurant food and takeaway experience"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 
@@ -106,52 +118,85 @@ export default async function FoodDeliveryPage() {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3" data-reveal>
-            <div id="delivery" className="surface p-7">
-              <div className="flex items-center justify-between">
-                <Store className="h-5 w-5 text-ambition" />
-                <span className="rounded bg-ambition/10 px-2.5 py-0.5 font-mono text-[11px] font-medium text-ambition">
-                  {foodDelStatus}
-                </span>
+            <div id="delivery" className="surface overflow-hidden">
+              <div className="relative aspect-[4/3] w-full bg-surface-secondary">
+                <Image
+                  src="/images/businesses/food/food-services-showcase.webp"
+                  alt="Restaurant food prepared for delivery"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
+                />
               </div>
-              <h3 className="mt-4 text-xl font-semibold text-fg">Food Delivery</h3>
-              <ul className="mt-3 space-y-2 text-sm text-fg-muted">
-                <li>• Restaurant discovery &amp; structured menu browsing</li>
-                <li>• Transparent food ordering &amp; order tracking</li>
-                <li>• Coordinated delivery fulfilment</li>
-                <li>• Restaurant-first commercial model</li>
-              </ul>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <Store className="h-5 w-5 text-ambition" />
+                  <span className="rounded bg-ambition/10 px-2.5 py-0.5 font-mono text-[11px] font-medium text-ambition">
+                    {foodDelStatus}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-fg">Food Delivery</h3>
+                <ul className="mt-3 space-y-2 text-sm text-fg-muted">
+                  <li>• Restaurant discovery &amp; structured menu browsing</li>
+                  <li>• Transparent food ordering &amp; order tracking</li>
+                  <li>• Coordinated delivery fulfilment</li>
+                  <li>• Restaurant-first commercial model</li>
+                </ul>
+              </div>
             </div>
 
-            <div id="dine-in" className="surface p-7">
-              <div className="flex items-center justify-between">
-                <Utensils className="h-5 w-5 text-intel" />
-                <span className="rounded bg-surface-secondary px-2.5 py-0.5 font-mono text-[11px] font-medium text-fg-muted">
-                  {dineInStatus}
-                </span>
+            <div id="dine-in" className="surface overflow-hidden">
+              <div className="relative aspect-[4/3] w-full bg-surface-secondary">
+                <Image
+                  src="/images/businesses/food/dine-in-experience.webp"
+                  alt="Modern restaurant dining interior"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
+                />
               </div>
-              <h3 className="mt-4 text-xl font-semibold text-fg">Dine-in</h3>
-              <ul className="mt-3 space-y-2 text-sm text-fg-muted">
-                <li>• Local restaurant discovery</li>
-                <li>• Clean digital menu access</li>
-                <li>• Planned dine-in ordering capabilities</li>
-                <li>• Streamlined in-venue dining experience</li>
-              </ul>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <Utensils className="h-5 w-5 text-intel" />
+                  <span className="rounded bg-surface-secondary px-2.5 py-0.5 font-mono text-[11px] font-medium text-fg-muted">
+                    {dineInStatus}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-fg">Dine-in</h3>
+                <ul className="mt-3 space-y-2 text-sm text-fg-muted">
+                  <li>• Local restaurant discovery</li>
+                  <li>• Clean digital menu access</li>
+                  <li>• Planned dine-in ordering capabilities</li>
+                  <li>• Streamlined in-venue dining experience</li>
+                </ul>
+              </div>
             </div>
 
-            <div id="takeaway" className="surface p-7">
-              <div className="flex items-center justify-between">
-                <ShoppingBag className="h-5 w-5 text-intel" />
-                <span className="rounded bg-surface-secondary px-2.5 py-0.5 font-mono text-[11px] font-medium text-fg-muted">
-                  {takeawayStatus}
-                </span>
+            <div id="takeaway" className="surface overflow-hidden">
+              <div className="relative aspect-[4/3] w-full bg-surface-secondary">
+                <Image
+                  src="/images/businesses/food/takeaway-counter.webp"
+                  alt="Contemporary restaurant takeaway pickup counter"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
+                />
               </div>
-              <h3 className="mt-4 text-xl font-semibold text-fg">Takeaway</h3>
-              <ul className="mt-3 space-y-2 text-sm text-fg-muted">
-                <li>• Advance food ordering &amp; scheduled preparation</li>
-                <li>• Coordinated pickup handoff</li>
-                <li>• Reduced customer waiting time</li>
-                <li>• Order readiness notifications</li>
-              </ul>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <ShoppingBag className="h-5 w-5 text-intel" />
+                  <span className="rounded bg-surface-secondary px-2.5 py-0.5 font-mono text-[11px] font-medium text-fg-muted">
+                    {takeawayStatus}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-fg">Takeaway</h3>
+                <ul className="mt-3 space-y-2 text-sm text-fg-muted">
+                  <li>• Advance food ordering &amp; scheduled preparation</li>
+                  <li>• Coordinated pickup handoff</li>
+                  <li>• Reduced customer waiting time</li>
+                  <li>• Order readiness notifications</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -201,6 +246,9 @@ export default async function FoodDeliveryPage() {
               <p className="mt-3 text-base leading-relaxed text-fg-muted">
                 An app-free, telephone-based ordering concept enabling customers to order food via a standard phone call without requiring the consumer mobile application.
               </p>
+              <div className="mt-6">
+                <TelephoneOrderingVisual />
+              </div>
               <div className="mt-6 surface p-5 text-xs leading-relaxed text-fg-muted space-y-2">
                 <p className="font-semibold text-fg">Key Engineering &amp; Governance Considerations</p>
                 <p>

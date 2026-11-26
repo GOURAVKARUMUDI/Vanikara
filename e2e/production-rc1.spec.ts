@@ -15,7 +15,7 @@ async function prepare(page: Page, { consent = true }: { consent?: boolean } = {
 }
 
 const PAGES = [
-  { path: "/", heading: /Intelligence\. Connectivity\. Impact\./ },
+  { path: "/", heading: /Intelligence meets possibility\./ },
   { path: "/businesses", heading: /One connected consumer ecosystem/ },
   { path: "/businesses/travel", heading: /Travel Booking/ },
   { path: "/businesses/hotels", heading: /Hotel Booking/ },

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
@@ -25,6 +26,16 @@ export default async function AboutPage() {
             title={story.heading}
             lead={identity.supportingStatement}
           />
+          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/corporate/about-architecture.webp"
+              alt="Contemporary corporate architecture representing Vanikara Intelligence"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 

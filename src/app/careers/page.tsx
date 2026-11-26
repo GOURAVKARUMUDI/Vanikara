@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
@@ -65,6 +66,16 @@ export default async function CareersPage({
               </Link>
             </div>
           </SectionHeader>
+          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
+            <Image
+              src="/images/careers/collaboration.webp"
+              alt="Illustrative technology workplace collaboration"
+              fill
+              priority
+              sizes="(max-width: 1440px) 100vw, 1440px"
+              className="object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 

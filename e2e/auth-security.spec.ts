@@ -11,7 +11,7 @@ import { test, expect } from "@playwright/test";
  * write to the database and need no credentials.
  */
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.PLAYWRIGHT_BASE_URL || `http://localhost:${process.env.PLAYWRIGHT_PORT || "3000"}`;
 const json = { "Content-Type": "application/json" };
 const sameOrigin = { ...json, Origin: BASE };
 

@@ -15,15 +15,16 @@ async function prepare(page: Page, { consent = true }: { consent?: boolean } = {
 }
 
 const PAGES = [
-  { path: "/", heading: /Building practical technology/ },
+  { path: "/", heading: /Intelligence meets purpose/ },
   { path: "/about", heading: /conversation/ },
-  { path: "/what-we-build", heading: /Two initiatives/ },
+  { path: "/what-we-build", heading: /Two focused initiatives/ },
   { path: "/food-delivery", heading: /Food delivery/ },
-  { path: "/cygma", heading: /CYGMA AI/ },
+  { path: "/cygma", heading: /CYGMA Intelligence/ },
   { path: "/technology", heading: /How we intend to build/ },
   { path: "/leadership", heading: /people building VANIKARA/ },
   { path: "/careers", heading: /Build with us/ },
   { path: "/contact", heading: /Let's talk/ },
+  { path: "/account/login", heading: /Sign in to your Vanikara Account/ },
   { path: "/legal", heading: /Policies/ },
   { path: "/legal/terms", heading: /Terms & Conditions/ },
   { path: "/legal/privacy", heading: /Privacy Policy/ },
@@ -36,11 +37,11 @@ const PAGES = [
 ];
 
 test.describe("VANIKARA website", () => {
-  test("homepage has title, brand symbol and skip link", async ({ page }) => {
+  test("homepage has title, brand mark and skip link", async ({ page }) => {
     await prepare(page);
     await page.goto("/");
-    await expect(page).toHaveTitle("VANIKARA — Building What Comes Next");
-    await expect(page.getByRole("img", { name: "The VANIKARA symbol" })).toBeVisible();
+    await expect(page).toHaveTitle("VANIKARA — Intelligence Meets Purpose");
+    await expect(page.getByRole("link", { name: "VANIKARA — Home" }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Skip to content" })).toHaveAttribute("href", "#main-content");
   });
 
@@ -117,14 +118,14 @@ test.describe("VANIKARA website", () => {
     test("menu opens, navigates and closes with Escape", async ({ page }) => {
       await prepare(page);
       await page.goto("/");
-      await page.getByRole("button", { name: "Open menu" }).click();
+      await page.getByRole("button", { name: "Open navigation menu" }).click();
       const menu = page.getByRole("dialog", { name: "Site navigation" });
       await expect(menu).toBeVisible();
       await page.keyboard.press("Escape");
-      await expect(page.getByRole("button", { name: "Open menu" })).toHaveAttribute("aria-expanded", "false");
+      await expect(page.getByRole("button", { name: "Open navigation menu" })).toHaveAttribute("aria-expanded", "false");
 
-      await page.getByRole("button", { name: "Open menu" }).click();
-      await menu.getByRole("link", { name: /Technology/ }).click();
+      await page.getByRole("button", { name: "Open navigation menu" }).click();
+      await menu.getByRole("link", { name: "Engineering" }).click();
       await expect(page).toHaveURL(/\/technology$/);
     });
 

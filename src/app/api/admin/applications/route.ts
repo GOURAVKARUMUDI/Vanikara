@@ -14,7 +14,20 @@ import { logAdminAction } from "@/lib/auditLogger";
  *   DELETE — ?id=…  (also deletes the stored résumé)
  */
 
-const STATUSES = ["new", "reviewing", "shortlisted", "rejected"] as const;
+const STATUSES = [
+  "new",
+  "submitted",
+  "reviewing",
+  "under_review",
+  "shortlisted",
+  "interview_scheduled",
+  "decision_pending",
+  "selected",
+  "not_selected",
+  "rejected",
+  "withdrawn",
+  "closed",
+] as const;
 const patchSchema = z.object({ id: z.string().uuid(), status: z.enum(STATUSES) });
 
 /** Résumé path for a row: newer rows use resume_path; older ones stored it in resume_url. */

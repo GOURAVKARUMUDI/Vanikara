@@ -269,6 +269,9 @@ export default function Navbar({
       {mobileOpen && (
         <div
           id={`${idBase}-mobile`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
           className="fixed inset-x-0 bottom-0 top-[var(--header-height)] z-40 overflow-y-auto bg-surface lg:hidden"
         >
           <div className="container-page space-y-6 py-6">

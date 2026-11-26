@@ -40,7 +40,7 @@ export default async function Footer() {
       links: [
         { href: "/legal/terms", label: "Terms & Conditions" },
         { href: "/legal/privacy", label: "Privacy Policy" },
-        { href: "/legal/refund", label: "Refund Policy" },
+        { href: "/legal/refund", label: "Refund & Cancellation" },
         { href: "/legal/shipping", label: "Shipping & Delivery" },
         { href: "/legal/cookies", label: "Cookie Policy" },
         { href: "/legal/security", label: "Security Policy" },

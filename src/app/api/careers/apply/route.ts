@@ -8,6 +8,7 @@ import { sanitize, apiResponse, logError, escapeHtml, isTrustedOrigin } from "@/
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
 import { getMailer, mailFrom } from "@/lib/mailer";
+import { validateResumeBuffer } from "@/lib/fileValidation";
 
 /**
  * Job / internship applications from the Careers page.
@@ -39,16 +40,6 @@ const schema = z.object({
   consent: z.literal("yes", { message: "Please agree to the Privacy Policy" }),
   website: z.string().max(0).optional().default(""), // honeypot
 });
-
-function detectResume(bytes: Buffer): { ext: "pdf" | "docx"; mime: string } | null {
-  if (bytes.length > 4 && bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) {
-    return { ext: "pdf", mime: "application/pdf" };
-  }
-  if (bytes.length > 4 && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04) {
-    return { ext: "docx", mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
-  }
-  return null;
-}
 
 export async function POST(req: Request) {
   try {
@@ -109,17 +100,17 @@ export async function POST(req: Request) {
         return NextResponse.json(apiResponse(false, null, "Your résumé must be 4 MB or smaller."), { status: 413 });
       }
       const bytes = Buffer.from(await file.arrayBuffer());
-      const kind = detectResume(bytes);
-      if (!kind) {
-        return NextResponse.json(apiResponse(false, null, "Please upload your résumé as a PDF or Word (.docx) file."), { status: 400 });
+      const validated = validateResumeBuffer(bytes);
+      if (!validated.valid) {
+        return NextResponse.json(apiResponse(false, null, validated.reason), { status: 400 });
       }
-      const path = `${randomUUID()}.${kind.ext}`;
+      const path = `${randomUUID()}.${validated.ext}`;
       const uploaded = await writeWithRetry("Careers résumé upload", () =>
-        supabaseService.storage.from("resumes").upload(path, bytes, { contentType: kind.mime, upsert: false })
+        supabaseService.storage.from("resumes").upload(path, bytes, { contentType: validated.mime, upsert: false })
       );
       if (uploaded) {
         resumePath = path;
-        resumeNote = `Résumé uploaded (${kind.ext.toUpperCase()})`;
+        resumeNote = `Résumé uploaded (${validated.ext.toUpperCase()})`;
       } else {
         // Don't lose the application because storage failed — ask for it by email instead
         resumeNote = "Résumé upload failed — request it from the applicant";

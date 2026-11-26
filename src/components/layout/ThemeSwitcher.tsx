@@ -1,26 +1,15 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { Check, Clock, Moon, Sun } from "lucide-react";
+import { Check, Monitor, Moon, Sun } from "lucide-react";
 import { useTheme, type ThemeMode } from "./ThemeContext";
-import { DARK_FROM, LIGHT_FROM, formatHour } from "@/lib/daypart";
 
 const OPTIONS: { mode: ThemeMode; label: string; hint: string; Icon: typeof Sun }[] = [
-  { mode: "light", label: "Light", hint: "Always light", Icon: Sun },
-  { mode: "dark", label: "Dark", hint: "Always dark", Icon: Moon },
-  {
-    mode: "auto",
-    label: "Auto",
-    hint: `Light ${formatHour(LIGHT_FROM)}–${formatHour(DARK_FROM)}, dark after`,
-    Icon: Clock,
-  },
+  { mode: "light", label: "Light", hint: "High-clarity light surface", Icon: Sun },
+  { mode: "dark", label: "Dark", hint: "Deep navy enterprise surface", Icon: Moon },
+  { mode: "auto", label: "System", hint: "Follow device preference", Icon: Monitor },
 ];
 
-/**
- * Theme picker: a round trigger showing the current theme, opening a
- * liquid-glass menu. Choosing an option switches with a circular reveal
- * that grows from the trigger.
- */
 export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "left" }) {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
@@ -41,7 +30,6 @@ export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "
     };
     document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);
-    rootRef.current?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus();
     return () => {
       document.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("keydown", onKey);
@@ -49,9 +37,8 @@ export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "
   }, [open]);
 
   const choose = (mode: ThemeMode) => {
-    const rect = triggerRef.current?.getBoundingClientRect();
     setOpen(false);
-    setTheme(mode, rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined);
+    setTheme(mode);
     triggerRef.current?.focus({ preventScroll: true });
   };
 
@@ -61,11 +48,15 @@ export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "
     const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('[role="menuitemradio"]'));
     const current = items.indexOf(document.activeElement as HTMLElement);
     const next =
-      event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : (current + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? items.length - 1
+          : (current + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
     items[next]?.focus();
   };
 
-  const label = `Theme: ${theme === "auto" ? `Auto (${resolvedTheme} now)` : theme}`;
+  const label = `Theme: ${theme === "auto" ? `System (${resolvedTheme})` : theme}`;
 
   return (
     <div ref={rootRef} className="relative">
@@ -78,29 +69,25 @@ export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "
         aria-label={label}
         title={label}
         onClick={() => setOpen((v) => !v)}
-        className="theme-toggle relative grid h-9 w-9 place-items-center rounded-full text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
+        className="grid h-9 w-9 place-items-center rounded-compact text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
       >
-        <Sun aria-hidden="true" className="hidden h-[18px] w-[18px] dark:block" />
-        <Moon aria-hidden="true" className="h-[18px] w-[18px] dark:hidden" />
-        {theme === "auto" && (
-          <span aria-hidden="true" className="absolute -bottom-0.5 -right-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-action text-white ring-2 ring-[var(--surface-base)]">
-            <Clock className="h-2.5 w-2.5" strokeWidth={3} />
-          </span>
-        )}
+        <Sun aria-hidden="true" className="hidden h-4 w-4 dark:block" />
+        <Moon aria-hidden="true" className="h-4 w-4 dark:hidden" />
       </button>
 
       <div
         id={`${id}-menu`}
         role="menu"
-        aria-label="Theme"
+        aria-label="Theme preference"
         data-open={open}
         onKeyDown={onMenuKey}
         inert={!open}
-        className={`nav-panel absolute top-full z-50 pt-3 ${align === "right" ? "right-0 origin-top-right" : "left-0 origin-top-left"}`}
+        className={`nav-panel absolute top-full z-50 pt-2 ${align === "right" ? "right-0 origin-top-right" : "left-0 origin-top-left"}`}
       >
-        <div className="liquid-glass glass-strong w-[15.5rem] max-w-[calc(100vw-2rem)] rounded-feature p-1.5">
+        <div className="glass-strong w-60 p-1.5">
           {OPTIONS.map(({ mode, label: optionLabel, hint, Icon }) => {
             const selected = theme === mode;
+            const resolvedHint = mode === "auto" ? `Currently ${resolvedTheme}` : hint;
             return (
               <button
                 key={mode}
@@ -109,21 +96,14 @@ export default function ThemeSwitcher({ align = "right" }: { align?: "right" | "
                 aria-checked={selected}
                 tabIndex={open ? 0 : -1}
                 onClick={() => choose(mode)}
-                className={`group flex w-full items-center gap-3 rounded-compact px-3 py-2.5 text-left transition-colors ${
-                  selected ? "bg-[color-mix(in_oklab,var(--accent-intel)_12%,transparent)]" : "hover:bg-surface-sunken/70"
+                className={`flex w-full items-center gap-3 rounded-compact px-3 py-2 text-left transition-colors ${
+                  selected ? "bg-surface-secondary text-fg" : "text-fg-muted hover:bg-surface-sunken hover:text-fg"
                 }`}
               >
-                <span
-                  aria-hidden="true"
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors ${
-                    selected ? "border-transparent bg-action text-white" : "border-line text-fg-muted group-hover:text-fg"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                </span>
+                <Icon aria-hidden="true" className={`h-4 w-4 shrink-0 ${selected ? "text-intel" : ""}`} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-fg">{optionLabel}</span>
-                  <span className="block text-xs text-fg-muted">{hint}</span>
+                  <span className="block text-sm font-medium text-fg">{optionLabel}</span>
+                  <span className="block text-xs text-fg-subtle">{resolvedHint}</span>
                 </span>
                 {selected && <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-intel" />}
               </button>

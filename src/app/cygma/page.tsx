@@ -1,168 +1,135 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
-import { SYMBOL_SRC } from "@/components/brand/BrandMark";
 import { getSiteContent } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "CYGMA AI",
+  title: "CYGMA Intelligence",
   description:
-    "CYGMA is VANIKARA's proprietary long-term intelligence initiative — company-specific intelligence around its products, knowledge, systems and operations. Not a public chatbot.",
+    "CYGMA is Vanikara's proprietary internal intelligence initiative focused on operational intelligence and decision-support systems. Not a public chatbot.",
 };
 
+const RESPONSIBLE_PRINCIPLES = [
+  {
+    title: "Human-in-the-loop authority",
+    desc: "Operational and hiring decisions remain human-controlled. Intelligence systems assist analysis rather than replacing accountability.",
+  },
+  {
+    title: "Data minimization & privacy",
+    desc: "Internal systems respect strict data boundaries, consent policies, and statutory protections under Indian law.",
+  },
+  {
+    title: "Factual transparency",
+    desc: "We never fabricate benchmarks, training claims, or live deployments. Capabilities are stated only when verified.",
+  },
+  {
+    title: "Security-first architecture",
+    desc: "Proprietary internal workflows and datasets are isolated from public interfaces with strict role-based access control.",
+  },
+];
+
 export default async function CygmaPage() {
-  const { initiatives: INITIATIVES } = await getSiteContent();
-  const { cygma, foodDelivery } = INITIATIVES;
+  const { initiatives } = await getSiteContent();
+  const { cygma } = initiatives;
 
   return (
-    <>
-      {/* Atmospheric header — always dark */}
-      <section className="container-page pt-6 sm:pt-10">
-        <div className="relative isolate overflow-hidden rounded-panel border border-white/10 bg-navy px-6 pb-16 pt-20 text-white sm:px-12 sm:pb-24 sm:pt-28 lg:px-16 dark:bg-surface-raised">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10"
-            style={{
-              background:
-                "radial-gradient(50% 70% at 80% 30%, color-mix(in oklab, var(--vanikara-blue) 50%, transparent), transparent 70%), radial-gradient(35% 50% at 95% 95%, color-mix(in oklab, var(--vanikara-cyan) 25%, transparent), transparent 70%), radial-gradient(45% 60% at 5% 100%, color-mix(in oklab, var(--vanikara-deep-blue) 80%, transparent), transparent 70%)",
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 opacity-50"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
-              backgroundSize: "56px 56px",
-              WebkitMaskImage: "radial-gradient(ellipse 55% 75% at 78% 35%, #000, transparent 75%)",
-              maskImage: "radial-gradient(ellipse 55% 75% at 78% 35%, #000, transparent 75%)",
-            }}
-          />
-          <Image
-            src={SYMBOL_SRC}
-            alt=""
-            aria-hidden="true"
-            width={520}
-            height={424}
-            sizes="(min-width: 1024px) 460px, 0px"
-            priority
-            className="pointer-events-none absolute right-12 top-1/2 -z-10 hidden w-[380px] -translate-y-1/2 select-none opacity-[0.16] lg:block"
-          />
-
-          <div className="rise-in max-w-2xl">
-            <p className="inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-white/70">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-cyan shadow-[0_0_0_4px_rgba(0,207,255,0.18)]" />
+    <div className="bg-[#101C30] text-[#F5F7FA]">
+      <section className="border-b border-[#34445C]">
+        <div className="container-page py-20 sm:py-28">
+          <div className="max-w-4xl rise-in">
+            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
               {cygma.index} · {cygma.status}
+            </span>
+            <h1 className="text-page-title mt-4 text-white">CYGMA Intelligence</h1>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#B8C4D4]">
+              {cygma.summary}
             </p>
-            <h1 className="text-display mt-6">{cygma.title}</h1>
-            <p className="mt-6 text-xl font-semibold leading-snug text-white/90">{cygma.tagline}</p>
-            <p className="mt-5 text-lg leading-relaxed text-white/70">{cygma.summary}</p>
+            <ul className="mt-8 flex flex-wrap gap-3 font-mono text-xs text-[#B8C4D4]">
+              {cygma.clarifications.map((line) => (
+                <li key={line} className="rounded-compact border border-[#34445C] bg-[#152238] px-3 py-1.5">
+                  {line}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* What it is not */}
-      <section aria-labelledby="scope-title" className="container-page py-20 sm:py-28">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-5" data-reveal>
-            <Eyebrow tone="cool">Scope</Eyebrow>
-            <h2 id="scope-title" className="text-headline mt-5 text-fg">
-              Clear about what it is — and isn&apos;t.
-            </h2>
+      {/* Research & Operational Directions */}
+      <section className="border-b border-[#34445C]">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12" data-reveal>
+            <div className="lg:col-span-4">
+              <p className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">R&D Direction</p>
+              <h2 className="text-headline mt-3 text-white">Intended internal focus areas.</h2>
+              <p className="mt-3 text-sm leading-relaxed text-[#B8C4D4]">{cygma.note}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-8">
+              {cygma.directions.map((dir, idx) => (
+                <div key={dir.title} className="rounded-card border border-[#34445C] bg-[#152238] p-6">
+                  <span className="font-mono text-xs text-[#78A9FF]">0{idx + 1}</span>
+                  <h3 className="mt-2 text-base font-semibold text-white">{dir.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#B8C4D4]">{dir.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <ul className="space-y-0 border-t border-line lg:col-span-6 lg:col-start-7" data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
-            {cygma.clarifications.map((line) => (
-              <li key={line} className="flex items-center gap-4 border-b border-line py-5 text-lg font-semibold text-fg">
-                <span aria-hidden="true" className="h-px w-6 bg-brand-blue" />
-                {line}
-              </li>
+        </div>
+      </section>
+
+      {/* Responsible AI & Security */}
+      <section className="border-b border-[#34445C]">
+        <div className="container-page py-16 sm:py-24">
+          <div className="max-w-2xl" data-reveal>
+            <p className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">Governance</p>
+            <h2 className="text-headline mt-3 text-white">Responsible engineering principles.</h2>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2" data-reveal>
+            {RESPONSIBLE_PRINCIPLES.map((item) => (
+              <div key={item.title} className="rounded-card border border-[#34445C] bg-[#152238] p-6">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#B8C4D4]">{item.desc}</p>
+              </div>
             ))}
-            <li className="py-5 text-[1.0625rem] leading-relaxed text-fg-muted">
-              CYGMA is proprietary to VANIKARA and is being shaped around the company itself.
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Purpose */}
-      <section aria-labelledby="purpose-title" className="container-page py-16 sm:py-24">
-        <div className="grid gap-12 border-t border-line pt-16 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-5" data-reveal>
-            <Eyebrow tone="cool">Purpose</Eyebrow>
-            <h2 id="purpose-title" className="text-headline mt-5 text-fg">
-              Why VANIKARA wants internal intelligence.
-            </h2>
           </div>
-          <p className="text-[1.0625rem] leading-relaxed text-fg-muted lg:col-span-6 lg:col-start-7 lg:pt-12" data-reveal>
-            {cygma.summary}
-          </p>
         </div>
       </section>
 
-      {/* Potential applications */}
-      <section aria-labelledby="directions-title" className="container-page py-16 sm:py-24">
-        <div data-reveal className="max-w-2xl">
-          <Eyebrow tone="cool">Potential applications</Eyebrow>
-          <h2 id="directions-title" className="text-headline mt-5 text-fg">
-            Possible internal uses, not finished features.
-          </h2>
-        </div>
-        <ol className="mt-12 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
-          {cygma.directions.map((direction, i) => (
-            <li
-              key={direction.title}
-              data-reveal
-              style={{ ["--reveal-delay" as string]: `${i * 80}ms` }}
-              className="bg-surface-raised p-6 sm:p-7"
-            >
-              <span className="text-[0.8125rem] font-semibold tabular-nums text-intel">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-lg font-bold text-fg">{direction.title}</h3>
-              <p className="mt-2 text-[0.9375rem] leading-relaxed text-fg-muted">{direction.desc}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {/* Explicit Development Status */}
+      <section className="border-b border-[#34445C]">
+        <div className="container-page py-16 sm:py-24">
+          <div className="max-w-3xl" data-reveal>
+            <p className="font-mono text-xs uppercase tracking-wider text-[#78A9FF]">Transparency Record</p>
+            <h2 className="text-headline mt-3 text-white">Current development status.</h2>
+            <div className="mt-8 overflow-x-auto rounded-card border border-[#34445C]">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-[#34445C] bg-[#152238] font-mono text-xs uppercase text-[#8D9DB3]">
+                  <tr>
+                    <th className="px-5 py-3.5">Stage</th>
+                    <th className="px-5 py-3.5">Status</th>
+                    <th className="px-5 py-3.5">Clarification</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#34445C]">
+                  {cygma.developmentStatus.map((row) => (
+                    <tr key={row.stage}>
+                      <td className="px-5 py-4 font-semibold text-white">{row.stage}</td>
+                      <td className="px-5 py-4 font-mono text-xs text-[#78A9FF]">{row.state}</td>
+                      <td className="px-5 py-4 text-[#B8C4D4]">{row.desc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-      {/* Development status */}
-      <section aria-labelledby="status-title" className="container-page pb-16 sm:pb-24">
-        <div data-reveal className="max-w-2xl">
-          <Eyebrow tone="cool">Development status</Eyebrow>
-          <h2 id="status-title" className="text-headline mt-5 text-fg">
-            What is conceptual, prototyped, or in use.
-          </h2>
-        </div>
-        <ul className="mt-10 divide-y divide-line border-y border-line" data-reveal>
-          {cygma.developmentStatus.map((row) => (
-            <li key={row.stage} className="grid gap-2 py-5 sm:grid-cols-12 sm:gap-6">
-              <span className="font-semibold text-fg sm:col-span-3">{row.stage}</span>
-              <span className="text-sm font-semibold text-intel sm:col-span-2">{row.state}</span>
-              <span className="text-[0.9375rem] leading-relaxed text-fg-muted sm:col-span-7">{row.desc}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-6 text-sm text-fg-subtle" data-reveal>
-          {cygma.note}
-        </p>
-      </section>
-
-      {/* Cross-link */}
-      <section className="container-page py-16 sm:py-24">
-        <div data-reveal className="surface flex flex-col gap-6 rounded-panel p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-          <div className="max-w-xl">
-            <p className="text-[0.8125rem] font-semibold text-ambition">
-              {foodDelivery.index} · {foodDelivery.status}
-            </p>
-            <h2 className="text-title mt-2 text-fg">{foodDelivery.title}</h2>
-            <p className="mt-2 text-[1.0625rem] leading-relaxed text-fg-muted">
-              The product VANIKARA is building now — targeting {foodDelivery.targetLaunch} in Guntur.
-            </p>
+            <div className="mt-10">
+              <Button href="/contact" variant="inverse" arrow>
+                Enquire about Vanikara
+              </Button>
+            </div>
           </div>
-          <Button href="/food-delivery" variant="secondary" arrow className="shrink-0">
-            Explore the platform
-          </Button>
         </div>
       </section>
-    </>
+    </div>
   );
 }

@@ -1,43 +1,36 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import Button from "@/components/ui/Button";
 import Eyebrow from "@/components/ui/Eyebrow";
-import RevealText from "@/components/motion/RevealText";
 import { getSiteContent } from "@/lib/content";
 
 export default async function StorySection() {
-  const { identity: COMPANY_IDENTITY, story: COMPANY_STORY, home: { story: copy } } = await getSiteContent();
+  const { identity, story } = await getSiteContent();
+
   return (
-    <section aria-labelledby="story-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="warm">
-      <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-7">
-          <Eyebrow>{copy.eyebrow}</Eyebrow>
-          <h2 id="story-title" className="text-headline mt-5 text-fg">
-            <RevealText>{copy.statement}</RevealText>
-          </h2>
-        </div>
+    <section aria-labelledby="company-intro-heading" className="border-b border-line bg-surface-secondary">
+      <div className="container-page py-20 sm:py-28">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12" data-reveal>
+          <div className="lg:col-span-5">
+            <Eyebrow tone="cool">About Vanikara</Eyebrow>
+            <h2 id="company-intro-heading" className="text-headline mt-4 text-fg">
+              {identity.mission}
+            </h2>
+          </div>
 
-        <div className="space-y-6 lg:col-span-5 lg:pt-14" data-reveal style={{ ["--reveal-delay" as string]: "240ms" }}>
-          {COMPANY_STORY.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="text-[1.0625rem] leading-relaxed text-fg-muted">
-              {paragraph}
+          <div className="space-y-5 lg:col-span-7">
+            <p className="text-lg leading-relaxed text-fg">
+              {identity.supportingStatement}
             </p>
-          ))}
-
-          <dl className="grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm">
-            <div>
-              <dt className="text-fg-subtle">Founded</dt>
-              <dd className="mt-1 font-semibold text-fg">{COMPANY_IDENTITY.foundingDate}</dd>
+            {story.paragraphs.map((paragraph) => (
+              <p key={paragraph} className="text-base leading-relaxed text-fg-muted">
+                {paragraph}
+              </p>
+            ))}
+            <div className="pt-4">
+              <Button href="/about" variant="outline" arrow>
+                Read our full story
+              </Button>
             </div>
-            <div>
-              <dt className="text-fg-subtle">Incorporated</dt>
-              <dd className="mt-1 font-semibold text-fg">{COMPANY_IDENTITY.incorporationDate}</dd>
-            </div>
-          </dl>
-
-          <Link href="/about" className="group inline-flex items-center gap-2 text-[0.9375rem] font-semibold text-intel">
-            <span className="link-underline">{copy.linkLabel}</span>
-            <ArrowRight aria-hidden="true" className="arrow-nudge h-4 w-4" />
-          </Link>
+          </div>
         </div>
       </div>
     </section>

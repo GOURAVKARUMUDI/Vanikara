@@ -1,101 +1,142 @@
 import type { Metadata } from "next";
+import { ShieldCheck, Database, Cpu, Lock, CheckCircle2, Layers } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
 
 export const metadata: Metadata = {
-  title: "Technology",
+  title: "Technology & Engineering",
   description:
-    "How VANIKARA approaches engineering: modular systems, replaceable providers, security in the data layer, and software built to be understood.",
+    "How Vanikara approaches software architecture, cybersecurity, data management, privacy by design, reliability, and testing.",
 };
 
-const PRINCIPLES = [
+const ARCHITECTURE_DOMAINS = [
   {
-    title: "Modular before distributed",
-    desc: "We start with well-separated modules inside a simple deployment, and split services apart only when real usage calls for it.",
+    icon: Layers,
+    title: "Modular Monolith First",
+    status: "Current Implementation",
+    desc: "Clean service boundaries inside a unified Next.js and PostgreSQL deployment. We avoid premature microservices until operational scale demands separation.",
   },
   {
-    title: "Replaceable providers",
-    desc: "Payments, maps and messaging sit behind our own interfaces, so a vendor can be changed without rewriting the product.",
+    icon: Database,
+    title: "Structured Data Management",
+    status: "Current Implementation",
+    desc: "Relational schemas in PostgreSQL with strict foreign keys, Zod runtime validation, and versioned SQL migrations.",
   },
   {
-    title: "Security in the data layer",
-    desc: "Access rules belong next to the data, not only in the interface. We treat authorisation as part of the schema.",
+    icon: ShieldCheck,
+    title: "Cybersecurity & Perimeter Defense",
+    status: "Current Implementation",
+    desc: "Strict Content Security Policy, HSTS, HttpOnly HMAC-signed sessions, scrypt password hashing, rate limiting, and origin validation.",
   },
   {
-    title: "Measured, then optimised",
-    desc: "Performance work follows evidence. We add monitoring early so decisions are based on how the software actually behaves.",
+    icon: Lock,
+    title: "Privacy by Design",
+    status: "Current Implementation",
+    desc: "Consent-gated optional analytics, private encrypted résumé storage with short-lived signed URLs, and structured data access workflows.",
   },
   {
-    title: "Built to be understood",
-    desc: "Clear boundaries and plain naming, so the next engineer can change the system with confidence.",
+    icon: CheckCircle2,
+    title: "Automated Verification & QA",
+    status: "Current Implementation",
+    desc: "TypeScript strict checks, ESLint static analysis, unit tests, and Playwright end-to-end security regression suites.",
   },
   {
-    title: "Room for CYGMA",
-    desc: "We record the context our products produce with care, so a future internal intelligence layer has something meaningful to learn from.",
+    icon: Cpu,
+    title: "Internal Operational Intelligence",
+    status: "Future Engineering Goal",
+    desc: "Carefully structured operational telemetry designed to support CYGMA internal decision-support workflows as products launch.",
   },
 ];
 
-const STACK = ["TypeScript", "React", "Next.js", "PostgreSQL", "Supabase", "Vercel"];
+const STACK = [
+  { layer: "Application", tech: "Next.js (App Router), React, TypeScript" },
+  { layer: "Design System", tech: "Tailwind CSS, CSS Custom Properties, Accessible HTML" },
+  { layer: "Data & Storage", tech: "PostgreSQL (Supabase), Row-Level Security, Private Buckets" },
+  { layer: "Security & Auth", tech: "Scrypt, Web Crypto HMAC-SHA256, Firebase Auth, Zod, DOMPurify" },
+  { layer: "Operations", tech: "Zoho SMTP, Upstash Redis Rate Limiting, Playwright, Vercel" },
+];
 
 export default function TechnologyPage() {
   return (
     <>
-      <section className="container-page pb-12 pt-16 sm:pt-24">
-        <SectionHeader
-          as="h1"
-          eyebrow="Technology"
-          tone="cool"
-          title="How we intend to build."
-          lead="VANIKARA is early, and so is its engineering. These are the principles we are designing around — what we aim for, stated plainly."
-        />
-      </section>
-
-      <section aria-labelledby="principles-heading" className="container-page py-12 sm:py-20">
-        <h2 id="principles-heading" className="sr-only">
-          Engineering principles
-        </h2>
-        <ol className="grid border-t border-line md:grid-cols-2">
-          {PRINCIPLES.map((principle, i) => (
-            <li
-              key={principle.title}
-              data-reveal
-              style={{ ["--reveal-delay" as string]: `${(i % 2) * 100}ms` }}
-              className={`group border-b border-line py-9 md:py-11 ${i % 2 === 0 ? "md:border-r md:pr-12" : "md:pl-12"}`}
-            >
-              <span className="text-sm font-semibold tabular-nums text-fg-subtle transition-colors duration-300 group-hover:text-intel">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="text-title mt-4 text-fg">{principle.title}</h3>
-              <p className="mt-3 max-w-md text-[1.0625rem] leading-relaxed text-fg-muted">{principle.desc}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section aria-labelledby="stack-heading" className="container-page py-16 sm:py-24">
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-end" data-reveal>
-          <div className="lg:col-span-6">
-            <Eyebrow>Current stack</Eyebrow>
-            <h2 id="stack-heading" className="text-headline mt-5 text-fg">
-              Proven tools, chosen for pace and clarity.
-            </h2>
-          </div>
-          <ul className="flex flex-wrap gap-2.5 lg:col-span-6 lg:justify-end">
-            {STACK.map((item) => (
-              <li key={item} className="rounded-full border border-line-strong bg-surface-raised px-4 py-2 text-sm font-semibold text-fg">
-                {item}
-              </li>
-            ))}
-          </ul>
+      <section className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <SectionHeader
+            as="h1"
+            eyebrow="Technology & Engineering"
+            tone="cool"
+            title="How we intend to build."
+            lead="Our engineering standards emphasize clarity, security in the data layer, and honest separation between what is operational today and what is planned."
+          />
         </div>
-        <div className="mt-16 flex flex-col gap-3 border-t border-line pt-10 sm:flex-row" data-reveal>
-          <Button href="/what-we-build" arrow>
-            See what we are building
-          </Button>
-          <Button href="/careers" variant="secondary">
-            Work with us
-          </Button>
+      </section>
+
+      <section className="border-b border-line bg-surface-secondary">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+            {ARCHITECTURE_DOMAINS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="surface p-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <Icon aria-hidden="true" className="h-5 w-5 text-intel" />
+                    <span
+                      className={`rounded px-2 py-0.5 font-mono text-[10px] font-medium uppercase ${
+                        item.status === "Current Implementation"
+                          ? "bg-status-success/10 text-status-success"
+                          : "bg-intel/10 text-intel"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+                  <h2 className="mt-4 text-base font-semibold text-fg">{item.title}</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Security Deep Dive */}
+      <section id="security" className="border-b border-line bg-surface">
+        <div className="container-page py-16 sm:py-24">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12" data-reveal>
+            <div className="lg:col-span-5">
+              <Eyebrow tone="cool">Security Architecture</Eyebrow>
+              <h2 className="text-headline mt-3 text-fg">Defense in depth across every layer.</h2>
+              <p className="mt-3 text-base leading-relaxed text-fg-muted">
+                Authorization is enforced on the server for every protected API route and database record — never solely in the browser interface.
+              </p>
+              <div className="mt-6">
+                <Button href="/legal/security" variant="outline" arrow>
+                  Read Security Policy
+                </Button>
+              </div>
+            </div>
+            <div className="lg:col-span-7">
+              <div className="surface overflow-hidden">
+                <table className="w-full text-left text-sm">
+                  <thead className="border-b border-line bg-surface-secondary font-mono text-xs uppercase text-fg-subtle">
+                    <tr>
+                      <th className="px-5 py-3">Layer</th>
+                      <th className="px-5 py-3">Core Technologies & Controls</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-line">
+                    {STACK.map((row) => (
+                      <tr key={row.layer}>
+                        <td className="px-5 py-3.5 font-semibold text-fg">{row.layer}</td>
+                        <td className="px-5 py-3.5 text-fg-muted">{row.tech}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>

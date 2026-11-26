@@ -1,35 +1,58 @@
 import Eyebrow from "@/components/ui/Eyebrow";
-import { getSiteContent } from "@/lib/content";
-import Lines from "@/components/ui/Lines";
 
-export default async function PrinciplesSection() {
-  const { principles: PHILOSOPHY_PRINCIPLES, home: { principles: copy } } = await getSiteContent();
+const ENGINEERING_PILLARS = [
+  {
+    index: "01",
+    title: "Security by design",
+    desc: "Access control, row-level isolation, and least-privilege defaults are engineered into the data layer from day one.",
+  },
+  {
+    index: "02",
+    title: "Practical innovation",
+    desc: "Technology exists to solve concrete operational problems — never to manufacture complexity or hype.",
+  },
+  {
+    index: "03",
+    title: "Intelligent systems",
+    desc: "Structured operational telemetry and clean domain boundaries lay the groundwork for internal decision support.",
+  },
+  {
+    index: "04",
+    title: "Scalable architecture",
+    desc: "Modular systems with clear interfaces allow independent evolution without premature distributed overhead.",
+  },
+  {
+    index: "05",
+    title: "Responsible development",
+    desc: "Transparent communication, factual product status reporting, and privacy-respecting user experiences.",
+  },
+  {
+    index: "06",
+    title: "Long-term reliability",
+    desc: "Durable persistence, verifiable audit trails, and measurable performance standards built to endure.",
+  },
+];
+
+export default function PrinciplesSection() {
   return (
-    <section aria-labelledby="principles-title" className="relative section-atmosphere py-20 sm:py-24" data-tone="mixed">
-      <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-4" data-reveal>
-          <Eyebrow tone="cool">{copy.eyebrow}</Eyebrow>
-          <h2 id="principles-title" className="text-headline mt-5 text-fg">
-            <Lines text={copy.title} />
+    <section aria-labelledby="engineering-philosophy-heading" className="border-b border-line bg-surface">
+      <div className="container-page py-20 sm:py-28">
+        <div className="max-w-2xl" data-reveal>
+          <Eyebrow tone="cool">Engineering Philosophy</Eyebrow>
+          <h2 id="engineering-philosophy-heading" className="text-headline mt-4 text-fg">
+            Disciplined software, built for the long term.
           </h2>
         </div>
 
-        <ol className="border-t border-line lg:col-span-8">
-          {PHILOSOPHY_PRINCIPLES.map((principle, i) => (
-            <li
-              key={principle.title}
-              data-reveal
-              style={{ ["--reveal-delay" as string]: `${i * 100}ms` }}
-              className="row-sweep group grid gap-3 border-b border-line py-8 sm:grid-cols-[4rem_1fr_1fr] sm:items-baseline sm:gap-6 sm:py-10"
-            >
-              <span className="text-sm font-semibold tabular-nums text-fg-subtle transition-colors duration-300 group-hover:text-ambition">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="row-sweep__title text-title text-fg">{principle.title}.</h3>
-              <p className="text-[1.0625rem] leading-relaxed text-fg-muted">{principle.desc}</p>
-            </li>
+        <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-10 border-t border-line pt-10 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+          {ENGINEERING_PILLARS.map((item) => (
+            <div key={item.index} className="space-y-2.5">
+              <span className="font-mono text-xs font-medium text-intel">{item.index}</span>
+              <h3 className="text-lg font-semibold text-fg">{item.title}</h3>
+              <p className="text-sm leading-relaxed text-fg-muted">{item.desc}</p>
+            </div>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   );

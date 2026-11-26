@@ -121,9 +121,12 @@ test.describe("VANIKARA website", () => {
 
   test("custom cookie choices are recorded", async ({ page }) => {
     await prepare(page, { consent: false });
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "networkidle" });
     await page.mouse.move(200, 300);
-    await page.getByRole("button", { name: "Manage preferences" }).click();
+    await page.mouse.move(240, 320);
+    const manageBtn = page.getByRole("button", { name: "Manage preferences" });
+    await expect(manageBtn).toBeVisible({ timeout: 10000 });
+    await manageBtn.click();
     await expect(page.getByRole("dialog", { name: "Cookie preferences" })).toBeVisible();
     await page.getByRole("switch").nth(1).click();
 
@@ -132,6 +135,85 @@ test.describe("VANIKARA website", () => {
     const response = await (await request).response();
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("dialog", { name: "Cookie preferences" })).toBeHidden();
+  });
+
+  test("all visual pages render every image cleanly with zero uncaught page errors", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (err) => errors.push(err.message));
+    await prepare(page);
+
+    const visualRoutes = [
+      "/",
+      "/businesses",
+      "/food-delivery",
+      "/businesses/travel",
+      "/businesses/hotels",
+      "/businesses/quick-commerce",
+      "/cygma-ai",
+      "/cygma-ai/resume-intelligence",
+      "/technology",
+      "/about",
+      "/careers",
+    ];
+
+    for (const route of visualRoutes) {
+      await page.goto(route, { waitUntil: "networkidle" });
+      // Trigger lazy-loaded Next.js <Image> elements by scrolling through the page
+      await page.evaluate(async () => {
+        const imgs = Array.from(document.querySelectorAll("img"));
+        for (const img of imgs) {
+          img.loading = "eager";
+          img.scrollIntoView({ behavior: "instant" });
+        }
+        await Promise.all(
+          imgs.map((img) => {
+            if (img.complete) return Promise.resolve();
+            return new Promise((resolve) => {
+              img.addEventListener("load", resolve, { once: true });
+              img.addEventListener("error", resolve, { once: true });
+              setTimeout(resolve, 4000);
+            });
+          })
+        );
+      });
+      const broken = await page.evaluate(() => {
+        const imgs = Array.from(document.querySelectorAll("img"));
+        return imgs
+          .filter((img) => {
+            const style = window.getComputedStyle(img);
+            return style.display !== "none" && style.visibility !== "hidden" && img.getBoundingClientRect().width > 0;
+          })
+          .filter((img) => !img.complete || img.naturalWidth === 0)
+          .map((img) => img.getAttribute("src"));
+      });
+      expect(broken, `Broken images on ${route}`).toEqual([]);
+    }
+    expect(errors, "Uncaught page errors").toEqual([]);
+  });
+
+  test("desktop mega menus and site search work cleanly", async ({ page }) => {
+    await prepare(page);
+    await page.goto("/");
+    await page.getByRole("button", { name: "Businesses" }).click();
+    await expect(page.getByRole("link", { name: /Unified Consumer Ecosystem/ })).toBeVisible();
+    await page.getByRole("button", { name: "CYGMA_AI" }).click();
+    await expect(page.getByRole("link", { name: /CYGMA-RI — Resume Intelligence/ })).toBeVisible();
+
+    await page.getByRole("button", { name: "Search site" }).click();
+    const searchDialog = page.getByRole("dialog", { name: "Search Vanikara" });
+    await expect(searchDialog).toBeVisible();
+    await searchDialog.getByRole("searchbox").fill("Resume");
+    await expect(searchDialog.getByRole("link", { name: /CYGMA-RI/ })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(searchDialog).toBeHidden();
+  });
+
+  test("CYGMA-RI interactive preview switches demo candidates and preserves human oversight", async ({ page }) => {
+    await prepare(page);
+    await page.goto("/cygma-ai/resume-intelligence");
+    await expect(page.getByText("Intelligence supports the decision. Humans make it.").first()).toBeVisible();
+    await page.getByRole("button", { name: /B\. Demo Candidate 02/ }).click();
+    await expect(page.getByText("Evidence Unavailable").first()).toBeVisible();
   });
 
   test.describe("mobile", () => {

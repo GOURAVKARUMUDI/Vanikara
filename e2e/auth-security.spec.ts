@@ -26,13 +26,28 @@ test.describe("Access control", () => {
     await expect(page).toHaveURL(/\/login$/);
   });
 
-  for (const path of ["/api/admin/stats", "/api/admin/users", "/api/admin/settings", "/api/leads", "/api/clients"]) {
-    test(`GET ${path} without an admin session -> 401`, async ({ request }) => {
+  for (const path of [
+    "/api/admin/stats",
+    "/api/admin/users",
+    "/api/admin/settings",
+    "/api/admin/jobs",
+    "/api/admin/security",
+    "/api/portfolio?scope=admin",
+    "/api/leads",
+    "/api/clients",
+    "/api/account/records",
+  ]) {
+    test(`GET ${path} without an authorized session -> 401`, async ({ request }) => {
       const res = await request.get(path);
       expect(res.status()).toBe(401);
       expect(await res.text()).not.toMatch(/stack|at .*\.(ts|js)/i);
     });
   }
+
+  test("/account sends signed-out visitors to /account/login", async ({ page }) => {
+    await page.goto("/account");
+    await expect(page).toHaveURL(/\/account\/login\?next=%2Faccount$/);
+  });
 
   test("public privacy config never includes admin statistics", async ({ request }) => {
     const res = await request.get("/api/admin/privacy");

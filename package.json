@@ -33,7 +33,8 @@
     "zod": "^4.4.3"
   },
   "overrides": {
-    "postcss": "^8.5.10"
+    "postcss": "^8.5.10",
+    "jsdom": "26.1.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",

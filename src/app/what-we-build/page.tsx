@@ -64,9 +64,6 @@ export default async function WhatWeBuildPage() {
                   <Button href="/food-delivery" arrow>
                     Explore Food Delivery Platform
                   </Button>
-                  <Button href="/food-delivery#register" variant="outline">
-                    Register Early Interest
-                  </Button>
                 </div>
               </div>
 

@@ -3,7 +3,7 @@ import Eyebrow from "@/components/ui/Eyebrow";
 import { getSiteContent } from "@/lib/content";
 
 export default async function StorySection() {
-  const { identity, story } = await getSiteContent();
+  const { identity } = await getSiteContent();
 
   return (
     <section aria-labelledby="company-intro-heading" className="border-b border-line bg-surface-secondary">
@@ -20,11 +20,6 @@ export default async function StorySection() {
             <p className="text-lg leading-relaxed text-fg">
               {identity.supportingStatement}
             </p>
-            {story.paragraphs.map((paragraph) => (
-              <p key={paragraph} className="text-base leading-relaxed text-fg-muted">
-                {paragraph}
-              </p>
-            ))}
             <div className="pt-4">
               <Button href="/about" variant="outline" arrow>
                 Read our full story

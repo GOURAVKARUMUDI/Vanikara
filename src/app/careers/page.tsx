@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Button from "@/components/ui/Button";
 import ApplicationForm from "@/sections/careers/ApplicationForm";
 import JobBoard, { type PublicJob } from "@/sections/careers/JobBoard";
+import ServiceGate from "@/components/availability/ServiceGate";
 import { getSiteContent } from "@/lib/content";
+import { getAvailability } from "@/lib/availability";
 import { supabaseService } from "@/utils/supabase/service";
 
 export const metadata: Metadata = {
   title: "Careers",
-  description:
-    "Explore open engineering, product, and internship opportunities at VANIKARA Intelligence Private Limited in Guntur, Andhra Pradesh.",
+  description: "Career opportunities at VANIKARA Intelligence Private Limited will be announced when recruitment officially opens.",
 };
 
 async function fetchPublishedJobs(): Promise<PublicJob[]> {
@@ -29,16 +29,43 @@ async function fetchPublishedJobs(): Promise<PublicJob[]> {
   }
 }
 
+/**
+ * While recruitment is closed, the page shows only the Opening Soon notice:
+ * no listings, no application controls, no recruitment forms. The job board
+ * and application form are kept and appear once an administrator opens
+ * recruitment in the Vanikara Console.
+ */
 export default async function CareersPage({
   searchParams,
 }: {
   searchParams: Promise<{ type?: string }>;
 }) {
-  const [{ identity }, jobs, params] = await Promise.all([
+  const [{ identity }, availability, params] = await Promise.all([
     getSiteContent(),
-    fetchPublishedJobs(),
+    getAvailability(),
     searchParams,
   ]);
+  const recruitmentOpen = availability.recruitment && availability.career_applications;
+  const jobs = recruitmentOpen ? await fetchPublishedJobs() : [];
+
+  if (!recruitmentOpen) {
+    return (
+      <section className="bg-white text-[#0F172A] dark:bg-surface">
+        <div className="container-page py-24 sm:py-32">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs font-semibold uppercase tracking-wider text-intel">Careers at Vanikara</p>
+            <h1 className="text-display mt-5 text-fg">Opening Soon</h1>
+            <p className="text-lead mt-6 text-fg-muted">
+              We are building the foundation for our next chapter. Career opportunities will be announced when recruitment officially opens.
+            </p>
+            <p className="mt-8 font-mono text-xs font-medium uppercase tracking-wider text-fg-subtle">
+              Status: Recruitment Not Yet Open
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>
@@ -55,9 +82,6 @@ export default async function CareersPage({
               <Button href="#open-positions" arrow>
                 Open Positions
               </Button>
-              <Button href="#apply" variant="outline">
-                General Application
-              </Button>
               <Link
                 href="/account/applications"
                 className="inline-flex h-11 items-center px-3 text-sm font-medium text-intel hover:underline"
@@ -66,20 +90,9 @@ export default async function CareersPage({
               </Link>
             </div>
           </SectionHeader>
-          <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
-            <Image
-              src="/images/careers/collaboration.webp"
-              alt="Illustrative technology workplace collaboration"
-              fill
-              priority
-              sizes="(max-width: 1440px) 100vw, 1440px"
-              className="object-cover object-center"
-            />
-          </div>
         </div>
       </section>
 
-      {/* Open Positions */}
       <section id="open-positions" className="border-b border-line bg-surface-secondary">
         <div className="container-page py-16 sm:py-24">
           <div className="max-w-2xl">
@@ -92,7 +105,6 @@ export default async function CareersPage({
         </div>
       </section>
 
-      {/* General Application Form */}
       <section id="apply" className="bg-surface">
         <div className="container-page py-16 sm:py-24">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
@@ -100,11 +112,13 @@ export default async function CareersPage({
               <Eyebrow tone="warm">Apply Directly</Eyebrow>
               <h2 className="text-headline mt-3 text-fg">Submit your application.</h2>
               <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-                All applications are reviewed by humans. Upload your résumé (PDF or DOCX, max 4 MB) and you will receive an immediate reference number for status tracking.
+                All applications are reviewed by humans. Upload your résumé (PDF or DOCX, max 4 MB) to receive a reference number for status tracking.
               </p>
             </div>
             <div className="lg:col-span-8">
-              <ApplicationForm contactEmail={identity.officialEmail} />
+              <ServiceGate service={["career_applications", "recruitment"]}>
+                <ApplicationForm contactEmail={identity.officialEmail} />
+              </ServiceGate>
             </div>
           </div>
         </div>

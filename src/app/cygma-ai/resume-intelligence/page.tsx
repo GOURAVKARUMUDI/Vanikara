@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle2, ShieldCheck, AlertTriangle, FileCheck2, Users 
 import Button from "@/components/ui/Button";
 import Eyebrow from "@/components/ui/Eyebrow";
 import CygmaRiEnquiryForm from "@/sections/cygma/CygmaRiEnquiryForm";
+import ServiceGate from "@/components/availability/ServiceGate";
 import CygmaRiInterfacePreview from "@/components/cygma/CygmaRiInterfacePreview";
 import { getSiteContent } from "@/lib/content";
 import { getPortfolioItemById } from "@/data/portfolio";
@@ -98,9 +99,6 @@ export default async function CygmaRiProductPage() {
                 CYGMA-RI (Resume Intelligence) is a B2B resume analysis and pre-verification platform powered by CYGMA_AI — Vanikara Intelligence. It helps companies and recruiters analyse resumes, match job requirements, identify inconsistencies, and review permitted supporting evidence from LinkedIn and GitHub while keeping final hiring decisions entirely in human hands.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button href="#early-access" size="lg" arrow>
-                  Request Early Access
-                </Button>
                 <Button href="#how-it-works" variant="outline" size="lg">
                   Explore How It Works
                 </Button>
@@ -308,7 +306,9 @@ export default async function CygmaRiProductPage() {
               </p>
             </div>
             <div className="lg:col-span-8">
-              <CygmaRiEnquiryForm />
+              <ServiceGate service="demo_requests">
+                <CygmaRiEnquiryForm />
+              </ServiceGate>
             </div>
           </div>
         </div>

@@ -40,7 +40,7 @@ This incremental upgrade extends the completed Vanikara V2 Premium Enterprise pl
 
 ## 4. CMS, Database, API & Vanikara Console Changes
 - **CMS Schema (`src/data/portfolio.ts`, `src/content/defaults.ts`, `src/content/schema.ts`)**: Added hierarchical `portfolio` CMS group with independently configurable `developmentStatus` and `visibility` (`public`, `internal`, `draft`, `archived`) editable live without code changes.
-- **Database Migration (`supabase/migrations/20261126_v2_portfolio_cygmari.sql`)**: Additive, backward-compatible migration extending `product_registrations` categories (`travel_partner`, `hotel_partner`, `quick_commerce_partner`, `cygma_ri_enterprise`) and adding B2B fields (`designation`, `company_size`, `monthly_resume_volume`, `enquiry_type`).
+- **Database Migration (`supabase/migrations/20261126143000_v2_portfolio_cygmari.sql`)**: Additive, backward-compatible migration extending `product_registrations` categories (`travel_partner`, `hotel_partner`, `quick_commerce_partner`, `cygma_ri_enterprise`) and adding B2B fields (`designation`, `company_size`, `monthly_resume_volume`, `enquiry_type`).
 - **API Changes**:
   - Added `GET /api/portfolio` (public strictly filtered to `visibility === "public"`; `?scope=admin` enforces admin session + `products:read` RBAC) and `PUT /api/portfolio` (`products:write` RBAC + audit logging).
   - Extended `POST /api/registrations` to capture CYGMA-RI B2B enquiries (`CYG-...` reference codes) using the existing validated CRM pipeline with fallback to `leads` if the migration has not yet run.
@@ -59,6 +59,6 @@ This incremental upgrade extends the completed Vanikara V2 Premium Enterprise pl
 - `PLAYWRIGHT_PORT=3099 npx playwright test --project=chromium --reporter=list`: **PASS (59/59 Playwright E2E & security regression tests)**
 
 ## 7. Known Limitations & Pending Approvals
-- **Database Migrations**: Run `supabase/setup_new_project.sql`, `supabase/migrations/20261126_v2_enterprise_schema.sql`, and `supabase/migrations/20261126_v2_portfolio_cygmari.sql` on staging/production Supabase projects after review.
+- **Database Migrations**: Run `supabase/setup_new_project.sql`, `supabase/migrations/20261126_v2_enterprise_schema.sql`, and `supabase/migrations/20261126143000_v2_portfolio_cygmari.sql` on staging/production Supabase projects after review.
 - **External Config**: `SMTP_PASS`, `UPSTASH_REDIS_REST_URL`, and `UPSTASH_REDIS_REST_TOKEN` remain unset in local `.env.local`.
 - **Awaiting Company Approval**: Official consumer app brand name, commercial subscription pricing tiers, membership fees, and live consumer/CYGMA-RI application URLs.

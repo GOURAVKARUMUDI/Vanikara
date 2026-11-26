@@ -22,8 +22,8 @@ export default async function FoundersSection() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2" data-reveal>
-          {people.map((founder) => (
-            <FounderCard key={founder.id} founder={founder} />
+          {people.map((person, index) => (
+            <FounderCard key={person.id} person={person} index={index} />
           ))}
         </div>
       </div>

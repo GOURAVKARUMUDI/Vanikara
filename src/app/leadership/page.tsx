@@ -31,8 +31,8 @@ export default async function LeadershipPage() {
       <section className="border-b border-line bg-surface-secondary">
         <div className="container-page py-16 sm:py-24">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2" data-reveal>
-            {people.map((founder) => (
-              <FounderCard key={founder.id} founder={founder} />
+            {people.map((person, index) => (
+              <FounderCard key={person.id} person={person} index={index} />
             ))}
           </div>
         </div>

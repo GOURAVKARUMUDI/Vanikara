@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   {
     question: "How does Vanikara approach restaurant commercial terms?",
     answer:
-      "Our planned model focuses on subscription-based restaurant charges, transparent pricing, and preserving original restaurant menu prices as a business objective — reducing dependence on escalating per-order commissions.",
+      "Restaurant commercial terms are not yet published. They will be shared with restaurants directly when the Food Services platform is ready.",
   },
   {
     question: "Is AI-Assisted Telephone Ordering completely offline?",
@@ -33,9 +33,9 @@ const FAQ_ITEMS = [
       "No. It is designed as an app-free, telephone-based ordering channel so customers do not need the smartphone app to place an order, while backend menu, inventory, and dispatch systems operate over connected infrastructure.",
   },
   {
-    question: "Which food businesses are in scope for Tier-2 markets?",
+    question: "Which food businesses are in scope for the initial Guntur rollout?",
     answer:
-      "Our initial Tier-2 strategy focuses on restaurants, cloud kitchens, bakeries, eligible local food businesses, and street food vendors subject to operational feasibility and regulatory requirements.",
+      "Our initial focus is on restaurants, cloud kitchens, bakeries, eligible local food businesses, and street food vendors subject to operational feasibility and regulatory requirements.",
   },
 ];
 
@@ -171,7 +171,7 @@ export default async function FoodDeliveryPage() {
         </div>
       </section>
 
-      {/* Restaurant Commercial Model, Membership & Tier-2 Focus */}
+      {/* Restaurant Model & Initial Focus */}
       <section className="border-b border-line bg-surface">
         <div className="container-page py-16 sm:py-24">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3" data-reveal>
@@ -179,7 +179,7 @@ export default async function FoodDeliveryPage() {
               <p className="font-mono text-xs uppercase text-ambition">Commercial Model (Planned)</p>
               <h3 className="mt-2 text-lg font-semibold text-fg">Restaurant-First Economics</h3>
               <p className="mt-2 text-sm leading-relaxed text-fg-muted">
-                Designed around subscription-based restaurant charges, transparent pricing, and preserving original restaurant menu prices as a business objective — reducing dependence on high per-order commission structures.
+                Restaurant commercial terms are not yet published and will be shared directly with restaurants.
               </p>
             </div>
 
@@ -193,9 +193,9 @@ export default async function FoodDeliveryPage() {
 
             <div className="surface-muted p-7">
               <p className="font-mono text-xs uppercase text-fg-subtle">Target Market Strategy</p>
-              <h3 className="mt-2 text-lg font-semibold text-fg">Tier-2 Food Ecosystem</h3>
+              <h3 className="mt-2 text-lg font-semibold text-fg">Guntur Food Ecosystem</h3>
               <p className="mt-2 text-sm leading-relaxed text-fg-muted">
-                Focused on Tier-2 cities starting with Guntur — serving restaurants, cloud kitchens, bakeries, eligible local food businesses, and street food vendors subject to feasibility and regulatory requirements.
+                Starting in Guntur — serving restaurants, cloud kitchens, bakeries, eligible local food businesses, and street food vendors subject to feasibility and regulatory requirements.
               </p>
             </div>
           </div>

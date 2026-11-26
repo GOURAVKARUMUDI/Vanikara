@@ -19,7 +19,7 @@ const SHARED_CAPABILITIES = [
   { title: "Shared Membership Infrastructure", desc: "Planned cross-service membership passes and eligible service benefits." },
   { title: "Integrated Rewards", desc: "Planned reward coins and transparent coupon redemption across participating services." },
   { title: "Secure Payments", desc: "RBI-compliant digital payment workflows and predictable refund handling." },
-  { title: "Service Discovery", desc: "Unified local discovery tailored to Tier-2 and regional Indian markets." },
+  { title: "Service Discovery", desc: "Unified local discovery for regional Indian markets." },
   { title: "Centralized Customer Support", desc: "Consistent human-backed issue resolution and grievance redressal." },
   { title: "Intelligent Recommendations", desc: "Helpful discovery powered by responsible internal intelligence over time." },
   { title: "Shared Operational Infrastructure", desc: "Common merchant onboarding, dispatch, and settlement foundations." },

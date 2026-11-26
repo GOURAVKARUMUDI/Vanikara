@@ -55,7 +55,7 @@ export default async function WhatWeBuildPage() {
                   <div>
                     <h3 className="font-mono text-xs font-semibold uppercase text-fg-subtle">Proposed Approach</h3>
                     <p className="mt-1.5 text-sm text-fg-muted">
-                      Subscription-centric, transparent commercial terms paired with dedicated merchant, customer, partner, and operations tools.
+                      Dedicated merchant, customer, partner and operations tools. Commercial terms are not yet published.
                     </p>
                   </div>
                 </div>

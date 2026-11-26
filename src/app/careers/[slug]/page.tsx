@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
 import ApplicationForm from "@/sections/careers/ApplicationForm";
 import ServiceGate from "@/components/availability/ServiceGate";
 import { getSiteContent } from "@/lib/content";
+import { getAvailability } from "@/lib/availability";
 import { supabaseService } from "@/utils/supabase/service";
 
 interface JobDetail {
@@ -40,6 +41,9 @@ async function getJobBySlug(slug: string): Promise<JobDetail | null> {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  // While recruitment is closed, job details are not described publicly.
+  const availability = await getAvailability();
+  if (!(availability.recruitment && availability.career_applications)) return { title: "Careers", robots: { index: false, follow: false } };
   const job = await getJobBySlug(slug);
   if (!job) return { title: "Position Not Found" };
   return {
@@ -50,6 +54,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // Direct links must not reveal listings while recruitment is closed.
+  const availability = await getAvailability();
+  if (!(availability.recruitment && availability.career_applications)) redirect("/careers");
   const [job, { identity }] = await Promise.all([getJobBySlug(slug), getSiteContent()]);
   if (!job) notFound();
 

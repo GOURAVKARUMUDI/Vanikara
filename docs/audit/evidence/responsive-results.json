@@ -1,0 +1,642 @@
+[
+  {
+    "viewport": "1920x1080",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1920x1080",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1440x900",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1280x800",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "1024x768",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_SSL_PROTOCOL_ERROR"
+    ],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "768x1024",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "390x844",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/businesses",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/food-delivery",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/cygma-ai",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/cygma-ai/resume-intelligence",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/careers",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/contact",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/account/login",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  },
+  {
+    "viewport": "375x812",
+    "route": "/legal/privacy",
+    "status": 200,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": [],
+    "serverErrors": []
+  }
+]

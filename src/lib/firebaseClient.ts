@@ -1,6 +1,6 @@
 "use client";
 
-import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
+import { getApp, getApps, initializeApp, type FirebaseApp } from "@firebase/app";
 
 /**
  * Firebase web app, created once and only in the browser. The web config
@@ -27,7 +27,7 @@ export function firebaseApp(): FirebaseApp {
 /** Google sign-in with a pop-up, falling back to a full-page redirect where pop-ups are blocked. */
 export async function signInWithGoogle(): Promise<string | null> {
   const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, browserLocalPersistence, setPersistence } =
-    await import("firebase/auth");
+    await import("@firebase/auth");
   const auth = getAuth(firebaseApp());
   await setPersistence(auth, browserLocalPersistence);
   const provider = new GoogleAuthProvider();
@@ -47,19 +47,19 @@ export async function signInWithGoogle(): Promise<string | null> {
 
 /** Finishes a redirect-based sign-in after Google sends the visitor back. */
 export async function completeRedirectSignIn(): Promise<string | null> {
-  const { getAuth, getRedirectResult } = await import("firebase/auth");
+  const { getAuth, getRedirectResult } = await import("@firebase/auth");
   const result = await getRedirectResult(getAuth(firebaseApp())).catch(() => null);
   return result ? result.user.getIdToken() : null;
 }
 
 export async function signOutOfFirebase() {
-  const { getAuth, signOut } = await import("firebase/auth");
+  const { getAuth, signOut } = await import("@firebase/auth");
   await signOut(getAuth(firebaseApp())).catch(() => {});
 }
 
 /** Google Analytics for Firebase — only ever started after analytics consent. */
 export async function startAnalytics() {
   if (!config.measurementId) return;
-  const { getAnalytics, isSupported } = await import("firebase/analytics");
+  const { getAnalytics, isSupported } = await import("@firebase/analytics");
   if (await isSupported()) getAnalytics(firebaseApp());
 }

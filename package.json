@@ -14,10 +14,12 @@
     "test:all": "npm run typecheck && npm run lint && npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
+    "@firebase/analytics": "0.10.25",
+    "@firebase/app": "0.16.2",
+    "@firebase/auth": "1.13.6",
     "@supabase/supabase-js": "^2.99.3",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "firebase": "^12.19.0",
     "isomorphic-dompurify": "^3.7.0",
     "jose": "^6.2.12",
     "lucide-react": "^0.577.0",

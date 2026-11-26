@@ -6,6 +6,7 @@ import { supabaseService } from "@/utils/supabase/service";
 import { sanitize, apiResponse, logError, isBot, escapeHtml, isTrustedOrigin } from "@/lib/security";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
 import { getMailer, mailFrom } from "@/lib/mailer";
+import { UNAVAILABLE_TITLE, isServiceEnabled } from "@/lib/availability";
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
 
@@ -24,6 +25,10 @@ export async function POST(req: Request) {
   try {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+    // Refuse before reading or storing anything while the service is off.
+    if (!(await isServiceEnabled("contact"))) {
+      return NextResponse.json(apiResponse(false, null, UNAVAILABLE_TITLE), { status: 503 });
     }
     if (Number(req.headers.get("content-length") ?? 0) > 32 * 1024) {
       return NextResponse.json(apiResponse(false, null, "Message too large."), { status: 413 });

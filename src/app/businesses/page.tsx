@@ -148,9 +148,6 @@ export default async function BusinessesPage() {
             <Button href="/contact?topic=partnership" arrow>
               Business Partnerships
             </Button>
-            <Button href="/food-delivery#register" variant="outline">
-              Food Services Registration
-            </Button>
           </div>
         </div>
       </section>

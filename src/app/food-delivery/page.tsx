@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CalendarDays, MapPin, PhoneCall, Store, Utensils, ShoppingBag } from "lucide-react";
+import { Store, Utensils, ShoppingBag } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Eyebrow from "@/components/ui/Eyebrow";
-import Button from "@/components/ui/Button";
 import Accordion from "@/components/ui/Accordion";
 import InterestRegistrationForm from "@/sections/food-delivery/InterestRegistrationForm";
-import TelephoneOrderingVisual from "@/components/food/TelephoneOrderingVisual";
+import ServiceGate from "@/components/availability/ServiceGate";
 import { getSiteContent } from "@/lib/content";
 import { getPortfolioItemById } from "@/data/portfolio";
 
@@ -16,25 +15,12 @@ export const metadata: Metadata = {
     "Vanikara's Food Services initiative covering Food Delivery, Dine-in, Takeaway, and proposed AI-Assisted Telephone Ordering, designed around restaurant-first economics.",
 };
 
-const TELEPHONE_WORKFLOW = [
-  "Customer calls the designated ordering telephone number.",
-  "AI-powered voice assistant understands the customer's request.",
-  "The system retrieves restaurant menu information from connected backend services.",
-  "Available items are checked against current restaurant inventory.",
-  "The customer confirms their selected items and quantities.",
-  "Delivery address or pickup details are confirmed.",
-  "The system communicates the applicable item prices and charges clearly.",
-  "A secure payment link is generated when online payment is selected.",
-  "Eligible cash-on-delivery options may be offered subject to approved policy.",
-  "The confirmed order is transmitted directly to the restaurant.",
-  "The order proceeds through preparation and fulfilment.",
-];
 
 const FAQ_ITEMS = [
   {
     question: "Is Food Services live for consumer ordering today?",
     answer:
-      "No. Food Delivery is currently in development with a planned roadmap target in Guntur, Andhra Pradesh in 2027. Dine-in and Takeaway are planned, and AI-Assisted Telephone Ordering is a proposed innovation.",
+      "No. Food Delivery is currently in development with a planned rollout in Guntur, Andhra Pradesh. Dine-in and Takeaway are planned, and AI-Assisted Telephone Ordering is under development. No launch date has been announced.",
   },
   {
     question: "How does Vanikara approach restaurant commercial terms?",
@@ -60,7 +46,6 @@ export default async function FoodDeliveryPage() {
   const foodDelStatus = getPortfolioItemById(portfolio, "food-delivery")?.developmentStatus ?? "In Development";
   const dineInStatus = getPortfolioItemById(portfolio, "dine-in")?.developmentStatus ?? "Planned";
   const takeawayStatus = getPortfolioItemById(portfolio, "takeaway")?.developmentStatus ?? "Planned";
-  const phoneStatus = getPortfolioItemById(portfolio, "ai-telephone-ordering")?.developmentStatus ?? "Proposed";
 
   return (
     <>
@@ -78,22 +63,6 @@ export default async function FoodDeliveryPage() {
                 <span aria-hidden="true" className="h-2 w-2 rounded-sm bg-ambition" />
                 Food Delivery: {foodDelStatus}
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-compact border border-line px-3 py-1.5 text-fg-muted">
-                <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-ambition" />
-                Tier-2 Initial Target: {foodDelivery.initialMarket}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-compact border border-line px-3 py-1.5 text-fg-muted">
-                <CalendarDays aria-hidden="true" className="h-3.5 w-3.5 text-fg-subtle" />
-                Roadmap Target: {foodDelivery.targetLaunch}
-              </span>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="#register" size="lg" arrow>
-                Register Early Interest
-              </Button>
-              <Button href="#telephone-ordering" variant="outline" size="lg">
-                AI Telephone Ordering
-              </Button>
             </div>
           </SectionHeader>
           <div className="relative mt-12 aspect-[21/9] w-full overflow-hidden rounded-[8px] border border-line bg-surface-secondary">
@@ -236,44 +205,12 @@ export default async function FoodDeliveryPage() {
       {/* AI-Assisted Telephone Ordering */}
       <section id="telephone-ordering" className="border-b border-line bg-surface-secondary">
         <div className="container-page py-16 sm:py-24">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12" data-reveal>
-            <div className="lg:col-span-5">
-              <span className="inline-flex items-center gap-2 rounded bg-intel/10 px-2.5 py-1 font-mono text-xs font-medium text-intel">
-                <PhoneCall className="h-3.5 w-3.5" />
-                {phoneStatus} Innovation
-              </span>
-              <h2 className="text-headline mt-4 text-fg">AI-Assisted Telephone Ordering.</h2>
-              <p className="mt-3 text-base leading-relaxed text-fg-muted">
-                An app-free, telephone-based ordering concept enabling customers to order food via a standard phone call without requiring the consumer mobile application.
-              </p>
-              <div className="mt-6">
-                <TelephoneOrderingVisual />
-              </div>
-              <div className="mt-6 surface p-5 text-xs leading-relaxed text-fg-muted space-y-2">
-                <p className="font-semibold text-fg">Key Engineering &amp; Governance Considerations</p>
-                <p>
-                  Future implementation accounts for multilingual and regional voice interaction, speech recognition accuracy, live inventory synchronization, human support fallback, explicit customer consent, call recording disclosures where applicable, secure payment links, and duplicate-order prevention.
-                </p>
-              </div>
-            </div>
-
-            <div className="lg:col-span-7">
-              <div className="surface p-6 sm:p-8">
-                <p className="font-mono text-xs uppercase tracking-wider text-fg-subtle">
-                  Proposed End-to-End Telephone Workflow
-                </p>
-                <ol className="mt-5 space-y-3 text-sm text-fg-muted">
-                  {TELEPHONE_WORKFLOW.map((step, i) => (
-                    <li key={step} className="flex items-start gap-3">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-surface-secondary font-mono text-[11px] font-semibold text-intel">
-                        {i + 1}
-                      </span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs font-medium uppercase tracking-wider text-fg-subtle">Under development</span>
+            <h2 className="text-headline mt-4 text-fg">AI-assisted telephone ordering.</h2>
+            <p className="mt-3 text-base leading-relaxed text-fg-muted">
+              A concept for ordering food by phone without installing an app. This service is under development and is not available to order.
+            </p>
           </div>
         </div>
       </section>
@@ -305,11 +242,13 @@ export default async function FoodDeliveryPage() {
                 Register interest for Food Services.
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-                Restaurants, cloud kitchens, bakeries, delivery partners, customers, and business partners can register early interest below.
+                Registration opens once online submissions are operational.
               </p>
             </div>
             <div className="lg:col-span-8">
-              <InterestRegistrationForm />
+              <ServiceGate service="restaurant_partnerships">
+                <InterestRegistrationForm />
+              </ServiceGate>
             </div>
           </div>
         </div>

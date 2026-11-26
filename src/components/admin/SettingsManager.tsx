@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Settings, Database, Palette, RefreshCw, AlertCircle, CheckCircle } from "lucide-react";
 import Card, { CardBody } from "@/components/ui/Card";
 import { useTheme, ThemeMode } from "@/components/layout/ThemeContext";
+import AvailabilityManager from "@/components/admin/AvailabilityManager";
 
 export default function SettingsManager() {
   const { theme, resolvedTheme, setTheme } = useTheme();
@@ -44,6 +45,8 @@ export default function SettingsManager() {
           Review database connectivity, environment configuration and appearance.
         </p>
       </div>
+
+      <AvailabilityManager />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Brand Presets Controls */}

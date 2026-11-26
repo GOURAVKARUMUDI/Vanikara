@@ -124,9 +124,11 @@ test.describe("Cross-site request protection", () => {
     });
   }
 
-  test("contact form rejects invalid input without leaking internals", async ({ request }) => {
+  test("contact endpoint refuses submissions while the service is disabled, without leaking internals", async ({ request }) => {
+    // Public submission services are disabled by default until verified in the Console.
     const res = await request.post("/api/contact", { headers: { ...sameOrigin, "X-Real-IP": "198.51.100.230" }, data: { name: "", email: "not-an-email" } });
-    expect(res.status()).toBe(400);
+    expect(res.status()).toBe(503);
+    expect(await res.text()).toMatch(/temporarily unavailable/i);
     expect(await res.text()).not.toMatch(/stack|supabase|postgres/i);
   });
 });

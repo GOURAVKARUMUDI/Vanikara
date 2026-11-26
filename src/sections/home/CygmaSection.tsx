@@ -1,11 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/ui/Button";
-import { getSiteContent } from "@/lib/content";
-import { getPortfolioItemById } from "@/data/portfolio";
 
 export default async function CygmaSection() {
-  const { portfolio } = await getSiteContent();
-  const cygmaAi = getPortfolioItemById(portfolio, "cygma-ai");
 
   return (
     <section
@@ -18,20 +14,17 @@ export default async function CygmaSection() {
           <div className="relative z-10 lg:col-span-5">
             <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#78A9FF]">
               <span aria-hidden="true" className="h-1.5 w-1.5 rounded-sm bg-[#78A9FF]" />
-              02 / Proprietary Intelligence
-            </span>
-            <p className="mt-5 font-display text-2xl font-bold tracking-tight text-white">
               CYGMA_AI
-            </p>
-            <p className="font-mono text-xs text-[#8D9DB3]">
-              Powered by Vanikara Intelligence · {cygmaAi?.developmentStatus ?? "In Development"}
+            </span>
+            <p className="mt-3 font-mono text-xs text-[#8D9DB3]">
+              Powered by Vanikara Intelligence
             </p>
 
             <h2 id="cygma-ai-heading" className="text-headline mt-5 text-white">
               Intelligence, engineered for purpose.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[#B8C4D4]">
-              A proprietary intelligence ecosystem designed to support specialized enterprise applications, intelligent workflows and internal operational systems.
+              A proprietary intelligence platform for specialised enterprise applications.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

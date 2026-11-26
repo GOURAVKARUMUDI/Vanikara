@@ -25,6 +25,11 @@ export default async function ContactInfo() {
         ))}
       </div>
 
+      <div>
+        <p className="text-[0.8125rem] text-fg-subtle">Telephone</p>
+        <p className="mt-1 text-[0.9375rem] text-fg-muted">Telephone support is currently unavailable.</p>
+      </div>
+
       <div className="surface rounded-feature p-6">
         <div className="flex items-center gap-3">
           <BrandSymbol size={22} alt="" />

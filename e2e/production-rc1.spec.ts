@@ -28,7 +28,7 @@ const PAGES = [
   { path: "/cygma", heading: /Intelligence, Built for Purpose/ },
   { path: "/technology", heading: /How we intend to build/ },
   { path: "/leadership", heading: /people building VANIKARA/ },
-  { path: "/careers", heading: /Build with us/ },
+  { path: "/careers", heading: /Opening Soon/ },
   { path: "/contact", heading: /Let's talk/ },
   { path: "/account/login", heading: /Sign in to your Vanikara Account/ },
   { path: "/legal", heading: /Policies/ },

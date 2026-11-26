@@ -9,6 +9,7 @@ import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { backupToGoogleForm, writeWithRetry } from "@/lib/submissions";
 import { getMailer, mailFrom } from "@/lib/mailer";
 import { validateResumeBuffer } from "@/lib/fileValidation";
+import { UNAVAILABLE_TITLE, getAvailability } from "@/lib/availability";
 
 /**
  * Job / internship applications from the Careers page.
@@ -45,6 +46,11 @@ export async function POST(req: Request) {
   try {
     if (!isTrustedOrigin(req)) {
       return NextResponse.json(apiResponse(false, null, "Forbidden"), { status: 403 });
+    }
+    // Applications need both the application service and recruitment to be open.
+    const availability = await getAvailability();
+    if (!availability.career_applications || !availability.recruitment) {
+      return NextResponse.json(apiResponse(false, null, UNAVAILABLE_TITLE), { status: 503 });
     }
     if (Number(req.headers.get("content-length") ?? 0) > MAX_RESUME_BYTES + 256 * 1024) {
       return NextResponse.json(apiResponse(false, null, "Your résumé must be 4 MB or smaller."), { status: 413 });

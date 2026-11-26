@@ -9,6 +9,7 @@ import { sanitize, isBot, isTrustedOrigin, logError } from "@/lib/security";
 import { clientIp, isRateLimited, retryAfterHeaders } from "@/lib/rateLimit";
 import { okResponse, errResponse } from "@/lib/apiEnvelope";
 import { logAdminAction } from "@/lib/auditLogger";
+import { UNAVAILABLE_TITLE, isServiceEnabled } from "@/lib/availability";
 
 const CATEGORIES = [
   "restaurant",
@@ -65,6 +66,11 @@ export async function POST(req: Request) {
     }
 
     const d = parsed.data;
+    // CYGMA-RI enquiries and restaurant/delivery registrations are switched separately.
+    const service = d.product === "cygma-ri" ? "demo_requests" : "restaurant_partnerships";
+    if (!(await isServiceEnabled(service))) {
+      return errResponse("SERVICE_UNAVAILABLE", UNAVAILABLE_TITLE, 503);
+    }
     const prefix = d.category === "cygma_ri_enterprise" ? "CYG" : "REG";
     const reference = `${prefix}-${randomBytes(3).toString("hex").toUpperCase()}`;
     const cleanName = sanitize(d.name).slice(0, 100);

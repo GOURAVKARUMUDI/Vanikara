@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
 import ApplicationForm from "@/sections/careers/ApplicationForm";
+import ServiceGate from "@/components/availability/ServiceGate";
 import { getSiteContent } from "@/lib/content";
 import { supabaseService } from "@/utils/supabase/service";
 
@@ -144,7 +145,9 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 
             <div className="lg:col-span-6">
               <h2 className="text-title mb-4 text-fg">Apply for this position</h2>
-              <ApplicationForm contactEmail={identity.officialEmail} />
+              <ServiceGate service={["career_applications", "recruitment"]}>
+                <ApplicationForm contactEmail={identity.officialEmail} />
+              </ServiceGate>
             </div>
           </div>
         </div>

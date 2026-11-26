@@ -4,6 +4,7 @@ import CookieSettingsButton from "@/components/layout/CookieSettingsButton";
 import PublicChrome from "@/components/layout/PublicChrome";
 import { getSiteContent } from "@/lib/content";
 
+/** Concise footer: company, business portfolio, AI, careers, contact, legal and registration details only. */
 export default async function Footer() {
   const { identity: COMPANY_IDENTITY } = await getSiteContent();
 
@@ -13,14 +14,12 @@ export default async function Footer() {
       links: [
         { href: "/about", label: "About Vanikara" },
         { href: "/leadership", label: "Leadership" },
-        { href: "/about#journey", label: "Our Journey" },
-        { href: "/legal/legal-information", label: "Corporate Governance" },
+        { href: "/legal/legal-information", label: "Company information" },
       ],
     },
     {
-      title: "Consumer Businesses",
+      title: "Business Portfolio",
       links: [
-        { href: "/businesses", label: "Ecosystem Overview" },
         { href: "/food-delivery", label: "Food Services" },
         { href: "/businesses/travel", label: "Travel Booking" },
         { href: "/businesses/hotels", label: "Hotel Booking" },
@@ -32,17 +31,12 @@ export default async function Footer() {
       links: [
         { href: "/cygma-ai", label: "CYGMA_AI" },
         { href: "/cygma-ai/resume-intelligence", label: "CYGMA-RI" },
-        { href: "/cygma-ai#internal-intelligence", label: "Internal Intelligence" },
-        { href: "/cygma-ai#responsible-ai", label: "Responsible AI" },
       ],
     },
     {
-      title: "Technology & Careers",
+      title: "Careers & Contact",
       links: [
-        { href: "/technology", label: "Engineering" },
-        { href: "/technology#security", label: "Cybersecurity" },
         { href: "/careers", label: "Careers" },
-        { href: "/contact?topic=partnership", label: "Partnerships" },
         { href: "/contact", label: "Contact" },
       ],
     },
@@ -54,7 +48,6 @@ export default async function Footer() {
         { href: "/legal/refund", label: "Refund & Cancellation" },
         { href: "/legal/shipping", label: "Shipping & Delivery" },
         { href: "/legal/cookies", label: "Cookie Policy" },
-        { href: "/legal/security", label: "Security Policy" },
       ],
     },
   ];
@@ -69,23 +62,9 @@ export default async function Footer() {
                 <BrandMark size={26} />
               </Link>
               <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#B8C4D4]">
-                Developing connected consumer service platforms and proprietary enterprise intelligence systems.
+                {COMPANY_IDENTITY.legalName}
               </p>
-              <div className="mt-6 space-y-1.5 text-sm">
-                <a
-                  href={`mailto:${COMPANY_IDENTITY.officialEmail}`}
-                  className="block w-fit font-medium text-white hover:underline"
-                >
-                  {COMPANY_IDENTITY.officialEmail}
-                </a>
-                <a
-                  href={`mailto:${COMPANY_IDENTITY.supportEmail}`}
-                  className="block w-fit text-[#B8C4D4] hover:text-white hover:underline"
-                >
-                  {COMPANY_IDENTITY.supportEmail}
-                </a>
-                <p className="pt-1 text-xs text-[#8D9DB3]">{COMPANY_IDENTITY.operationalLocation}</p>
-              </div>
+              <p className="mt-2 text-xs text-[#8D9DB3]">{COMPANY_IDENTITY.operationalLocation}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">

@@ -3,6 +3,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import ContactForm from "@/sections/contact/ContactForm";
 import { getSiteContent } from "@/lib/content";
 import ContactInfo from "@/sections/contact/ContactInfo";
+import ServiceGate from "@/components/availability/ServiceGate";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -42,7 +43,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             <ContactInfo />
           </div>
           <div className="lg:col-span-7">
-            <ContactForm identity={identity} initialCategory={initialCategory} />
+            <ServiceGate service="contact">
+              <ContactForm identity={identity} initialCategory={initialCategory} />
+            </ServiceGate>
           </div>
         </div>
       </section>
